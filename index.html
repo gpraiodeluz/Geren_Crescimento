@@ -52,7 +52,13 @@
   --transition: 0.2s cubic-bezier(.4,0,.2,1);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+  -webkit-tap-highlight-color: transparent; 
+  touch-action: manipulation; /* Trava o zoom por clique duplo */
+}
 
 html { scroll-behavior: smooth; }
 
@@ -1603,6 +1609,26 @@ document.addEventListener("keydown", e => {
     closeSidebar();
   }
 });
+
+// ============================================================
+// BLOQUEIO DE ZOOM NO IOS (Pinça e Toque Duplo)
+// ============================================================
+// Bloqueia o movimento de pinça (pinch-to-zoom)
+document.addEventListener('touchmove', function(event) {
+  if (event.touches.length > 1) {
+    event.preventDefault();
+  }
+}, { passive: false });
+
+// Bloqueia o zoom nativo extra por duplo toque rápido
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(event) {
+  const now = (new Date()).getTime();
+  if (now - lastTouchEnd <= 300) {
+    event.preventDefault();
+  }
+  lastTouchEnd = now;
+}, false);
 
 // ============================================================
 // INIT
