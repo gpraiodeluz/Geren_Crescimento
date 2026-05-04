@@ -1,449 +1,1612 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerenciador de Inscrições</title>
-  <style>
-    :root {
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      /* Cores do Dark Theme (baseadas na sua imagem) */
-      --color-background-tertiary: #1E1E1E; /* Fundo geral da página */
-      --color-background-primary: #2D2D2D;  /* Fundo do Topbar e Cards */
-      --color-background-secondary: #252525; /* Fundo dos stats e inputs */
-      --color-border-primary: #555555;
-      --color-border-secondary: #444444;
-      --color-border-tertiary: #333333;
-      --color-text-primary: #FFFFFF;
-      --color-text-secondary: #AAAAAA;
-      --color-text-tertiary: #888888;
-      
-      --border-radius-md: 8px;
-      --border-radius-lg: 12px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Inscrições Rebanhão - Crescimento</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--color-background-tertiary); color: var(--color-text-primary); font-family: var(--font-sans); }
-    .app { min-height: 100vh; max-width: 800px; margin: 0 auto; background: var(--color-background-tertiary); }
-    
-    /* Topbar */
-    .topbar { background: var(--color-background-primary); padding: 20px 16px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); border-radius: 0 0 16px 16px; }
-    .topbar-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .topbar-title { font-size: 18px; font-weight: 600; color: var(--color-text-primary); }
-    .topbar-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
-    .refresh-btn { width: 36px; height: 36px; border-radius: 8px; border: 0.5px solid var(--color-border-secondary); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text-secondary); font-size: 18px; transition: background 0.2s; }
-    .refresh-btn:hover { background: var(--color-background-secondary); }
-    
-    /* Stats */
-    .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
-    .stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 16px; }
-    .stat-lbl { font-size: 10px; color: #bcaaa4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600; }
-    .stat-val { font-size: 24px; font-weight: 500; color: var(--color-text-primary); }
-    .stat-val.green { color: #4ade80; }
-    .stat-val.amber { color: #fbbf24; }
-    
-    /* Search */
-    .search-bar { display: flex; gap: 8px; align-items: center; }
-    .search-wrap { flex: 1; position: relative; }
-    .search-wrap input { width: 100%; height: 42px; padding: 0 10px 0 38px; font-size: 14px; border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); outline: none; transition: border-color 0.2s; }
-    .search-wrap input:focus { border-color: var(--color-border-primary); }
-    .si { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--color-text-tertiary); }
-    .filter-btn { height: 42px; padding: 0 16px; font-size: 14px; border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; white-space: nowrap; font-weight: 500; }
-    .filter-btn.active { background: #E1F5EE; border-color: #5DCAA5; color: #085041; }
-    
-    /* List */
-    .list { padding: 16px; }
-    .card { background: var(--color-background-primary); border-radius: var(--border-radius-lg); border: 1px solid var(--color-border-tertiary); margin-bottom: 12px; overflow: hidden; cursor: pointer; transition: border-color .15s, transform .1s; }
-    .card:hover { border-color: var(--color-border-secondary); }
-    .card:active { transform: scale(0.99); }
-    .card-main { display: flex; align-items: center; gap: 14px; padding: 16px; }
-    
-    /* Avatar */
-    .avatar { width: 52px; height: 52px; border-radius: 50%; background: #CECBF6; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: #3C3489; overflow: hidden; border: 1px solid var(--color-border-tertiary); }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    
-    /* Info */
-    .card-info { flex: 1; min-width: 0; }
-    .card-name { font-size: 16px; font-weight: 600; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-email { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    
-    /* Badges */
-    .card-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-    .bg { background: #E1F5EE; color: #085041; } /* Pago */
-    .ba { background: #FAEEDA; color: #633806; } /* Pendente / Medicação */
-    .br { background: #FCEBEB; color: #791F1F; } /* Restrição */
-    .bgr { background: #F1EFE8; color: #444441; } /* Foto */
-    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-    .dg { background: #1D9E75; }
-    .da { background: #BA7517; }
-    .card-arrow { color: var(--color-text-tertiary); font-size: 20px; flex-shrink: 0; padding-left: 10px; }
-    
-    /* Footer do Card */
-    .card-footer { border-top: 1px solid var(--color-border-tertiary); padding: 12px 16px; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.1); }
-    .card-footer-lbl { font-size: 12px; color: var(--color-text-secondary); }
-    .card-footer-val { font-size: 12px; color: var(--color-text-primary); font-weight: 600; }
-    .empty { text-align: center; padding: 48px 20px; color: var(--color-text-secondary); font-size: 14px; }
-    .loading { text-align: center; padding: 40px; color: var(--color-text-secondary); font-size: 14px; }
+<style>
+/* ─── TOKENS ──────────────────────────────────────── */
+:root {
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'DM Serif Display', serif;
 
-    /* Modal */
-    .modal-bg { display: none; position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,.7); align-items: flex-end; justify-content: center; z-index: 1000; }
-    .modal-bg.open { display: flex; animation: fadeIn 0.2s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal { background: var(--color-background-primary); border-radius: 20px 20px 0 0; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; }
-    .modal-head { padding: 20px; border-bottom: 1px solid var(--color-border-tertiary); display: flex; align-items: center; gap: 14px; position: sticky; top: 0; background: var(--color-background-primary); z-index: 10; }
-    .modal-avatar { width: 56px; height: 56px; border-radius: 50%; background: #CECBF6; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: #3C3489; overflow: hidden; }
-    .modal-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .modal-headinfo { flex: 1; min-width: 0; }
-    .modal-name { font-size: 18px; font-weight: 600; color: var(--color-text-primary); }
-    .modal-sub { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
-    .close-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--color-background-secondary); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--color-text-primary); }
-    
-    .modal-body { padding: 20px; }
-    .sec { margin-top: 20px; background: var(--color-background-secondary); padding: 16px; border-radius: var(--border-radius-md); }
-    .sec-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-secondary); font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid var(--color-border-tertiary); margin-bottom: 12px; }
-    .row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    .iitem .lbl, .iitem-full .lbl { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
-    .iitem .val, .iitem-full .val { font-size: 14px; color: var(--color-text-primary); font-weight: 500; }
-    .sacr-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  /* Fundos neutros/escuros (sem o tom azulado de antes) */
+  --bg-0: #121212;
+  --bg-1: #18181b;
+  --bg-2: #27272a;
+  --bg-3: #3f3f46;
+  --bg-glass: rgba(24, 24, 27, 0.85);
 
-    /* Foto area */
-    .foto-current { width: 100%; height: 200px; border-radius: var(--border-radius-md); object-fit: cover; border: 1px solid var(--color-border-tertiary); margin-bottom: 12px; display: block; }
-    .foto-placeholder { width: 100%; height: 150px; border-radius: var(--border-radius-md); border: 2px dashed var(--color-border-secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; background: rgba(0,0,0,0.1); }
-    .foto-placeholder span { font-size: 13px; color: var(--color-text-secondary); }
-    .foto-btns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .foto-btn { height: 48px; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-primary); background: transparent; cursor: pointer; font-size: 14px; color: var(--color-text-primary); display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
-    .foto-btn:active { background: var(--color-background-tertiary); }
-    .foto-btn svg { width: 18px; height: 18px; flex-shrink: 0; stroke: currentColor; }
+  --border-0: rgba(255,255,255,.05);
+  --border-1: rgba(255,255,255,.10);
+  --border-2: rgba(255,255,255,.15);
 
-    /* Pago toggle */
-    .pago-toggle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-secondary); overflow: hidden; margin-top: 12px; }
-    .pago-opt { height: 48px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; color: var(--color-text-secondary); background: transparent; }
-    .pago-opt.sel-green { background: #E1F5EE; color: #085041; font-weight: 600; }
-    .pago-opt.sel-amber { background: #FAEEDA; color: #633806; font-weight: 600; }
+  --text-0: #f4f4f5;
+  --text-1: #a1a1aa;
+  --text-2: #71717a;
 
-    .save-btn { width: 100%; height: 52px; background: #1D9E75; color: #fff; border: none; border-radius: var(--border-radius-md); font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 24px; transition: background 0.2s; }
-    .save-btn:active { background: #0F6E56; }
-    .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    input[type=file] { display: none; }
-  </style>
+  /* Cores de Destaque (Tema Amarelo) */
+  --accent-y: #FACC15; /* Amarelo Principal */
+  --accent-y-dim: rgba(250, 204, 21, 0.12);
+  --accent-y-mid: rgba(250, 204, 21, 0.25);
+  
+  --accent-o: #FB923C; /* Laranja para Pendentes/Medicação */
+  --accent-o-dim: rgba(251, 146, 60, 0.12);
+  
+  --accent-r: #EF4444; /* Vermelho para Restrições */
+  --accent-r-dim: rgba(239, 68, 68, 0.12);
+  
+  --accent-l: #FEF08A; /* Amarelo Claro para tag de Foto */
+  --accent-l-dim: rgba(254, 240, 138, 0.12);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  --shadow-card: 0 2px 16px rgba(0,0,0,.35);
+  --shadow-modal: 0 24px 80px rgba(0,0,0,.7);
+  --transition: 0.2s cubic-bezier(.4,0,.2,1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-0);
+  color: var(--text-0);
+  font-family: var(--font-body);
+  font-size: 15px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── LAYOUT ──────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .sidebar.mobile-open { display: flex; position: fixed; inset: 0; z-index: 500; }
+}
+
+/* ─── SIDEBAR ─────────────────────────────────────── */
+.sidebar {
+  background: var(--bg-1);
+  border-right: 1px solid var(--border-0);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border-0);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sidebar-logo-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent-y), #EAB308);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  color: #18181b;
+}
+
+.sidebar-logo-text {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--text-0);
+  line-height: 1.1;
+}
+
+.sidebar-logo-sub {
+  font-size: 11px;
+  color: var(--text-2);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.stat-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: 300;
+  font-family: var(--font-display);
+  color: var(--text-0);
+  line-height: 1;
+}
+
+.stat-number.yellow { color: var(--accent-y); }
+.stat-number.orange { color: var(--accent-o); }
+
+.sidebar-body { padding: 20px 24px; flex: 1; overflow-y: auto; }
+
+/* Search & Filter */
+.search-field {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.search-field input {
+  width: 100%;
+  height: 42px;
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-sm);
+  color: var(--text-0);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 0 12px 0 40px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.search-field input:focus { border-color: var(--border-2); }
+.search-field input::placeholder { color: var(--text-2); }
+
+.search-icon {
+  position: absolute;
+  left: 13px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-2);
+  font-size: 15px;
+  pointer-events: none;
+}
+
+/* Filtros com quebra de linha (Wrap) para caber os 5 */
+.filter-row { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 6px; 
+}
+
+.filter-chip {
+  flex: 1;
+  min-width: 65px; /* Garante que os botões não fiquem pequenos demais */
+  height: 36px;
+  border: 1px solid var(--border-1);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--text-1);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  padding: 0 8px;
+}
+
+.filter-chip.active-yellow {
+  background: var(--accent-y-dim);
+  border-color: var(--accent-y);
+  color: var(--accent-y);
+}
+
+.filter-chip.active-orange {
+  background: var(--accent-o-dim);
+  border-color: var(--accent-o);
+  color: var(--accent-o);
+}
+
+.filter-chip.active-red {
+  background: var(--accent-r-dim);
+  border-color: var(--accent-r);
+  color: var(--accent-r);
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--border-0);
+  margin: 16px 0;
+}
+
+.sidebar-section-title {
+  font-size: 10px;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.sidebar-counter {
+  font-size: 12px;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-count-val {
+  font-weight: 600;
+  color: var(--text-0);
+}
+
+.refresh-btn-side {
+  width: 100%;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  color: var(--text-1);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition);
+  margin-top: auto;
+}
+
+.refresh-btn-side:hover { background: var(--bg-3); border-color: var(--border-2); color: var(--text-0); }
+
+/* ─── MAIN CONTENT ────────────────────────────────── */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Mobile topbar */
+.mobile-topbar {
+  display: none;
+  padding: 16px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border-0);
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+@media (max-width: 900px) {
+  .mobile-topbar { display: flex; }
+}
+
+.mobile-menu-btn {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  color: var(--text-0);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.mobile-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  flex: 1;
+}
+
+.mobile-refresh {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  color: var(--text-1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Mobile stats */
+.mobile-stats {
+  display: none;
+  padding: 12px 16px;
+  gap: 8px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border-0);
+  overflow-x: auto;
+}
+
+.mobile-stats::-webkit-scrollbar { display: none; }
+
+@media (max-width: 900px) {
+  .mobile-stats { display: flex; }
+}
+
+.mobile-stat {
+  background: var(--bg-2);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mobile-stat-label { font-size: 9px; color: var(--text-2); text-transform: uppercase; letter-spacing: .8px; font-weight: 600; }
+.mobile-stat-number { font-size: 20px; font-weight: 300; font-family: var(--font-display); color: var(--text-0); line-height: 1; }
+.mobile-stat-number.yellow { color: var(--accent-y); }
+.mobile-stat-number.orange { color: var(--accent-o); }
+
+/* Mobile search */
+.mobile-search {
+  display: none;
+  padding: 12px 16px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border-0);
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .mobile-search { display: flex; }
+}
+
+.mobile-search .search-field { flex: 1; margin: 0; }
+
+/* ─── LIST ────────────────────────────────────────── */
+.list-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+@media (max-width: 600px) {
+  .list-wrapper { padding: 12px; }
+}
+
+/* Desktop 2-col grid */
+@media (min-width: 1400px) {
+  .list-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+}
+
+.card {
+  background: var(--bg-1);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-lg);
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+  overflow: hidden;
+}
+
+@media (min-width: 1400px) {
+  .card { margin-bottom: 0; }
+}
+
+.card:hover {
+  border-color: var(--border-1);
+  box-shadow: var(--shadow-card);
+}
+
+.card:active { transform: scale(0.992); }
+
+.card-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+}
+
+/* ─── AVATAR ──────────────────────────────────────── */
+.avatar {
+  width: 52px; height: 52px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #3f3314, #5c4a17);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 600; color: var(--accent-y);
+  border: 1px solid var(--border-1);
+  cursor: pointer;
+  transition: opacity var(--transition);
+  position: relative;
+}
+
+.avatar:hover { opacity: .85; }
+
+.avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar .photo-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition);
+  font-size: 20px;
+}
+
+.avatar:hover .photo-overlay { opacity: 1; }
+
+.card-info { flex: 1; min-width: 0; }
+
+.card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-email {
+  font-size: 12px;
+  color: var(--text-1);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-chips {
+  display: flex;
+  gap: 5px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+.chip-yellow { background: var(--accent-y-dim); color: var(--accent-y); border: 1px solid var(--accent-y-mid); }
+.chip-orange { background: var(--accent-o-dim); color: var(--accent-o); border: 1px solid rgba(251,146,60,.25); }
+.chip-red { background: var(--accent-r-dim); color: var(--accent-r); border: 1px solid rgba(239,68,68,.2); }
+.chip-light { background: var(--accent-l-dim); color: var(--accent-l); border: 1px solid rgba(254,240,138,.2); }
+.chip-gray { background: rgba(255,255,255,.06); color: var(--text-1); border: 1px solid var(--border-1); }
+
+.dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+.dot-y { background: var(--accent-y); }
+.dot-o { background: var(--accent-o); }
+
+.card-arrow { color: var(--text-2); font-size: 20px; flex-shrink: 0; }
+
+.card-footer {
+  border-top: 1px solid var(--border-0);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,0,0,.15);
+  font-size: 12px;
+}
+
+.card-footer-lbl { color: var(--text-2); }
+.card-footer-val { color: var(--text-0); font-weight: 600; }
+.card-footer-sep { color: var(--border-1); margin: 0 8px; }
+
+.empty, .loading {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+.loading-spinner {
+  width: 32px; height: 32px;
+  border: 2px solid var(--border-1);
+  border-top-color: var(--accent-y);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── MODAL ───────────────────────────────────────── */
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 800;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-bg.open { display: flex; animation: fadein .2s; }
+
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  width: 100%;
+  max-width: 680px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-modal);
+  animation: slideup .28s cubic-bezier(.4,0,.2,1);
+}
+
+@keyframes slideup { from { transform: translateY(48px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+@media (min-width: 900px) {
+  .modal-bg {
+    align-items: center;
+  }
+  .modal {
+    border-radius: var(--radius-xl);
+    max-height: 88vh;
+  }
+}
+
+.modal::-webkit-scrollbar { width: 4px; }
+.modal::-webkit-scrollbar-track { background: transparent; }
+.modal::-webkit-scrollbar-thumb { background: var(--border-1); border-radius: 2px; }
+
+.modal-head {
+  padding: 20px;
+  border-bottom: 1px solid var(--border-0);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: sticky;
+  top: 0;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+}
+
+.modal-avatar {
+  width: 52px; height: 52px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: linear-gradient(135deg, #3f3314, #5c4a17);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 600; color: var(--accent-y);
+  flex-shrink: 0;
+  border: 1px solid var(--border-1);
+}
+
+.modal-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.modal-head-info { flex: 1; min-width: 0; }
+.modal-name { font-size: 17px; font-weight: 600; }
+.modal-sub { font-size: 12px; color: var(--text-1); margin-top: 2px; }
+
+.close-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-1);
+  font-size: 16px;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.close-btn:hover { background: var(--bg-3); color: var(--text-0); }
+
+.modal-body { padding: 20px; }
+
+/* Sections */
+.section {
+  background: var(--bg-2);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-2);
+  font-weight: 600;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-0);
+  background: rgba(0,0,0,.15);
+}
+
+.section-body { padding: 16px; }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 480px) {
+  .grid-2 { grid-template-columns: 1fr; gap: 10px; }
+}
+
+.data-item .lbl {
+  font-size: 11px;
+  color: var(--text-2);
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+
+.data-item .val {
+  font-size: 14px;
+  color: var(--text-0);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.sacr-wrap { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+
+/* ─── FOTO SECTION ────────────────────────────────── */
+.foto-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.foto-preview-wrap {
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 1/1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-1);
+  background: var(--bg-3);
+  position: relative;
+  cursor: pointer;
+}
+
+.foto-preview-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .3s;
+}
+
+.foto-preview-wrap:hover img { transform: scale(1.04); }
+
+.foto-preview-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity var(--transition);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.foto-preview-wrap:hover .foto-preview-overlay { opacity: 1; }
+
+.foto-empty {
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 1/1;
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--border-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-2);
+  font-size: 13px;
+  background: rgba(255,255,255,.02);
+}
+
+.foto-empty-icon { font-size: 36px; opacity: .4; }
+
+.foto-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 300px; }
+
+.foto-btn {
+  height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-1);
+  background: var(--bg-3);
+  color: var(--text-0);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition);
+}
+
+.foto-btn:hover { background: var(--bg-2); border-color: var(--border-2); }
+
+/* ─── PAYMENT TOGGLE ──────────────────────────────── */
+.payment-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-1);
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.payment-opt {
+  height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-2);
+  background: transparent;
+  transition: all var(--transition);
+  border: none;
+  font-family: var(--font-body);
+}
+
+.payment-opt + .payment-opt { border-left: 1px solid var(--border-1); }
+
+.payment-opt.sel-yellow {
+  background: var(--accent-y-dim);
+  color: var(--accent-y);
+}
+
+.payment-opt.sel-orange {
+  background: var(--accent-o-dim);
+  color: var(--accent-o);
+}
+
+/* ─── SAVE BUTTON ─────────────────────────────────── */
+.save-btn {
+  width: 100%;
+  height: 52px;
+  background: linear-gradient(135deg, var(--accent-y), #EAB308);
+  color: #18181b; /* Texto escuro para contrastar no amarelo */
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: opacity var(--transition), transform var(--transition);
+  letter-spacing: .2px;
+}
+
+.save-btn:hover { opacity: .9; }
+.save-btn:active { transform: scale(.99); }
+.save-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ─── CROP MODAL ──────────────────────────────────── */
+.crop-modal-content {
+  display: flex;
+  flex-direction: column;
+  height: 88vh;
+  width: 100%;
+  max-width: 520px;
+  background: #000;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+@media (min-width: 900px) {
+  .crop-modal-content {
+    border-radius: var(--radius-xl);
+  }
+}
+
+.crop-area {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #000;
+}
+
+.crop-footer {
+  padding: 16px;
+  background: var(--bg-1);
+}
+
+/* ─── LIGHTBOX ────────────────────────────────────── */
+.lightbox-bg {
+  z-index: 1500;
+  background: rgba(0,0,0,.92);
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.lightbox-content {
+  position: relative;
+  cursor: default;
+  max-width: 92vw;
+  max-height: 92vh;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  display: block;
+  box-shadow: 0 32px 80px rgba(0,0,0,.6);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -16px; right: -16px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  color: var(--text-0);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ─── SIDEBAR MOBILE OVERLAY ──────────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 499;
+}
+
+.sidebar-overlay.open { display: block; }
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: flex;
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: min(320px, 85vw);
+    transform: translateX(-100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    z-index: 500;
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+}
+
+/* Utils */
+input[type=file] { display: none; }
+
+/* Scrollbar */
+.list-wrapper::-webkit-scrollbar { width: 4px; }
+.list-wrapper::-webkit-scrollbar-track { background: transparent; }
+.list-wrapper::-webkit-scrollbar-thumb { background: var(--border-0); border-radius: 2px; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-0);
+  z-index: 9999;
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+  white-space: nowrap;
+  box-shadow: var(--shadow-modal);
+  pointer-events: none;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { border-color: var(--accent-y); color: var(--accent-y); }
+.toast.error { border-color: var(--accent-r); color: var(--accent-r); }
+</style>
 </head>
 <body>
 
-<div class="app">
-  <div class="topbar">
-    <div class="topbar-row">
-      <div>
-        <div class="topbar-title">Inscrições</div>
-        <div class="topbar-sub">Encontro de Jovens</div>
+<div class="layout">
+  <!-- ─── SIDEBAR ─────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">✦</div>
+        <div>
+          <div class="sidebar-logo-text">Inscrições</div>
+          <div class="sidebar-logo-sub">Encontro de Jovens</div>
+        </div>
       </div>
-      <button class="refresh-btn" onclick="carregarDados()" title="Atualizar">&#8635;</button>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total</div>
+          <div class="stat-number" id="sTotal">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pagos</div>
+          <div class="stat-number yellow" id="sPagos">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pendentes</div>
+          <div class="stat-number orange" id="sPend">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Com foto</div>
+          <div class="stat-number" id="sFoto">—</div>
+        </div>
+      </div>
     </div>
-    
-    <div class="stats-row">
-      <div class="stat"><div class="stat-lbl">Total</div><div class="stat-val" id="sTotal">—</div></div>
-      <div class="stat"><div class="stat-lbl">Pagos</div><div class="stat-val green" id="sPagos">—</div></div>
-      <div class="stat"><div class="stat-lbl">Pendentes</div><div class="stat-val amber" id="sPend">—</div></div>
-      <div class="stat"><div class="stat-lbl">Com foto</div><div class="stat-val" id="sFoto">—</div></div>
-    </div>
-    
-    <div class="search-bar">
-      <div class="search-wrap">
-        <span class="si">&#9906;</span>
+
+    <div class="sidebar-body">
+      <div class="search-field">
+        <span class="search-icon">⌕</span>
         <input type="text" id="busca" placeholder="Buscar participante..." oninput="filtrar()">
       </div>
-      <button class="filter-btn" id="btnFiltro" onclick="toggleFiltro()">Pago</button>
-    </div>
-  </div>
 
-  <div class="list" id="lista">
-    <div class="loading">Carregando dados da planilha...</div>
-  </div>
+      <div class="filter-row">
+        <button class="filter-chip" id="chipPago" onclick="toggleFiltro('pago')">Pago</button>
+        <button class="filter-chip" id="chipPend" onclick="toggleFiltro('pend')">Pendente</button>
+        <button class="filter-chip" id="chipFoto" onclick="toggleFiltro('foto')">Foto</button>
+        <button class="filter-chip" id="chipMed" onclick="toggleFiltro('med')">Medicação</button>
+        <button class="filter-chip" id="chipRest" onclick="toggleFiltro('rest')">Restrição</button>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section-title">Exibindo</div>
+      <div class="sidebar-counter">
+        <span>Participantes visíveis</span>
+        <span class="sidebar-count-val" id="sCount">—</span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <button class="refresh-btn-side" onclick="carregarDados()">
+        <span>↺</span> Atualizar dados
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ─── MAIN ───────────────────── -->
+  <main class="main">
+    <!-- Mobile topbar -->
+    <div class="mobile-topbar">
+      <button class="mobile-menu-btn" onclick="openSidebar()">☰</button>
+      <span class="mobile-title">Inscrições</span>
+      <button class="mobile-refresh" onclick="carregarDados()">↺</button>
+    </div>
+
+    <!-- Mobile stats strip -->
+    <div class="mobile-stats">
+      <div class="mobile-stat">
+        <div class="mobile-stat-label">Total</div>
+        <div class="mobile-stat-number" id="mTotal">—</div>
+      </div>
+      <div class="mobile-stat">
+        <div class="mobile-stat-label">Pagos</div>
+        <div class="mobile-stat-number yellow" id="mPagos">—</div>
+      </div>
+      <div class="mobile-stat">
+        <div class="mobile-stat-label">Pendentes</div>
+        <div class="mobile-stat-number orange" id="mPend">—</div>
+      </div>
+      <div class="mobile-stat">
+        <div class="mobile-stat-label">Com foto</div>
+        <div class="mobile-stat-number" id="mFoto">—</div>
+      </div>
+    </div>
+
+    <!-- Mobile search -->
+    <div class="mobile-search">
+      <div class="search-field">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="buscaMobile" placeholder="Buscar..." oninput="filtrarMobile()">
+      </div>
+      <button class="filter-chip" id="chipMobile" onclick="toggleFiltroMobile()" style="min-width:80px">Filtrar</button>
+    </div>
+
+    <!-- List -->
+    <div class="list-wrapper">
+      <div class="list-grid" id="lista">
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          Carregando dados da planilha…
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
 
-<!-- Modal -->
+<!-- ─── MODAL PRINCIPAL ──────────── -->
 <div class="modal-bg" id="modalBg">
   <div class="modal" id="modalBox">
     <div class="modal-head">
       <div class="modal-avatar" id="mAvatar"></div>
-      <div class="modal-headinfo">
+      <div class="modal-head-info">
         <div class="modal-name" id="mNome"></div>
         <div class="modal-sub" id="mSub"></div>
       </div>
-      <button class="close-btn" onclick="fecharModal()">&#x2715;</button>
+      <button class="close-btn" onclick="fecharModal()">✕</button>
     </div>
     <div class="modal-body" id="mBody"></div>
   </div>
 </div>
 
+<!-- ─── MODAL CROP ───────────────── -->
+<div class="modal-bg" id="cropModalBg" style="z-index:1200;">
+  <div class="crop-modal-content">
+    <div class="modal-head" style="border-radius: 20px 20px 0 0; background: #111;">
+      <div class="modal-name" style="flex:1; color:#fff;">Ajustar Foto</div>
+      <button class="close-btn" onclick="fecharCrop()">✕</button>
+    </div>
+    <div class="crop-area">
+      <img id="imageToCrop" src="" style="max-width:100%;">
+    </div>
+    <div class="crop-footer">
+      <button class="save-btn" style="margin-top:0;" onclick="aplicarCrop()">Confirmar Recorte</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LIGHTBOX ─────────────────── -->
+<div class="modal-bg lightbox-bg" id="lightboxBg" onclick="fecharLightbox()">
+  <div class="lightbox-content" onclick="event.stopPropagation()">
+    <button class="lightbox-close" onclick="fecharLightbox()">✕</button>
+    <img class="lightbox-img" id="lightboxImg" src="">
+  </div>
+</div>
+
+<!-- ─── TOAST ────────────────────── -->
+<div class="toast" id="toast"></div>
+
 <input type="file" id="inputFotoGaleria" accept="image/*">
 <input type="file" id="inputFotoCamera" accept="image/*" capture="environment">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
 <script>
-// ==========================================
-// COLE AQUI A SUA URL DO GOOGLE APPS SCRIPT
-// ==========================================
-const API_URL = "https://script.google.com/macros/s/AKfycbwX87QCGUQg6jO5Cx1R-TZAY8_-W9q6e2YwX4ZWdJHHWjDkdhsP5JVXVBrM3Yb1MUE-/exec"; 
+// ============================================================
+// CONFIG — Troque pela URL da sua API do Google Apps Script
+// ============================================================
+const API_URL = "https://script.google.com/macros/s/AKfycbwX87QCGUQg6jO5Cx1R-TZAY8_-W9q6e2YwX4ZWdJHHWjDkdhsP5JVXVBrM3Yb1MUE-/exec";
 
-var dados=[], filtrados=[], iP=18, iF=19, rowAtual=-1, filtroAtivo=false;
-var fotoNovaBase64=null, fotoNovoMime=null, fotoNovoNome=null;
+// ============================================================
+// STATE
+// ============================================================
+let dados = [], filtrados = [];
+let iP = 18, iF = 19;
+let rowAtual = -1;
+let filtroAtivo = null; // 'pago' | 'pend' | 'foto' | 'med' | 'rest' | null
+let fotoNovaBase64 = null, fotoNovoMime = null, fotoNovoNome = null;
+let cropper = null;
+let _pagoSelecionado = true;
 
+// ============================================================
+// UTILS
+// ============================================================
 function initials(n) {
-  var p=(n||"?").trim().split(" ");
-  return p.length>=2 ? (p[0][0]+p[p.length-1][0]).toUpperCase() : (p[0][0]||"?").toUpperCase();
+  const p = (n || "?").trim().split(" ");
+  return p.length >= 2 ? (p[0][0] + p[p.length-1][0]).toUpperCase() : (p[0][0] || "?").toUpperCase();
 }
 
-async function carregarDados(){
-  document.getElementById("lista").innerHTML='<div class="loading">Carregando dados da planilha...</div>';
-  
-  if(API_URL === "SUA_URL_AQUI") {
-      document.getElementById("lista").innerHTML='<div class="empty" style="color: #fbbf24;">Atenção: Configure a API_URL no código para conectar com sua planilha.</div>';
-      return;
+// Converte qualquer URL do Google Drive para formato que pode ser exibido em <img>
+function fixDriveUrl(url) {
+  if (!url || !url.trim()) return "";
+  url = url.trim();
+
+  // Já é lh3.googleusercontent.com — retorna direto
+  if (url.includes("lh3.googleusercontent.com")) return url;
+
+  // /file/d/{id}/view  ou  open?id={id}  ou  uc?export=view&id={id}
+  let id = null;
+
+  const m1 = url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  if (m1) id = m1[1];
+
+  if (!id) {
+    const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+    if (m2) id = m2[1];
   }
+
+  if (id) return `https://lh3.googleusercontent.com/d/${id}`;
+
+  // Fallback: retorna a URL original
+  return url;
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type = "") {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  setTimeout(() => el.classList.remove("show"), 3000);
+}
+
+// ============================================================
+// SIDEBAR MOBILE
+// ============================================================
+function openSidebar() {
+  document.getElementById("sidebar").classList.add("mobile-open");
+  document.getElementById("sidebarOverlay").classList.add("open");
+}
+
+function closeSidebar() {
+  document.getElementById("sidebar").classList.remove("mobile-open");
+  document.getElementById("sidebarOverlay").classList.remove("open");
+}
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function carregarDados() {
+  document.getElementById("lista").innerHTML = `
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      Carregando dados da planilha…
+    </div>`;
 
   try {
-    const response = await fetch(API_URL);
-    const jsonStr = await response.text();
-    renderizar(jsonStr);
-  } catch (error) {
-    console.error("Erro ao buscar dados:", error);
-    document.getElementById("lista").innerHTML='<div class="empty text-danger">Erro de conexão. Verifique o console.</div>';
+    const res = await fetch(API_URL);
+    const json = await res.text();
+    renderizar(json);
+  } catch (err) {
+    console.error(err);
+    document.getElementById("lista").innerHTML = `<div class="empty">Erro de conexão. Tente novamente.</div>`;
   }
 }
 
-function renderizar(json){
-  var data=JSON.parse(json);
-  dados=data.slice(1);
-  var h=data[0];
-  iP=h.indexOf("PAGO"); iF=h.indexOf("Foto");
-  filtrados=[...dados];
+function renderizar(json) {
+  const data = JSON.parse(json);
+  dados = data.slice(1);
+  const h = data[0];
+  iP = h.indexOf("PAGO");
+  iF = h.indexOf("Foto");
+  filtrados = [...dados];
   atualizarStats();
   renderLista();
 }
 
-function atualizarStats(){
-  var t=dados.length,pg=dados.filter(r=>(r[iP]||"").toUpperCase()==="SIM").length;
-  document.getElementById("sTotal").textContent=t;
-  document.getElementById("sPagos").textContent=pg;
-  document.getElementById("sPend").textContent=t-pg;
-  document.getElementById("sFoto").textContent=dados.filter(r=>r[iF]&&r[iF].trim()).length;
+function atualizarStats() {
+  const t = dados.length;
+  const pg = dados.filter(r => (r[iP] || "").toUpperCase() === "SIM").length;
+  const cf = dados.filter(r => r[iF] && r[iF].trim()).length;
+
+  // Sidebar stats
+  document.getElementById("sTotal").textContent = t;
+  document.getElementById("sPagos").textContent = pg;
+  document.getElementById("sPend").textContent = t - pg;
+  document.getElementById("sFoto").textContent = cf;
+
+  // Mobile stats
+  document.getElementById("mTotal").textContent = t;
+  document.getElementById("mPagos").textContent = pg;
+  document.getElementById("mPend").textContent = t - pg;
+  document.getElementById("mFoto").textContent = cf;
 }
 
-function toggleFiltro(){
-  filtroAtivo=!filtroAtivo;
-  var btn=document.getElementById("btnFiltro");
-  btn.classList.toggle("active",filtroAtivo);
-  btn.textContent=filtroAtivo?"Pendente":"Pago";
+// ============================================================
+// FILTER
+// ============================================================
+function toggleFiltro(tipo) {
+  filtroAtivo = filtroAtivo === tipo ? null : tipo;
+
+  // Reset chips
+  ["chipPago","chipPend","chipFoto","chipMed","chipRest"].forEach(id => {
+    document.getElementById(id).className = "filter-chip";
+  });
+
+  if (filtroAtivo === "pago") document.getElementById("chipPago").className = "filter-chip active-yellow";
+  if (filtroAtivo === "pend") document.getElementById("chipPend").className = "filter-chip active-orange";
+  if (filtroAtivo === "foto") document.getElementById("chipFoto").className = "filter-chip active-yellow";
+  if (filtroAtivo === "med") document.getElementById("chipMed").className = "filter-chip active-orange";
+  if (filtroAtivo === "rest") document.getElementById("chipRest").className = "filter-chip active-red";
+
   filtrar();
 }
 
-function filtrar(){
-  var q=(document.getElementById("busca").value||"").toLowerCase();
-  filtrados=dados.filter(function(r){
-    var n=(r[2]||"").toLowerCase(), e=(r[1]||"").toLowerCase();
-    var mq=!q||n.includes(q)||e.includes(q);
-    var pago=(r[iP]||"").toUpperCase()==="SIM";
-    var mp=!filtroAtivo||!pago;
-    return mq&&mp;
+function toggleFiltroMobile() {
+  // Cicla entre todas as opções
+  const order = [null, "pend", "pago", "foto", "med", "rest"];
+  let idx = order.indexOf(filtroAtivo);
+  idx = (idx + 1) % order.length;
+  filtroAtivo = order[idx];
+
+  const chip = document.getElementById("chipMobile");
+  chip.className = "filter-chip"; // Reset
+
+  if (!filtroAtivo) { chip.textContent = "Filtrar"; }
+  else if (filtroAtivo === "pend") { chip.textContent = "Pendente"; chip.classList.add("active-orange"); }
+  else if (filtroAtivo === "pago") { chip.textContent = "Pago"; chip.classList.add("active-yellow"); }
+  else if (filtroAtivo === "foto") { chip.textContent = "Com Foto"; chip.classList.add("active-yellow"); }
+  else if (filtroAtivo === "med") { chip.textContent = "Medicação"; chip.classList.add("active-orange"); }
+  else if (filtroAtivo === "rest") { chip.textContent = "Restrição"; chip.classList.add("active-red"); }
+
+  filtrar();
+}
+
+function filtrarMobile() {
+  document.getElementById("busca").value = document.getElementById("buscaMobile").value;
+  filtrar();
+}
+
+function filtrar() {
+  const q = (document.getElementById("busca").value || "").toLowerCase();
+  filtrados = dados.filter(r => {
+    const n = (r[2] || "").toLowerCase(), e = (r[1] || "").toLowerCase();
+    const mq = !q || n.includes(q) || e.includes(q);
+    
+    const pago = (r[iP] || "").toUpperCase() === "SIM";
+    const foto = !!(r[iF] && r[iF].trim());
+    const rest = (r[7] || "").toLowerCase().includes("sim");
+    const med = (r[9] || "").toLowerCase().includes("sim");
+    
+    let mp = true;
+    if (filtroAtivo === "pago") mp = pago;
+    if (filtroAtivo === "pend") mp = !pago;
+    if (filtroAtivo === "foto") mp = foto;
+    if (filtroAtivo === "med") mp = med;
+    if (filtroAtivo === "rest") mp = rest;
+    
+    return mq && mp;
   });
+  document.getElementById("sCount").textContent = filtrados.length;
   renderLista();
 }
 
-function renderLista(){
-  if(!filtrados.length){
-    document.getElementById("lista").innerHTML='<div class="empty">Nenhum participante encontrado.</div>';
+// ============================================================
+// RENDER LIST
+// ============================================================
+function renderLista() {
+  document.getElementById("sCount").textContent = filtrados.length;
+
+  if (!filtrados.length) {
+    document.getElementById("lista").innerHTML = `<div class="empty">Nenhum participante encontrado.</div>`;
     return;
   }
-  var html="";
-  filtrados.forEach(function(row){
-    var ri=dados.indexOf(row);
-    var nome=row[2]||"—", email=row[1]||"", nasc=row[4]||"—", resp=row[5]||"—";
-    var pago=(row[iP]||"").toUpperCase()==="SIM";
-    var foto=row[iF]||"";
-    var rest=(row[7]||"").toLowerCase().includes("sim");
-    var med=(row[9]||"").toLowerCase().includes("sim");
-    var ini=initials(nome);
-    
-    var av=foto
-      ?'<div class="avatar"><img src="'+foto+'" onerror="this.parentElement.innerHTML=\''+ini+'\'"></div>'
-      :'<div class="avatar">'+ini+'</div>';
-      
-    var pgB=pago
-      ?'<span class="badge bg"><span class="dot dg"></span>Pago</span>'
-      :'<span class="badge ba"><span class="dot da"></span>Pendente</span>';
-      
-    var rB=rest?'<span class="badge br">Restrição</span>':'';
-    var mB=med?'<span class="badge ba">Medicação</span>':'';
-    var fB=foto?'<span class="badge bgr">&#10003; Foto</span>':'';
-    
-    html+='<div class="card" onclick="abrirModal('+ri+')">'
-      +'<div class="card-main">'
-      +av
-      +'<div class="card-info">'
-      +'<div class="card-name">'+nome+'</div>'
-      +'<div class="card-email">'+email+'</div>'
-      +'<div class="card-badges">'+pgB+rB+mB+fB+'</div>'
-      +'</div>'
-      +'<div class="card-arrow">›</div>'
-      +'</div>'
-      +'<div class="card-footer">'
-      +'<span class="card-footer-lbl">Nasc.</span><span class="card-footer-val">'+nasc+'</span>'
-      +'<span style="margin:0 12px;color:var(--color-border-secondary)">|</span>'
-      +'<span class="card-footer-lbl">Resp.</span><span class="card-footer-val" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+resp+'</span>'
-      +'</div>'
-      +'</div>';
+
+  let html = "";
+  filtrados.forEach(row => {
+    const ri = dados.indexOf(row);
+    const nome = row[2] || "—";
+    const email = row[1] || "";
+    const nasc = row[4] || "—";
+    const resp = row[5] || "—";
+    const pago = (row[iP] || "").toUpperCase() === "SIM";
+    const fotoRaw = row[iF] || "";
+    const foto = fixDriveUrl(fotoRaw);
+    const rest = (row[7] || "").toLowerCase().includes("sim");
+    const med = (row[9] || "").toLowerCase().includes("sim");
+    const ini = initials(nome);
+
+    const pgChip = pago
+      ? `<span class="chip chip-yellow"><span class="dot dot-y"></span>Pago</span>`
+      : `<span class="chip chip-orange"><span class="dot dot-o"></span>Pendente</span>`;
+    const rChip = rest ? `<span class="chip chip-red">Restrição</span>` : "";
+    const mChip = med ? `<span class="chip chip-orange">Medicação</span>` : "";
+    const fChip = foto ? `<span class="chip chip-light">✓ Foto</span>` : "";
+
+    const avInner = foto
+      ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.innerHTML='<span>${ini}</span>'"><div class="photo-overlay">🔍</div>`
+      : `<span>${ini}</span>`;
+
+    html += `
+      <div class="card" onclick="abrirModal(${ri})">
+        <div class="card-inner">
+          <div class="avatar" onclick="event.stopPropagation(); ${foto ? `verFoto('${foto}')` : ''}" title="${foto ? 'Ver foto' : nome}">
+            ${avInner}
+          </div>
+          <div class="card-info">
+            <div class="card-name">${nome}</div>
+            <div class="card-email">${email}</div>
+            <div class="card-chips">${pgChip}${rChip}${mChip}${fChip}</div>
+          </div>
+          <div class="card-arrow">›</div>
+        </div>
+        <div class="card-footer">
+          <span class="card-footer-lbl">Nasc.</span>
+          <span class="card-footer-val">${nasc}</span>
+          <span class="card-footer-sep">|</span>
+          <span class="card-footer-lbl">Resp.</span>
+          <span class="card-footer-val" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${resp}</span>
+        </div>
+      </div>`;
   });
-  document.getElementById("lista").innerHTML=html;
+
+  document.getElementById("lista").innerHTML = html;
 }
 
-function abrirModal(ri){
-  rowAtual=ri;
-  fotoNovaBase64=null; fotoNovoMime=null; fotoNovoNome=null;
-  var row=dados[ri];
-  var nome=row[2]||"—", email=row[1]||"", foto=row[iF]||"";
-  var pago=(row[iP]||"").toUpperCase()==="SIM";
-  var ini=initials(nome);
+// ============================================================
+// LIGHTBOX
+// ============================================================
+function verFoto(url) {
+  if (!url) return;
+  document.getElementById("lightboxImg").src = url;
+  document.getElementById("lightboxBg").classList.add("open");
+}
 
-  document.getElementById("mNome").textContent=nome;
-  document.getElementById("mSub").textContent=email;
-  var av=document.getElementById("mAvatar");
-  if(foto){av.innerHTML='<img src="'+foto+'" onerror="this.parentElement.innerHTML=\''+ini+'\'">';}
-  else{av.textContent=ini;}
+function fecharLightbox() {
+  document.getElementById("lightboxBg").classList.remove("open");
+}
 
-  var rest=(row[7]||"").toLowerCase().includes("sim");
-  var med=(row[9]||"").toLowerCase().includes("sim");
-  var alerMed=(row[11]||"").toLowerCase().includes("sim");
-  var sair=(row[13]||"").toLowerCase().includes("sim");
-  var sacrs=(row[16]||"—").split(",").map(s=>s.trim()).filter(Boolean);
-  var sacrHtml=sacrs.map(s=>'<span class="badge bgr">'+s+'</span>').join("");
+// ============================================================
+// MODAL PRINCIPAL
+// ============================================================
+function abrirModal(ri) {
+  rowAtual = ri;
+  fotoNovaBase64 = null; fotoNovoMime = null; fotoNovoNome = null;
+  const row = dados[ri];
+  const nome = row[2] || "—";
+  const email = row[1] || "";
+  const fotoRaw = row[iF] || "";
+  const foto = fixDriveUrl(fotoRaw);
+  const pago = (row[iP] || "").toUpperCase() === "SIM";
+  _pagoSelecionado = pago;
+  const ini = initials(nome);
 
-  var fotoHtml='<div class="foto-placeholder"><span style="font-size:28px;color:var(--color-text-tertiary)">&#128247;</span><span>Nenhuma foto cadastrada</span></div>';
-  if(foto){fotoHtml='<img class="foto-current" id="fotoAtual" src="'+foto+'" onerror="this.style.display=\'none\'">';}
+  document.getElementById("mNome").textContent = nome;
+  document.getElementById("mSub").textContent = email;
 
-  document.getElementById("mBody").innerHTML=
-    '<div class="sec">'
-    +'<div class="sec-title">Dados pessoais</div>'
-    +'<div class="row2">'
-    +'<div class="iitem"><div class="lbl">Nascimento</div><div class="val">'+(row[4]||"—")+'</div></div>'
-    +'<div class="iitem"><div class="lbl">Telefone</div><div class="val">'+(row[3]||"—")+'</div></div>'
-    +'<div class="iitem"><div class="lbl">Responsável</div><div class="val">'+(row[5]||"—")+'</div></div>'
-    +'<div class="iitem"><div class="lbl">Tel. responsável</div><div class="val">'+(row[6]||"—")+'</div></div>'
-    +'</div></div>'
+  const av = document.getElementById("mAvatar");
+  av.innerHTML = foto
+    ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.innerHTML='${ini}'">`
+    : ini;
 
-    +'<div class="sec">'
-    +'<div class="sec-title">Saúde e alimentação</div>'
-    +'<div class="row2">'
-    +'<div class="iitem"><div class="lbl">Restrição alimentar</div><div class="val">'+(rest?'Sim — '+(row[8]||""):"Não")+'</div></div>'
-    +'<div class="iitem"><div class="lbl">Medicação</div><div class="val">'+(med?'Sim — '+(row[10]||""):"Não")+'</div></div>'
-    +'<div class="iitem"><div class="lbl">Alergia a medicação</div><div class="val">'+(alerMed?'Sim — '+(row[12]||""):"Não")+'</div></div>'
-    +'<div class="iitem"><div class="lbl">Precisará sair</div><div class="val">'+(sair?'Sim — '+(row[14]||""):"Não")+'</div></div>'
-    +'</div></div>'
+  const rest = (row[7] || "").toLowerCase().includes("sim");
+  const med = (row[9] || "").toLowerCase().includes("sim");
+  const alerMed = (row[11] || "").toLowerCase().includes("sim");
+  const sair = (row[13] || "").toLowerCase().includes("sim");
+  const sacrs = (row[16] || "—").split(",").map(s => s.trim()).filter(Boolean);
+  const sacrHtml = sacrs.map(s => `<span class="chip chip-gray">${s}</span>`).join("");
 
-    +'<div class="sec">'
-    +'<div class="sec-title">Histórico religioso</div>'
-    +'<div class="iitem-full" style="margin-bottom:12px"><div class="lbl">Já fez retiro</div><div class="val">'+(row[15]||"—")+'</div></div>'
-    +'<div class="iitem-full"><div class="lbl">Sacramentos</div><div class="sacr-wrap">'+sacrHtml+'</div></div>'
-    +'</div>'
+  // Foto section
+  let fotoHtml = "";
+  if (foto) {
+    fotoHtml = `
+      <div class="foto-preview-wrap" onclick="verFoto('${foto}')" title="Clique para ampliar">
+        <img id="fotoAtual" src="${foto}" onerror="this.onerror=null;this.parentElement.outerHTML=buildFotoEmpty()">
+        <div class="foto-preview-overlay"><span style="font-size:28px">🔍</span><span>Ver foto completa</span></div>
+      </div>`;
+  } else {
+    fotoHtml = `<div class="foto-empty" id="fotoEmpty"><div class="foto-empty-icon">📷</div><span>Nenhuma foto cadastrada</span></div>`;
+  }
 
-    +'<div class="sec">'
-    +'<div class="sec-title">Foto do participante</div>'
-    +fotoHtml
-    +'<div class="foto-btns">'
-    +'<button class="foto-btn" onclick="abrirGaleria()">'
-    +'<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>'
-    +'Galeria</button>'
-    +'<button class="foto-btn" onclick="abrirCamera()">'
-    +'<svg viewBox="0 0 24 24" fill="none"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>'
-    +'Câmera</button>'
-    +'</div>'
-    +'</div>'
+  document.getElementById("mBody").innerHTML = `
+    <div class="section">
+      <div class="section-title">Dados pessoais</div>
+      <div class="section-body">
+        <div class="grid-2">
+          <div class="data-item"><div class="lbl">Nascimento</div><div class="val">${row[4] || "—"}</div></div>
+          <div class="data-item"><div class="lbl">Telefone</div><div class="val">${row[3] || "—"}</div></div>
+          <div class="data-item"><div class="lbl">Responsável</div><div class="val">${row[5] || "—"}</div></div>
+          <div class="data-item"><div class="lbl">Tel. responsável</div><div class="val">${row[6] || "—"}</div></div>
+        </div>
+      </div>
+    </div>
 
-    +'<div class="sec">'
-    +'<div class="sec-title">Status de pagamento</div>'
-    +'<div class="pago-toggle">'
-    +'<div class="pago-opt '+(pago?"sel-green":"")+ '" id="optPago" onclick="setPago(true)">&#10003; Pago</div>'
-    +'<div class="pago-opt '+(pago?"":"sel-amber")+'" id="optPend" onclick="setPago(false)">Pendente</div>'
-    +'</div>'
-    +'<button class="save-btn" id="saveBtn" onclick="salvar()">Salvar alterações no Drive</button>'
-    +'</div>';
+    <div class="section">
+      <div class="section-title">Saúde e alimentação</div>
+      <div class="section-body">
+        <div class="grid-2">
+          <div class="data-item"><div class="lbl">Restrição alimentar</div><div class="val">${rest ? "Sim — " + (row[8] || "") : "Não"}</div></div>
+          <div class="data-item"><div class="lbl">Medicação</div><div class="val">${med ? "Sim — " + (row[10] || "") : "Não"}</div></div>
+          <div class="data-item"><div class="lbl">Alergia a medicação</div><div class="val">${alerMed ? "Sim — " + (row[12] || "") : "Não"}</div></div>
+          <div class="data-item"><div class="lbl">Precisará sair</div><div class="val">${sair ? "Sim — " + (row[14] || "") : "Não"}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Histórico religioso</div>
+      <div class="section-body">
+        <div class="data-item" style="margin-bottom:12px"><div class="lbl">Já fez retiro</div><div class="val">${row[15] || "—"}</div></div>
+        <div class="data-item"><div class="lbl">Sacramentos</div><div class="sacr-wrap">${sacrHtml}</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Foto do participante</div>
+      <div class="section-body">
+        <div class="foto-container">
+          ${fotoHtml}
+          <div class="foto-actions">
+            <button class="foto-btn" onclick="abrirGaleria()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+              Galeria
+            </button>
+            <button class="foto-btn" onclick="abrirCamera()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              Câmera
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Status de pagamento</div>
+      <div class="section-body">
+        <div class="payment-toggle">
+          <button class="payment-opt ${pago ? "sel-yellow" : ""}" id="optPago" onclick="setPago(true)">✓ Pago</button>
+          <button class="payment-opt ${pago ? "" : "sel-orange"}" id="optPend" onclick="setPago(false)">⏳ Pendente</button>
+        </div>
+        <button class="save-btn" id="saveBtn" onclick="salvar()">Salvar alterações</button>
+      </div>
+    </div>`;
 
   document.getElementById("modalBg").classList.add("open");
 }
 
-var _pagoSelecionado=true;
-function setPago(v){
-  _pagoSelecionado=v;
-  document.getElementById("optPago").className="pago-opt "+(v?"sel-green":"");
-  document.getElementById("optPend").className="pago-opt "+(v?"":"sel-amber");
+function fecharModal() {
+  document.getElementById("modalBg").classList.remove("open");
 }
 
-function fecharModal(){document.getElementById("modalBg").classList.remove("open");}
+function setPago(v) {
+  _pagoSelecionado = v;
+  document.getElementById("optPago").className = "payment-opt " + (v ? "sel-yellow" : "");
+  document.getElementById("optPend").className = "payment-opt " + (v ? "" : "sel-orange");
+}
 
-function abrirGaleria(){document.getElementById("inputFotoGaleria").click();}
-function abrirCamera(){document.getElementById("inputFotoCamera").click();}
+// ============================================================
+// FOTO — CROP
+// ============================================================
+function abrirGaleria() { document.getElementById("inputFotoGaleria").click(); }
+function abrirCamera() { document.getElementById("inputFotoCamera").click(); }
 
-function processarFoto(file){
-  if(!file)return;
-  var reader=new FileReader();
-  reader.onloadend=function(){
-    fotoNovaBase64=reader.result;
-    fotoNovoMime=file.type;
-    fotoNovoNome=file.name;
-    var el=document.getElementById("fotoAtual");
-    if(el){
-      if(el.tagName==="IMG"){el.src=reader.result;}
-      else{
-        var img=document.createElement("img");
-        img.className="foto-current";
-        img.id="fotoAtual";
-        img.src=reader.result;
-        el.parentNode.replaceChild(img,el);
-      }
-    }
+function processarFoto(file) {
+  if (!file) return;
+  fotoNovoMime = file.type;
+  fotoNovoNome = file.name;
+  const reader = new FileReader();
+  reader.onloadend = e => {
+    document.getElementById("imageToCrop").src = e.target.result;
+    document.getElementById("cropModalBg").classList.add("open");
+    if (cropper) cropper.destroy();
+    cropper = new Cropper(document.getElementById("imageToCrop"), {
+      aspectRatio: 1,
+      viewMode: 1,
+      zoomable: true,
+      dragMode: "move",
+      autoCropArea: 1,
+      guides: true,
+      cropBoxMovable: true,
+      cropBoxResizable: true,
+      toggleDragModeOnDblclick: false,
+    });
   };
   reader.readAsDataURL(file);
 }
 
-document.getElementById("inputFotoGaleria").addEventListener("change",function(){processarFoto(this.files[0]);this.value="";});
-document.getElementById("inputFotoCamera").addEventListener("change",function(){processarFoto(this.files[0]);this.value="";});
+function fecharCrop() {
+  document.getElementById("cropModalBg").classList.remove("open");
+  if (cropper) { cropper.destroy(); cropper = null; }
+}
 
-async function salvar(){
-  var btn=document.getElementById("saveBtn");
-  btn.textContent="Salvando na planilha..."; 
-  btn.disabled=true;
-  
-  var pagoVal=_pagoSelecionado?"SIM":"NÃO";
-  
-  var payload = {
+function aplicarCrop() {
+  if (!cropper) return;
+  const canvas = cropper.getCroppedCanvas({ width: 800, height: 800 });
+  fotoNovaBase64 = canvas.toDataURL(fotoNovoMime || "image/jpeg", 0.9);
+
+  // Atualiza preview no modal
+  const container = document.querySelector("#mBody .section:nth-of-type(4) .foto-container");
+  const oldPreview = container.querySelector(".foto-preview-wrap");
+  const oldEmpty = container.querySelector(".foto-empty");
+  if (oldPreview) oldPreview.remove();
+  if (oldEmpty) oldEmpty.remove();
+
+  const wrap = document.createElement("div");
+  wrap.className = "foto-preview-wrap";
+  wrap.title = "Clique para ampliar";
+  wrap.onclick = () => verFoto(fotoNovaBase64);
+  wrap.innerHTML = `
+    <img id="fotoAtual" src="${fotoNovaBase64}">
+    <div class="foto-preview-overlay"><span style="font-size:28px">🔍</span><span>Ver foto completa</span></div>`;
+
+  const actions = container.querySelector(".foto-actions");
+  container.insertBefore(wrap, actions);
+
+  // Também atualiza o avatar do modal
+  const av = document.getElementById("mAvatar");
+  av.innerHTML = `<img src="${fotoNovaBase64}">`;
+
+  fecharCrop();
+  showToast("Foto recortada! Clique em Salvar para enviar.", "success");
+}
+
+document.getElementById("inputFotoGaleria").addEventListener("change", function() { processarFoto(this.files[0]); this.value = ""; });
+document.getElementById("inputFotoCamera").addEventListener("change", function() { processarFoto(this.files[0]); this.value = ""; });
+
+// ============================================================
+// SAVE
+// ============================================================
+async function salvar() {
+  const btn = document.getElementById("saveBtn");
+  btn.textContent = "Salvando…";
+  btn.disabled = true;
+
+  const payload = {
     rowIndex: rowAtual,
-    pago: pagoVal,
+    pago: _pagoSelecionado ? "SIM" : "NÃO",
     fotoBase64: fotoNovaBase64,
     mimeType: fotoNovoMime,
     nomeArquivo: fotoNovoNome
   };
 
   try {
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
-    
-    btn.textContent="Salvo com sucesso!"; 
-    setTimeout(() => {
-      fecharModal();
-      carregarDados();
-    }, 500);
-  } catch (error) {
-    console.error("Erro ao salvar:", error);
-    btn.textContent="Erro ao salvar!";
-    setTimeout(() => {
-      btn.textContent="Tentar novamente";
-      btn.disabled=false;
-    }, 2000);
+    await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+    showToast("Salvo com sucesso! ✓", "success");
+    setTimeout(() => { fecharModal(); carregarDados(); }, 600);
+  } catch (err) {
+    console.error(err);
+    showToast("Erro ao salvar. Tente novamente.", "error");
+    btn.textContent = "Tentar novamente";
+    btn.disabled = false;
   }
 }
 
-// Iniciar app
+// ============================================================
+// KEYBOARD
+// ============================================================
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    fecharLightbox();
+    fecharModal();
+    fecharCrop();
+    closeSidebar();
+  }
+});
+
+// ============================================================
+// INIT
+// ============================================================
 carregarDados();
 </script>
 </body>
