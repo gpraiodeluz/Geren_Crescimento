@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Inscrições Rebanhão - Crescimento</title>
+<title>Inscrições — Encontro de Jovens</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
-/* ─── TOKENS ──────────────────────────────────────── */
 :root {
   --font-body: 'DM Sans', sans-serif;
   --font-display: 'DM Serif Display', serif;
@@ -34,9 +33,6 @@
   --accent-g: #4ADE80;
   --accent-g-dim: rgba(74,222,128,.12);
   --accent-g-mid: rgba(74,222,128,.25);
-  --accent-b: #60A5FA;
-  --accent-b-dim: rgba(96,165,250,.12);
-  --accent-b-mid: rgba(96,165,250,.25);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
@@ -48,237 +44,266 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);font-size:15px;min-height:100vh;-webkit-font-smoothing:antialiased;}
-/* ─── LAYOUT ──────────────────────────────────────── */
+
+/* ─── LAYOUT ─────────────────────────────────────── */
 .layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
-@media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}.sidebar.mobile-open{display:flex;position:fixed;inset:0;z-index:500;}}
-/* ─── ENCONTRO BANNER ─────────────────────────────── */
-.encontro-banner{padding:10px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-0);font-size:13px;}
-.encontro-banner.active{background:rgba(74,222,128,.06);border-bottom-color:rgba(74,222,128,.2);}
-.encontro-banner.inactive{background:rgba(251,146,60,.06);border-bottom-color:rgba(251,146,60,.2);}
-.encontro-banner.none{background:rgba(255,255,255,.03);}
-.encontro-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.encontro-dot.active{background:var(--accent-g);box-shadow:0 0 8px rgba(74,222,128,.6);}
-.encontro-dot.inactive{background:var(--accent-o);}
-.encontro-dot.none{background:var(--text-2);}
-.encontro-info{flex:1;}
-.encontro-name{font-weight:600;color:var(--text-0);}
-.encontro-name.active{color:var(--accent-g);}
-.encontro-name.inactive{color:var(--accent-o);}
-.encontro-name.none{color:var(--text-2);}
-.encontro-meta{font-size:11px;color:var(--text-2);margin-top:1px;}
-/* ─── SIDEBAR ─────────────────────────────────────── */
+@media(max-width:900px){.layout{grid-template-columns:1fr;}}
+
+/* ─── SIDEBAR ────────────────────────────────────── */
 .sidebar{background:var(--bg-1);border-right:1px solid var(--border-0);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden;}
-.sidebar-header{padding:28px 24px 20px;border-bottom:1px solid var(--border-0);}
-.sidebar-logo{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-.sidebar-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent-y),#EAB308);display:flex;align-items:center;justify-content:center;font-size:20px;color:#18181b;}
-.sidebar-logo-text{font-family:var(--font-display);font-size:20px;color:var(--text-0);line-height:1.1;}
-.sidebar-logo-sub{font-size:11px;color:var(--text-2);letter-spacing:.5px;text-transform:uppercase;font-weight:500;margin-top:3px;}
-/* Encontro ativo — sidebar */
-.sidebar-encontro{margin-bottom:14px;padding:12px 14px;border-radius:var(--radius-md);border:1px solid var(--border-0);background:var(--bg-2);font-size:12px;}
-.sidebar-encontro.enc-active{border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.06);}
-.sidebar-encontro.enc-inactive{border-color:rgba(251,146,60,.25);background:rgba(251,146,60,.06);}
-.sidebar-enc-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;font-weight:600;color:var(--text-2);margin-bottom:5px;}
-.sidebar-enc-label.active{color:var(--accent-g);}
-.sidebar-enc-label.inactive{color:var(--accent-o);}
-.sidebar-enc-name{font-size:14px;font-weight:600;color:var(--text-0);}
-.sidebar-enc-date{font-size:11px;color:var(--text-2);margin-top:2px;}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.stat-card{background:var(--bg-2);border:1px solid var(--border-0);border-radius:var(--radius-md);padding:12px 14px;}
+.sidebar-header{padding:24px 24px 16px;border-bottom:1px solid var(--border-0);}
+.sidebar-logo{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.sidebar-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent-y),#EAB308);display:flex;align-items:center;justify-content:center;font-size:20px;color:#18181b;flex-shrink:0;}
+.sidebar-logo-text{font-family:var(--font-display);font-size:18px;color:var(--text-0);line-height:1.15;}
+.sidebar-logo-sub{font-size:10px;color:var(--text-2);letter-spacing:.5px;text-transform:uppercase;font-weight:500;margin-top:2px;}
+
+/* Encontro ativo pill */
+.enc-pill{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius-md);margin-bottom:14px;}
+.enc-pill.active{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);}
+.enc-pill.inactive{background:rgba(251,146,60,.07);border:1px solid rgba(251,146,60,.2);}
+.enc-pill.none{background:var(--bg-2);border:1px solid var(--border-0);}
+.enc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.enc-dot.active{background:var(--accent-g);box-shadow:0 0 8px rgba(74,222,128,.5);}
+.enc-dot.inactive{background:var(--accent-o);}
+.enc-dot.none{background:var(--text-2);}
+.enc-info{}
+.enc-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:3px;}
+.enc-label.active{color:var(--accent-g);}
+.enc-label.inactive{color:var(--accent-o);}
+.enc-label.none{color:var(--text-2);}
+.enc-name{font-size:13px;font-weight:600;color:var(--text-0);line-height:1.3;}
+.enc-date{font-size:11px;color:var(--text-2);margin-top:2px;}
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.stat-card{background:var(--bg-2);border:1px solid var(--border-0);border-radius:var(--radius-md);padding:10px 12px;}
 .stat-card.full{grid-column:1 / -1;}
-.stat-label{font-size:10px;color:var(--text-2);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:4px;}
-.stat-number{font-size:28px;font-weight:300;font-family:var(--font-display);color:var(--text-0);line-height:1;}
+.stat-label{font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:3px;}
+.stat-number{font-size:26px;font-weight:300;font-family:var(--font-display);color:var(--text-0);line-height:1;}
 .stat-number.yellow{color:var(--accent-y);}
 .stat-number.orange{color:var(--accent-o);}
 .stat-number.green{color:var(--accent-g);}
-.sidebar-body{padding:20px 24px;flex:1;overflow-y:auto;}
+
+.sidebar-body{padding:16px 24px;flex:1;overflow-y:auto;}
 .search-field{position:relative;margin-bottom:10px;}
-.search-field input{width:100%;height:42px;background:var(--bg-2);border:1px solid var(--border-1);border-radius:var(--radius-sm);color:var(--text-0);font-family:var(--font-body);font-size:14px;padding:0 12px 0 40px;outline:none;transition:border-color var(--transition);}
+.search-field input{width:100%;height:40px;background:var(--bg-2);border:1px solid var(--border-1);border-radius:var(--radius-sm);color:var(--text-0);font-family:var(--font-body);font-size:14px;padding:0 12px 0 38px;outline:none;transition:border-color var(--transition);}
 .search-field input:focus{border-color:var(--border-2);}
 .search-field input::placeholder{color:var(--text-2);}
-.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text-2);font-size:15px;pointer-events:none;}
-.filter-row{display:flex;flex-wrap:wrap;gap:6px;}
-.filter-chip{flex:1;min-width:65px;height:36px;border:1px solid var(--border-1);border-radius:20px;background:transparent;color:var(--text-1);font-family:var(--font-body);font-size:12px;font-weight:500;cursor:pointer;transition:all var(--transition);padding:0 8px;}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-2);font-size:15px;pointer-events:none;}
+.filter-row{display:flex;flex-wrap:wrap;gap:5px;}
+.filter-chip{flex:1;min-width:60px;height:34px;border:1px solid var(--border-1);border-radius:20px;background:transparent;color:var(--text-1);font-family:var(--font-body);font-size:11px;font-weight:500;cursor:pointer;transition:all var(--transition);padding:0 6px;}
 .filter-chip.active-yellow{background:var(--accent-y-dim);border-color:var(--accent-y);color:var(--accent-y);}
 .filter-chip.active-orange{background:var(--accent-o-dim);border-color:var(--accent-o);color:var(--accent-o);}
 .filter-chip.active-red{background:var(--accent-r-dim);border-color:var(--accent-r);color:var(--accent-r);}
 .filter-chip.active-green{background:var(--accent-g-dim);border-color:var(--accent-g);color:var(--accent-g);}
-.sidebar-divider{height:1px;background:var(--border-0);margin:16px 0;}
-.sidebar-section-title{font-size:10px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px;}
+.filter-chip.active-blue{background:rgba(96,165,250,.12);border-color:#60A5FA;color:#60A5FA;}
+.sidebar-divider{height:1px;background:var(--border-0);margin:14px 0;}
+.sidebar-section-title{font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:7px;}
 .sidebar-counter{font-size:12px;color:var(--text-1);display:flex;align-items:center;justify-content:space-between;}
 .sidebar-count-val{font-weight:600;color:var(--text-0);}
-.refresh-btn-side{width:100%;height:40px;border-radius:var(--radius-sm);background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-1);font-family:var(--font-body);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all var(--transition);margin-top:auto;}
+.refresh-btn-side{width:100%;height:38px;border-radius:var(--radius-sm);background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-1);font-family:var(--font-body);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all var(--transition);margin-top:auto;}
 .refresh-btn-side:hover{background:var(--bg-3);border-color:var(--border-2);color:var(--text-0);}
-/* ─── MAIN ────────────────────────────────────────── */
+
+/* ─── MAIN ───────────────────────────────────────── */
 .main{display:flex;flex-direction:column;min-height:100vh;overflow:hidden;}
-.mobile-topbar{display:none;padding:16px;background:var(--bg-1);border-bottom:1px solid var(--border-0);align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+
+/* Banner encontro — topo da main */
+.encontro-banner{padding:10px 20px;display:flex;align-items:center;gap:10px;font-size:13px;border-bottom:1px solid var(--border-0);}
+.encontro-banner.active{background:rgba(74,222,128,.05);border-bottom-color:rgba(74,222,128,.18);}
+.encontro-banner.inactive{background:rgba(251,146,60,.05);border-bottom-color:rgba(251,146,60,.18);}
+.encontro-banner.none{background:rgba(255,255,255,.02);}
+.eb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.eb-dot.active{background:var(--accent-g);box-shadow:0 0 7px rgba(74,222,128,.5);}
+.eb-dot.inactive{background:var(--accent-o);}
+.eb-dot.none{background:var(--text-2);}
+.eb-name{font-weight:600;}
+.eb-name.active{color:var(--accent-g);}
+.eb-name.inactive{color:var(--accent-o);}
+.eb-name.none{color:var(--text-2);}
+.eb-meta{color:var(--text-2);font-size:12px;}
+
+/* Mobile topbar */
+.mobile-topbar{display:none;padding:14px 16px;background:var(--bg-1);border-bottom:1px solid var(--border-0);align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
 @media(max-width:900px){.mobile-topbar{display:flex;}}
-.mobile-menu-btn,.mobile-refresh{width:40px;height:40px;border-radius:var(--radius-sm);background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-0);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;}
+.mobile-menu-btn,.mobile-refresh{width:38px;height:38px;border-radius:var(--radius-sm);background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-0);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;}
 .mobile-refresh{color:var(--text-1);}
-.mobile-title{font-family:var(--font-display);font-size:18px;flex:1;}
-.mobile-stats{display:none;padding:12px 16px;gap:8px;background:var(--bg-1);border-bottom:1px solid var(--border-0);overflow-x:auto;}
+.mobile-title{font-family:var(--font-display);font-size:17px;flex:1;}
+
+.mobile-stats{display:none;padding:10px 14px;gap:7px;background:var(--bg-1);border-bottom:1px solid var(--border-0);overflow-x:auto;}
 .mobile-stats::-webkit-scrollbar{display:none;}
 @media(max-width:900px){.mobile-stats{display:flex;}}
-.mobile-stat{background:var(--bg-2);border:1px solid var(--border-0);border-radius:var(--radius-sm);padding:8px 14px;min-width:max-content;display:flex;flex-direction:column;gap:2px;}
+.mobile-stat{background:var(--bg-2);border:1px solid var(--border-0);border-radius:var(--radius-sm);padding:7px 12px;min-width:max-content;display:flex;flex-direction:column;gap:2px;}
 .mobile-stat-label{font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:.8px;font-weight:600;}
 .mobile-stat-number{font-size:20px;font-weight:300;font-family:var(--font-display);color:var(--text-0);line-height:1;}
 .mobile-stat-number.yellow{color:var(--accent-y);}
 .mobile-stat-number.orange{color:var(--accent-o);}
 .mobile-stat-number.green{color:var(--accent-g);}
-.mobile-search{display:none;padding:12px 16px;background:var(--bg-1);border-bottom:1px solid var(--border-0);gap:8px;}
+
+.mobile-search{display:none;padding:10px 14px;background:var(--bg-1);border-bottom:1px solid var(--border-0);gap:8px;}
 @media(max-width:900px){.mobile-search{display:flex;}}
 .mobile-search .search-field{flex:1;margin:0;}
-/* ─── LIST ────────────────────────────────────────── */
-.list-wrapper{flex:1;overflow-y:auto;padding:20px;}
-@media(max-width:600px){.list-wrapper{padding:12px;}}
-@media(min-width:1400px){.list-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}}
-.card{background:var(--bg-1);border:1px solid var(--border-0);border-radius:var(--radius-lg);margin-bottom:10px;cursor:pointer;transition:border-color var(--transition),box-shadow var(--transition),transform var(--transition);overflow:hidden;}
+
+/* ─── LIST ───────────────────────────────────────── */
+.list-wrapper{flex:1;overflow-y:auto;padding:18px;}
+@media(max-width:600px){.list-wrapper{padding:10px;}}
+@media(min-width:1400px){.list-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}}
+.card{background:var(--bg-1);border:1px solid var(--border-0);border-radius:var(--radius-lg);margin-bottom:9px;cursor:pointer;transition:border-color var(--transition),box-shadow var(--transition),transform var(--transition);overflow:hidden;}
 @media(min-width:1400px){.card{margin-bottom:0;}}
 .card:hover{border-color:var(--border-1);box-shadow:var(--shadow-card);}
-.card:active{transform:scale(0.992);}
+.card:active{transform:scale(.993);}
 .card.card-checkedin{border-color:rgba(74,222,128,.2);}
-.card-inner{display:flex;align-items:center;gap:14px;padding:16px;}
-/* ─── AVATAR ──────────────────────────────────────── */
-.avatar{width:52px;height:52px;border-radius:var(--radius-md);flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,#3f3314,#5c4a17);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--accent-y);border:1px solid var(--border-1);cursor:pointer;transition:opacity var(--transition);position:relative;}
+.card-inner{display:flex;align-items:center;gap:13px;padding:14px;}
+
+/* ─── AVATAR ─────────────────────────────────────── */
+.avatar{width:50px;height:50px;border-radius:var(--radius-md);flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,#3f3314,#5c4a17);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--accent-y);border:1px solid var(--border-1);cursor:pointer;transition:opacity var(--transition);position:relative;}
 .avatar.avatar-checkedin{border-color:rgba(74,222,128,.4);}
+.avatar.avatar-herdada{border-color:rgba(96,165,250,.4);}
 .avatar:hover{opacity:.85;}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block;}
-.avatar .photo-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--transition);font-size:20px;}
+.avatar .photo-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--transition);font-size:18px;}
 .avatar:hover .photo-overlay{opacity:1;}
+/* Badge foto herdada */
+.avatar .herdada-badge{position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;background:rgba(96,165,250,.9);border:1.5px solid var(--bg-1);display:flex;align-items:center;justify-content:center;font-size:8px;line-height:1;}
+
 .card-info{flex:1;min-width:0;}
-.card-name{font-size:15px;font-weight:600;color:var(--text-0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-email{font-size:12px;color:var(--text-1);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-chips{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
-.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.2px;}
+.card-name{font-size:14px;font-weight:600;color:var(--text-0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-email{font-size:11px;color:var(--text-1);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-chips{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap;}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.2px;}
 .chip-yellow{background:var(--accent-y-dim);color:var(--accent-y);border:1px solid var(--accent-y-mid);}
 .chip-orange{background:var(--accent-o-dim);color:var(--accent-o);border:1px solid rgba(251,146,60,.25);}
 .chip-red{background:var(--accent-r-dim);color:var(--accent-r);border:1px solid rgba(239,68,68,.2);}
-.chip-light{background:var(--accent-l-dim);color:var(--accent-l);border:1px solid rgba(254,240,138,.2);}
 .chip-gray{background:rgba(255,255,255,.06);color:var(--text-1);border:1px solid var(--border-1);}
 .chip-green{background:var(--accent-g-dim);color:var(--accent-g);border:1px solid var(--accent-g-mid);}
-.dot{width:5px;height:5px;border-radius:50%;display:inline-block;}
+.chip-blue{background:rgba(96,165,250,.12);color:#60A5FA;border:1px solid rgba(96,165,250,.25);}
+.dot{width:4px;height:4px;border-radius:50%;display:inline-block;}
 .dot-y{background:var(--accent-y);}
 .dot-o{background:var(--accent-o);}
 .dot-g{background:var(--accent-g);}
-/* ─── CARD CHECK-IN ACTION ────────────────────────── */
-.card-checkin-zone{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.ci-action{width:44px;height:44px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all var(--transition);border:none;font-family:var(--font-body);}
+
+/* ─── CARD CHECK-IN ──────────────────────────────── */
+.card-checkin-zone{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.ci-action{width:42px;height:42px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;transition:all var(--transition);border:none;font-family:var(--font-body);}
 .ci-action.ci-ready{background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);color:var(--accent-g);}
 .ci-action.ci-ready:hover{background:rgba(74,222,128,.22);transform:scale(1.06);}
 .ci-action.ci-done{background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);color:var(--accent-g);cursor:default;}
 .ci-action.ci-nofoto{background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);color:var(--accent-o);}
 .ci-action.ci-nofoto:hover{background:rgba(251,146,60,.2);}
-.ci-action.ci-locked{background:rgba(255,255,255,.04);border:1px solid var(--border-0);color:var(--text-2);cursor:default;}
-.ci-label{font-size:9px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;text-align:center;color:var(--text-2);}
-.card-footer{border-top:1px solid var(--border-0);padding:10px 16px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.15);font-size:12px;}
+.ci-action.ci-locked{background:rgba(255,255,255,.03);border:1px solid var(--border-0);color:var(--text-2);cursor:default;}
+.ci-label{font-size:8px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;text-align:center;color:var(--text-2);}
+
+.card-footer{border-top:1px solid var(--border-0);padding:8px 14px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.12);font-size:11px;}
 .card-footer-lbl{color:var(--text-2);}
 .card-footer-val{color:var(--text-0);font-weight:600;}
-.card-footer-sep{color:var(--border-1);margin:0 8px;}
+.card-footer-sep{color:var(--border-1);margin:0 6px;}
+
 .empty,.loading{text-align:center;padding:64px 20px;color:var(--text-2);font-size:14px;}
-.loading-spinner{width:32px;height:32px;border:2px solid var(--border-1);border-top-color:var(--accent-y);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px;}
+.loading-spinner{width:30px;height:30px;border:2px solid var(--border-1);border-top-color:var(--accent-y);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-/* ─── MODAL ───────────────────────────────────────── */
+
+/* ─── MODAL ──────────────────────────────────────── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:800;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
 .modal-bg.open{display:flex;animation:fadein .2s;}
-@keyframes fadein{from{opacity:0;}to{opacity:1;}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
 .modal{background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-xl) var(--radius-xl) 0 0;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-modal);animation:slideup .28s cubic-bezier(.4,0,.2,1);}
-@keyframes slideup{from{transform:translateY(48px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes slideup{from{transform:translateY(48px);opacity:0}to{transform:translateY(0);opacity:1}}
 @media(min-width:900px){.modal-bg{align-items:center;}.modal{border-radius:var(--radius-xl);max-height:88vh;}}
 .modal::-webkit-scrollbar{width:4px;}
 .modal::-webkit-scrollbar-track{background:transparent;}
 .modal::-webkit-scrollbar-thumb{background:var(--border-1);border-radius:2px;}
-.modal-head{padding:20px;border-bottom:1px solid var(--border-0);display:flex;align-items:center;gap:14px;position:sticky;top:0;background:var(--bg-glass);backdrop-filter:blur(12px);z-index:10;}
-.modal-avatar{width:52px;height:52px;border-radius:var(--radius-md);overflow:hidden;background:linear-gradient(135deg,#3f3314,#5c4a17);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--accent-y);flex-shrink:0;border:1px solid var(--border-1);}
+.modal-head{padding:18px 20px;border-bottom:1px solid var(--border-0);display:flex;align-items:center;gap:13px;position:sticky;top:0;background:var(--bg-glass);backdrop-filter:blur(12px);z-index:10;}
+.modal-avatar{width:50px;height:50px;border-radius:var(--radius-md);overflow:hidden;background:linear-gradient(135deg,#3f3314,#5c4a17);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--accent-y);flex-shrink:0;border:1px solid var(--border-1);}
 .modal-avatar img{width:100%;height:100%;object-fit:cover;}
 .modal-head-info{flex:1;min-width:0;}
-.modal-name{font-size:17px;font-weight:600;}
-.modal-sub{font-size:12px;color:var(--text-1);margin-top:2px;}
-.close-btn{width:36px;height:36px;border-radius:50%;background:var(--bg-2);border:1px solid var(--border-1);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-1);font-size:16px;transition:all var(--transition);flex-shrink:0;}
+.modal-name{font-size:16px;font-weight:600;}
+.modal-sub{font-size:11px;color:var(--text-1);margin-top:1px;}
+.close-btn{width:34px;height:34px;border-radius:50%;background:var(--bg-2);border:1px solid var(--border-1);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-1);font-size:15px;transition:all var(--transition);flex-shrink:0;}
 .close-btn:hover{background:var(--bg-3);color:var(--text-0);}
-.modal-body{padding:20px;}
-.section{background:var(--bg-2);border:1px solid var(--border-0);border-radius:var(--radius-md);overflow:hidden;margin-bottom:12px;}
+.modal-body{padding:18px;}
+.section{background:var(--bg-2);border:1px solid var(--border-0);border-radius:var(--radius-md);overflow:hidden;margin-bottom:10px;}
 .section.section-checkin{border-color:rgba(74,222,128,.2);}
-.section.section-checkin-locked{border-color:rgba(251,146,60,.2);}
-.section.section-checkin-nofoto{border-color:rgba(251,146,60,.2);}
-.section-title{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-2);font-weight:600;padding:12px 16px;border-bottom:1px solid var(--border-0);background:rgba(0,0,0,.15);}
+.section.section-locked{border-color:rgba(251,146,60,.2);}
+.section.section-nofoto{border-color:rgba(251,146,60,.2);}
+.section-title{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-2);font-weight:600;padding:11px 15px;border-bottom:1px solid var(--border-0);background:rgba(0,0,0,.15);}
 .section.section-checkin .section-title{color:var(--accent-g);}
-.section.section-checkin-locked .section-title{color:var(--accent-o);}
-.section-body{padding:16px;}
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
-@media(max-width:480px){.grid-2{grid-template-columns:1fr;gap:10px;}}
-.data-item .lbl{font-size:11px;color:var(--text-2);margin-bottom:3px;font-weight:500;}
-.data-item .val{font-size:14px;color:var(--text-0);font-weight:500;line-height:1.4;}
-.sacr-wrap{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
-/* ─── CHECK-IN LOCKED ─────────────────────────────── */
-.checkin-locked-banner{padding:14px 16px;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);}
-.checkin-locked-title{font-size:13px;font-weight:600;color:var(--accent-o);display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.checkin-locked-sub{font-size:12px;color:rgba(251,146,60,.7);line-height:1.5;}
-.checkin-locked-encounters{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
-.enc-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);background:rgba(255,255,255,.03);border:1px solid var(--border-0);font-size:12px;}
-.enc-row-name{font-weight:600;color:var(--text-0);flex:1;}
-.enc-row-date{color:var(--text-2);}
-.enc-row-done{color:var(--accent-g);font-weight:600;}
-/* ─── CHECK-IN UI ─────────────────────────────────── */
-.checkin-done-banner{display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);border-radius:var(--radius-sm);}
-.checkin-done-circle{width:44px;height:44px;border-radius:50%;background:rgba(74,222,128,.2);border:2px solid var(--accent-g);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.checkin-done-label{font-size:15px;font-weight:700;color:var(--accent-g);}
-.checkin-done-time{font-size:12px;color:rgba(74,222,128,.7);margin-top:2px;}
-.checkin-done-enc{font-size:11px;color:rgba(74,222,128,.6);margin-top:2px;}
-.checkin-btn{width:100%;height:58px;background:linear-gradient(135deg,#4ADE80,#22C55E);color:#0a1f12;border:none;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all var(--transition);letter-spacing:.2px;}
+.section.section-locked .section-title{color:var(--accent-o);}
+.section-body{padding:15px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;}
+@media(max-width:480px){.grid-2{grid-template-columns:1fr;gap:9px;}}
+.data-item .lbl{font-size:10px;color:var(--text-2);margin-bottom:2px;font-weight:500;}
+.data-item .val{font-size:13px;color:var(--text-0);font-weight:500;line-height:1.4;}
+.sacr-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;}
+
+/* ─── CHECK-IN UI ────────────────────────────────── */
+.checkin-done-banner{display:flex;align-items:center;gap:14px;padding:13px 15px;background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);border-radius:var(--radius-sm);}
+.checkin-done-circle{width:42px;height:42px;border-radius:50%;background:rgba(74,222,128,.2);border:2px solid var(--accent-g);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.checkin-done-label{font-size:14px;font-weight:700;color:var(--accent-g);}
+.checkin-done-enc{font-size:11px;color:rgba(74,222,128,.65);margin-top:1px;}
+.checkin-done-time{font-size:11px;color:rgba(74,222,128,.55);margin-top:1px;}
+.checkin-btn{width:100%;height:56px;background:linear-gradient(135deg,#4ADE80,#22C55E);color:#0a1f12;border:none;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all var(--transition);letter-spacing:.2px;}
 .checkin-btn:hover{opacity:.9;transform:scale(1.01);}
 .checkin-btn:active{transform:scale(.98);}
 .checkin-btn.confirming{background:linear-gradient(135deg,#FB923C,#EA580C);color:#1a0800;}
 .checkin-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-.checkin-hint{font-size:11px;color:var(--text-2);text-align:center;margin-top:8px;}
-.revoke-btn{width:100%;height:40px;border-radius:var(--radius-sm);border:1px solid var(--border-1);background:transparent;color:var(--text-2);font-family:var(--font-body);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all var(--transition);margin-top:10px;letter-spacing:.1px;}
+.checkin-hint{font-size:11px;color:var(--text-2);text-align:center;margin-top:7px;}
+.revoke-btn{width:100%;height:38px;border-radius:var(--radius-sm);border:1px solid var(--border-1);background:transparent;color:var(--text-2);font-family:var(--font-body);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all var(--transition);margin-top:9px;}
 .revoke-btn:hover{background:var(--accent-r-dim);border-color:rgba(239,68,68,.3);color:var(--accent-r);}
 .revoke-btn.confirming-revoke{background:var(--accent-r-dim);border-color:rgba(239,68,68,.4);color:var(--accent-r);}
-.checkin-no-foto-banner{padding:14px 16px;background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);border-radius:var(--radius-sm);margin-bottom:12px;}
-.checkin-no-foto-title{font-size:13px;font-weight:600;color:var(--accent-o);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
-.checkin-no-foto-sub{font-size:12px;color:rgba(251,146,60,.7);}
-/* ─── FOTO SECTION ────────────────────────────────── */
-.foto-container{display:flex;flex-direction:column;align-items:center;gap:14px;}
-.foto-preview-wrap{width:100%;max-width:240px;aspect-ratio:1/1;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-1);background:var(--bg-3);position:relative;cursor:pointer;}
+
+/* ─── FOTO HERDADA / HISTÓRICO NOTICE ─────────────── */
+.foto-herdada-notice{display:flex;align-items:flex-start;gap:8px;padding:10px 13px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:var(--radius-sm);margin-bottom:12px;font-size:12px;}
+.foto-herdada-notice .fhn-icon{font-size:15px;flex-shrink:0;margin-top:1px;}
+.foto-herdada-notice .fhn-text{color:rgba(96,165,250,.9);line-height:1.5;}
+.foto-herdada-notice strong{color:#60A5FA;}
+
+/* ─── FOTO SECTION ───────────────────────────────── */
+.foto-container{display:flex;flex-direction:column;align-items:center;gap:13px;}
+.foto-preview-wrap{width:100%;max-width:220px;aspect-ratio:1/1;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-1);background:var(--bg-3);position:relative;cursor:pointer;}
 .foto-preview-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
 .foto-preview-wrap:hover img{transform:scale(1.04);}
-.foto-preview-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;transition:opacity var(--transition);color:#fff;font-size:12px;font-weight:500;}
+.foto-preview-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;opacity:0;transition:opacity var(--transition);color:#fff;font-size:12px;font-weight:500;}
 .foto-preview-wrap:hover .foto-preview-overlay{opacity:1;}
-.foto-empty{width:100%;max-width:240px;aspect-ratio:1/1;border-radius:var(--radius-md);border:2px dashed var(--border-1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-2);font-size:13px;background:rgba(255,255,255,.02);}
-.foto-empty-icon{font-size:36px;opacity:.4;}
-.foto-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:300px;}
-.foto-btn{height:44px;border-radius:var(--radius-sm);border:1px solid var(--border-1);background:var(--bg-3);color:var(--text-0);font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all var(--transition);}
+.foto-empty{width:100%;max-width:220px;aspect-ratio:1/1;border-radius:var(--radius-md);border:2px dashed var(--border-1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--text-2);font-size:12px;background:rgba(255,255,255,.02);}
+.foto-empty-icon{font-size:32px;opacity:.4;}
+.foto-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:100%;max-width:280px;}
+.foto-btn{height:42px;border-radius:var(--radius-sm);border:1px solid var(--border-1);background:var(--bg-3);color:var(--text-0);font-family:var(--font-body);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all var(--transition);}
 .foto-btn:hover{background:var(--bg-2);border-color:var(--border-2);}
-/* ─── PAYMENT TOGGLE ──────────────────────────────── */
+
+/* ─── PAYMENT TOGGLE ─────────────────────────────── */
 .payment-toggle{display:grid;grid-template-columns:1fr 1fr;border-radius:var(--radius-sm);border:1px solid var(--border-1);overflow:hidden;margin-top:4px;}
-.payment-opt{height:48px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-2);background:transparent;transition:all var(--transition);border:none;font-family:var(--font-body);}
+.payment-opt{height:46px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text-2);background:transparent;transition:all var(--transition);border:none;font-family:var(--font-body);}
 .payment-opt+.payment-opt{border-left:1px solid var(--border-1);}
 .payment-opt.sel-yellow{background:var(--accent-y-dim);color:var(--accent-y);}
 .payment-opt.sel-orange{background:var(--accent-o-dim);color:var(--accent-o);}
-.save-btn{width:100%;height:52px;background:linear-gradient(135deg,var(--accent-y),#EAB308);color:#18181b;border:none;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:15px;font-weight:600;cursor:pointer;margin-top:16px;transition:opacity var(--transition),transform var(--transition);letter-spacing:.2px;}
+.save-btn{width:100%;height:50px;background:linear-gradient(135deg,var(--accent-y),#EAB308);color:#18181b;border:none;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:14px;font-weight:600;cursor:pointer;margin-top:14px;transition:opacity var(--transition),transform var(--transition);letter-spacing:.2px;}
 .save-btn:hover{opacity:.9;}
 .save-btn:active{transform:scale(.99);}
 .save-btn:disabled{opacity:.5;cursor:not-allowed;}
-/* ─── CROP MODAL ──────────────────────────────────── */
+
+/* ─── CROP MODAL ─────────────────────────────────── */
 .crop-modal-content{display:flex;flex-direction:column;height:88vh;width:100%;max-width:520px;background:#000;border-radius:var(--radius-xl) var(--radius-xl) 0 0;}
 @media(min-width:900px){.crop-modal-content{border-radius:var(--radius-xl);}}
 .crop-area{flex:1;overflow:hidden;position:relative;background:#000;}
-.crop-footer{padding:16px;background:var(--bg-1);}
-/* ─── LIGHTBOX ────────────────────────────────────── */
+.crop-footer{padding:15px;background:var(--bg-1);}
+
+/* ─── LIGHTBOX ───────────────────────────────────── */
 .lightbox-bg{z-index:1500;background:rgba(0,0,0,.92);align-items:center;justify-content:center;cursor:zoom-out;}
 .lightbox-content{position:relative;cursor:default;max-width:92vw;max-height:92vh;}
 .lightbox-img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:var(--radius-md);display:block;box-shadow:0 32px 80px rgba(0,0,0,.6);}
-.lightbox-close{position:absolute;top:-16px;right:-16px;width:36px;height:36px;border-radius:50%;background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-0);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;}
-/* ─── SIDEBAR MOBILE ──────────────────────────────── */
+.lightbox-close{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-0);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;}
+
+/* ─── SIDEBAR MOBILE ─────────────────────────────── */
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:499;}
 .sidebar-overlay.open{display:block;}
 @media(max-width:900px){
-  .sidebar{display:flex;position:fixed;left:0;top:0;bottom:0;width:min(320px,85vw);transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:500;}
+  .sidebar{display:flex;position:fixed;left:0;top:0;bottom:0;width:min(310px,85vw);transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:500;}
   .sidebar.mobile-open{transform:translateX(0);}
 }
 input[type=file]{display:none;}
 .list-wrapper::-webkit-scrollbar{width:4px;}
 .list-wrapper::-webkit-scrollbar-track{background:transparent;}
 .list-wrapper::-webkit-scrollbar-thumb{background:var(--border-0);border-radius:2px;}
-.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg-2);border:1px solid var(--border-1);border-radius:20px;padding:10px 20px;font-size:13px;font-weight:500;color:var(--text-0);z-index:9999;transition:transform .3s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:var(--shadow-modal);pointer-events:none;}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg-2);border:1px solid var(--border-1);border-radius:20px;padding:9px 18px;font-size:13px;font-weight:500;color:var(--text-0);z-index:9999;transition:transform .3s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:var(--shadow-modal);pointer-events:none;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.success{border-color:var(--accent-g);color:var(--accent-g);}
 .toast.error{border-color:var(--accent-r);color:var(--accent-r);}
@@ -287,7 +312,8 @@ input[type=file]{display:none;}
 </head>
 <body>
 <div class="layout">
-  <!-- ─── SIDEBAR ─────────────────── -->
+
+  <!-- ─── SIDEBAR ──────────────────── -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">
@@ -297,29 +323,21 @@ input[type=file]{display:none;}
           <div class="sidebar-logo-sub">Encontro de Jovens</div>
         </div>
       </div>
-
-      <!-- Encontro ativo — sidebar -->
-      <div class="sidebar-encontro" id="sidebarEncontroBox" style="display:none"></div>
-
+      <div class="enc-pill none" id="sideEncPill">
+        <div class="enc-dot none" id="sideEncDot"></div>
+        <div class="enc-info">
+          <div class="enc-label none" id="sideEncLabel">Carregando…</div>
+          <div class="enc-name" id="sideEncName">—</div>
+          <div class="enc-date" id="sideEncDate"></div>
+        </div>
+      </div>
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total</div>
-          <div class="stat-number" id="sTotal">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Pagos</div>
-          <div class="stat-number yellow" id="sPagos">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Pendentes</div>
-          <div class="stat-number orange" id="sPend">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Com foto</div>
-          <div class="stat-number" id="sFoto">—</div>
-        </div>
-        <div class="stat-card full" style="border-color:rgba(74,222,128,.2);">
-          <div class="stat-label" style="color:var(--accent-g);" id="sPresLbl">Presentes — Check-in</div>
+        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-number" id="sTotal">—</div></div>
+        <div class="stat-card"><div class="stat-label">Pagos</div><div class="stat-number yellow" id="sPagos">—</div></div>
+        <div class="stat-card"><div class="stat-label">Pendentes</div><div class="stat-number orange" id="sPend">—</div></div>
+        <div class="stat-card"><div class="stat-label">Com foto</div><div class="stat-number" id="sFoto">—</div></div>
+        <div class="stat-card full" style="border-color:rgba(74,222,128,.2)">
+          <div class="stat-label" style="color:var(--accent-g)" id="sPresLbl">Presentes</div>
           <div class="stat-number green" id="sPresentes">—</div>
         </div>
       </div>
@@ -331,11 +349,12 @@ input[type=file]{display:none;}
       </div>
       <div class="filter-row">
         <button class="filter-chip" id="chipCheckin" onclick="toggleFiltro('checkin')">Presentes</button>
-        <button class="filter-chip" id="chipPago" onclick="toggleFiltro('pago')">Pago</button>
-        <button class="filter-chip" id="chipPend" onclick="toggleFiltro('pend')">Pendente</button>
-        <button class="filter-chip" id="chipFoto" onclick="toggleFiltro('foto')">Foto</button>
-        <button class="filter-chip" id="chipMed" onclick="toggleFiltro('med')">Medicação</button>
-        <button class="filter-chip" id="chipRest" onclick="toggleFiltro('rest')">Restrição</button>
+        <button class="filter-chip" id="chipPago"    onclick="toggleFiltro('pago')">Pago</button>
+        <button class="filter-chip" id="chipPend"    onclick="toggleFiltro('pend')">Pendente</button>
+        <button class="filter-chip" id="chipFoto"    onclick="toggleFiltro('foto')">Foto</button>
+        <button class="filter-chip" id="chipMed"     onclick="toggleFiltro('med')">Medicação</button>
+        <button class="filter-chip" id="chipRest"    onclick="toggleFiltro('rest')">Restrição</button>
+        <button class="filter-chip" id="chipRetorno" onclick="toggleFiltro('retorno')">Retornante</button>
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-title">Exibindo</div>
@@ -344,15 +363,13 @@ input[type=file]{display:none;}
         <span class="sidebar-count-val" id="sCount">—</span>
       </div>
       <div class="sidebar-divider"></div>
-      <button class="refresh-btn-side" onclick="carregarDados()">
-        <span>↺</span> Atualizar dados
-      </button>
+      <button class="refresh-btn-side" onclick="carregarDados()"><span>↺</span> Atualizar dados</button>
     </div>
   </aside>
 
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-  <!-- ─── MAIN ───────────────────── -->
+  <!-- ─── MAIN ─────────────────────── -->
   <main class="main">
     <div class="mobile-topbar">
       <button class="mobile-menu-btn" onclick="openSidebar()">☰</button>
@@ -360,34 +377,20 @@ input[type=file]{display:none;}
       <button class="mobile-refresh" onclick="carregarDados()">↺</button>
     </div>
 
-    <!-- Banner de encontro ativo — mobile + desktop main -->
-    <div class="encontro-banner none" id="encontroBanner" style="display:none">
-      <div class="encontro-dot none" id="encontroDot"></div>
-      <div class="encontro-info">
-        <div class="encontro-name none" id="encontroName">—</div>
-        <div class="encontro-meta" id="encontroMeta">—</div>
-      </div>
+    <!-- Banner encontro -->
+    <div class="encontro-banner none" id="encontroBanner">
+      <div class="eb-dot none" id="ebDot"></div>
+      <span class="eb-name none" id="ebName">—</span>
+      <span class="eb-meta" id="ebMeta"></span>
     </div>
 
     <div class="mobile-stats">
-      <div class="mobile-stat">
-        <div class="mobile-stat-label">Total</div>
-        <div class="mobile-stat-number" id="mTotal">—</div>
-      </div>
-      <div class="mobile-stat">
-        <div class="mobile-stat-label">Pagos</div>
-        <div class="mobile-stat-number yellow" id="mPagos">—</div>
-      </div>
-      <div class="mobile-stat">
-        <div class="mobile-stat-label">Pendentes</div>
-        <div class="mobile-stat-number orange" id="mPend">—</div>
-      </div>
-      <div class="mobile-stat">
-        <div class="mobile-stat-label">Com foto</div>
-        <div class="mobile-stat-number" id="mFoto">—</div>
-      </div>
-      <div class="mobile-stat" style="border-color:rgba(74,222,128,.2);">
-        <div class="mobile-stat-label" style="color:var(--accent-g);">Presentes</div>
+      <div class="mobile-stat"><div class="mobile-stat-label">Total</div><div class="mobile-stat-number" id="mTotal">—</div></div>
+      <div class="mobile-stat"><div class="mobile-stat-label">Pagos</div><div class="mobile-stat-number yellow" id="mPagos">—</div></div>
+      <div class="mobile-stat"><div class="mobile-stat-label">Pendentes</div><div class="mobile-stat-number orange" id="mPend">—</div></div>
+      <div class="mobile-stat"><div class="mobile-stat-label">Foto</div><div class="mobile-stat-number" id="mFoto">—</div></div>
+      <div class="mobile-stat" style="border-color:rgba(74,222,128,.2)">
+        <div class="mobile-stat-label" style="color:var(--accent-g)">Presentes</div>
         <div class="mobile-stat-number green" id="mPresentes">—</div>
       </div>
     </div>
@@ -397,21 +400,18 @@ input[type=file]{display:none;}
         <span class="search-icon">⌕</span>
         <input type="text" id="buscaMobile" placeholder="Buscar..." oninput="filtrarMobile()">
       </div>
-      <button class="filter-chip" id="chipMobile" onclick="toggleFiltroMobile()" style="min-width:80px">Filtrar</button>
+      <button class="filter-chip" id="chipMobile" onclick="toggleFiltroMobile()" style="min-width:76px">Filtrar</button>
     </div>
 
     <div class="list-wrapper">
       <div class="list-grid" id="lista">
-        <div class="loading">
-          <div class="loading-spinner"></div>
-          Carregando dados da planilha…
-        </div>
+        <div class="loading"><div class="loading-spinner"></div>Carregando dados…</div>
       </div>
     </div>
   </main>
 </div>
 
-<!-- ─── MODAL PRINCIPAL ──────────── -->
+<!-- ─── MODAL PRINCIPAL ──────── -->
 <div class="modal-bg" id="modalBg">
   <div class="modal" id="modalBox">
     <div class="modal-head">
@@ -426,23 +426,21 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- ─── MODAL CROP ───────────────── -->
+<!-- ─── MODAL CROP ────────────── -->
 <div class="modal-bg" id="cropModalBg" style="z-index:1200;">
   <div class="crop-modal-content">
     <div class="modal-head" style="border-radius:20px 20px 0 0;background:#111;">
       <div class="modal-name" style="flex:1;color:#fff;">Ajustar Foto</div>
       <button class="close-btn" onclick="fecharCrop()">✕</button>
     </div>
-    <div class="crop-area">
-      <img id="imageToCrop" src="" style="max-width:100%;">
-    </div>
+    <div class="crop-area"><img id="imageToCrop" src="" style="max-width:100%;"></div>
     <div class="crop-footer">
       <button class="save-btn" style="margin-top:0;" onclick="aplicarCrop()">Confirmar Recorte</button>
     </div>
   </div>
 </div>
 
-<!-- ─── LIGHTBOX ─────────────────── -->
+<!-- ─── LIGHTBOX ─────────────── -->
 <div class="modal-bg lightbox-bg" id="lightboxBg" onclick="fecharLightbox()">
   <div class="lightbox-content" onclick="event.stopPropagation()">
     <button class="lightbox-close" onclick="fecharLightbox()">✕</button>
@@ -451,14 +449,13 @@ input[type=file]{display:none;}
 </div>
 
 <div class="toast" id="toast"></div>
-
 <input type="file" id="inputFotoGaleria" accept="image/*">
 <input type="file" id="inputFotoCamera" accept="image/*" capture="environment">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script>
 // ============================================================
-// CONFIG
+// CONFIG — substitua pela URL do seu Apps Script publicado
 // ============================================================
 const API_URL = "https://script.google.com/macros/s/AKfycbwX87QCGUQg6jO5Cx1R-TZAY8_-W9q6e2YwX4ZWdJHHWjDkdhsP5JVXVBrM3Yb1MUE-/exec";
 
@@ -466,21 +463,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwX87QCGUQg6jO5Cx1R-TZA
 // STATE
 // ============================================================
 let dados = [], filtrados = [];
-let iP = 18, iF = 19;
+let iP = -1, iF = -1, iCI = -1; // índices de coluna
 let rowAtual = -1;
 let filtroAtivo = null;
 let fotoNovaBase64 = null, fotoNovoMime = null, fotoNovoNome = null;
 let cropper = null;
 let _pagoSelecionado = true;
-let _checkinConfirmStep = false;
-let _checkinTimer = null;
-let _revogarConfirmStep = false;
-let _revogarTimer = null;
+let _checkinConfirmStep = false, _checkinTimer = null;
+let _revogarConfirmStep = false, _revogarTimer = null;
 
-// ─── Encontros ───────────────────────────────────────────────
-let encontros = [];        // [{nome, data}] — dados da aba Encontros
-let encontroAtivo = null;  // {nome, data, colKey} ou null
-// "colKey" = nome da coluna na aba principal: "Checkin_<NomeEncontro>"
+// Encontro ativo vindo do backend
+let encontroAtivo  = null; // { nome, dataStr }
+let todosEncontros = [];
+// Indica se o encontro está acontecendo hoje
+let encontroHoje   = false;
+
+// Rastreia quais rows têm foto herdada (índice na lista dados)
+let fotosHerdadas = new Set();
+
+// Histórico de presença em outros encontros: { "<índice da linha>": [ {encontro, data}, ... ] }
+let historicoMap = {};
 
 // ============================================================
 // UTILS
@@ -489,7 +491,6 @@ function initials(n) {
   const p = (n || "?").trim().split(" ");
   return p.length >= 2 ? (p[0][0]+p[p.length-1][0]).toUpperCase() : (p[0][0]||"?").toUpperCase();
 }
-
 function fixDriveUrl(url) {
   if (!url || !url.trim()) return "";
   url = url.trim();
@@ -501,60 +502,33 @@ function fixDriveUrl(url) {
   if (id) return `https://lh3.googleusercontent.com/d/${id}`;
   return url;
 }
-
 function fmtTimestamp() {
   return new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
 }
-
-/**
- * Converte string "DD/MM/YYYY" em objeto Date (meia-noite local).
- */
-function parseDate(str) {
+function parseDataBR(str) {
   if (!str) return null;
-  str = str.trim();
-  // Aceita DD/MM/YYYY ou DD-MM-YYYY
-  const parts = str.split(/[\/\-]/);
+  const parts = str.toString().trim().split(/[\/\-]/);
   if (parts.length === 3) {
-    const d = parseInt(parts[0], 10);
-    const m = parseInt(parts[1], 10) - 1;
-    const y = parseInt(parts[2], 10);
-    const dt = new Date(y, m, d);
-    if (!isNaN(dt.getTime())) return dt;
+    let [d, m, y] = parts.map(Number);
+    if (y < 100) y += 2000;
+    const dt = new Date(y, m - 1, d);
+    return isNaN(dt.getTime()) ? null : dt;
   }
-  // Fallback: tenta parse direto
-  const dt = new Date(str);
-  return isNaN(dt.getTime()) ? null : dt;
+  return null;
 }
-
 function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() &&
          a.getMonth()    === b.getMonth()    &&
          a.getDate()     === b.getDate();
 }
-
-/**
- * Dado o array de cabeçalhos da planilha, retorna o índice da coluna
- * de check-in do encontroAtivo (ou -1).
- */
-function getCiColIndex(headers) {
-  if (!encontroAtivo) return -1;
-  const colKey = "Checkin_" + encontroAtivo.nome;
-  const idx = headers.indexOf(colKey);
-  return idx; // -1 se ainda não criada
-}
-
-/**
- * Retorna o valor de check-in do encontro ativo para uma linha.
- */
-function getCheckinValue(row) {
-  if (!encontroAtivo || !row._ciIdx || row._ciIdx < 0) return "";
-  return row[row._ciIdx] || "";
+function fmtHistoricoLista(hist) {
+  return hist.map(h => h.data ? `${h.encontro} (${h.data})` : h.encontro).join(", ");
 }
 
 // ============================================================
 // TOAST
 // ============================================================
-function showToast(msg, type="") {
+function showToast(msg, type = "") {
   const el = document.getElementById("toast");
   el.textContent = msg;
   el.className = `toast ${type} show`;
@@ -564,22 +538,16 @@ function showToast(msg, type="") {
 // ============================================================
 // SIDEBAR MOBILE
 // ============================================================
-function openSidebar() {
-  document.getElementById("sidebar").classList.add("mobile-open");
-  document.getElementById("sidebarOverlay").classList.add("open");
-}
-function closeSidebar() {
-  document.getElementById("sidebar").classList.remove("mobile-open");
-  document.getElementById("sidebarOverlay").classList.remove("open");
-}
+function openSidebar()  { document.getElementById("sidebar").classList.add("mobile-open"); document.getElementById("sidebarOverlay").classList.add("open"); }
+function closeSidebar() { document.getElementById("sidebar").classList.remove("mobile-open"); document.getElementById("sidebarOverlay").classList.remove("open"); }
 
 // ============================================================
 // LOAD DATA
 // ============================================================
 async function carregarDados() {
-  document.getElementById("lista").innerHTML = `<div class="loading"><div class="loading-spinner"></div>Carregando dados da planilha…</div>`;
+  document.getElementById("lista").innerHTML = `<div class="loading"><div class="loading-spinner"></div>Carregando dados…</div>`;
   try {
-    const res = await fetch(API_URL);
+    const res  = await fetch(API_URL);
     const json = await res.text();
     renderizar(json);
   } catch(err) {
@@ -591,120 +559,113 @@ async function carregarDados() {
 function renderizar(json) {
   const payload = JSON.parse(json);
 
-  // Suporte legado (array puro) e novo formato {inscricoes, encontros}
-  let rawData, rawEncontros;
-  if (Array.isArray(payload)) {
-    rawData = payload;
-    rawEncontros = [];
-  } else {
-    rawData = payload.inscricoes || [];
-    rawEncontros = payload.encontros || [];
+  if (payload.erro) {
+    document.getElementById("lista").innerHTML = `<div class="empty">⚠ ${payload.erro}</div>`;
+    return;
   }
 
-  encontros = rawEncontros;
-  resolverEncontroAtivo();
+  const rawData = payload.inscricoes || [];
+  encontroAtivo  = payload.encontroAtivo  || null;
+  todosEncontros = payload.todosEncontros || [];
+  historicoMap   = payload.historico      || {};
 
+  // Verifica se o encontro ativo é hoje
+  encontroHoje = false;
+  if (encontroAtivo) {
+    const dt = parseDataBR(encontroAtivo.dataStr);
+    encontroHoje = dt ? isSameDay(dt, new Date()) : false;
+  }
+
+  // Cabeçalho
   const headers = rawData[0] || [];
-  iP = headers.indexOf("PAGO");
-  iF = headers.indexOf("Foto");
-  // iCI será resolvido por linha via encontroAtivo
-  const ciIdx = getCiColIndex(headers);
+  iP  = headers.indexOf("PAGO");
+  iF  = headers.indexOf("Foto");
+  iCI = headers.indexOf("Checkin");
 
-  dados = rawData.slice(1).map(row => {
-    // Anexa índice da coluna de CI diretamente na linha para acesso rápido
-    row._ciIdx = ciIdx;
-    return row;
-  });
+  // Detecta linhas com foto herdada:
+  // Se a planilha na coluna Foto estava vazia e o backend injetou um valor,
+  // o backend não sinaliza mais com _fotoHerdada (removido antes de retornar),
+  // então não há como distinguir aqui — apenas mostramos a foto normalmente.
+  // O badge "herdada" fica reservado para o que vier com flag no futuro.
+  // (O enriquecimento é transparente para o usuário.)
+  fotosHerdadas.clear();
 
+  dados = rawData.slice(1);
   filtrados = [...dados];
   atualizarStats();
-  atualizarBannerEncontro();
-  renderLista();
+  atualizarBanner();
+  filtrar();
 }
 
 // ============================================================
-// RESOLVER ENCONTRO ATIVO
+// BANNER & SIDEBAR PILL
 // ============================================================
-function resolverEncontroAtivo() {
-  const hoje = new Date();
-  encontroAtivo = null;
-
-  for (const enc of encontros) {
-    const dt = parseDate(enc.data);
-    if (dt && isSameDay(dt, hoje)) {
-      encontroAtivo = {
-        nome: enc.nome,
-        data: enc.data,
-        colKey: "Checkin_" + enc.nome
-      };
-      break;
-    }
-  }
-}
-
-// ============================================================
-// BANNER DE ENCONTRO
-// ============================================================
-function atualizarBannerEncontro() {
+function atualizarBanner() {
+  // Banner main
   const banner = document.getElementById("encontroBanner");
-  const dot    = document.getElementById("encontroDot");
-  const name   = document.getElementById("encontroName");
-  const meta   = document.getElementById("encontroMeta");
-  const sideBox= document.getElementById("sidebarEncontroBox");
-  const sPresLbl = document.getElementById("sPresLbl");
+  const ebDot  = document.getElementById("ebDot");
+  const ebName = document.getElementById("ebName");
+  const ebMeta = document.getElementById("ebMeta");
 
-  banner.style.display = "flex";
+  // Sidebar pill
+  const pill      = document.getElementById("sideEncPill");
+  const sideDot   = document.getElementById("sideEncDot");
+  const sideLabel = document.getElementById("sideEncLabel");
+  const sideName  = document.getElementById("sideEncName");
+  const sideDate  = document.getElementById("sideEncDate");
+  const sPresLbl  = document.getElementById("sPresLbl");
 
-  if (encontroAtivo) {
-    banner.className = "encontro-banner active";
-    dot.className    = "encontro-dot active";
-    name.className   = "encontro-name active";
-    name.textContent = encontroAtivo.nome;
-    meta.textContent = `Encontro de hoje · ${encontroAtivo.data} · Check-in habilitado`;
-    sPresLbl.textContent = `Presentes — ${encontroAtivo.nome}`;
-
-    sideBox.style.display = "";
-    sideBox.className = "sidebar-encontro enc-active";
-    sideBox.innerHTML = `
-      <div class="sidebar-enc-label active">Encontro hoje</div>
-      <div class="sidebar-enc-name">${encontroAtivo.nome}</div>
-      <div class="sidebar-enc-date">${encontroAtivo.data}</div>`;
-  } else if (encontros.length > 0) {
-    banner.className = "encontro-banner inactive";
-    dot.className    = "encontro-dot inactive";
-    name.className   = "encontro-name inactive";
-
-    // Próximo encontro
-    const hoje = new Date();
-    const futuros = encontros
-      .map(e => ({ ...e, dt: parseDate(e.data) }))
-      .filter(e => e.dt && e.dt > hoje)
-      .sort((a,b) => a.dt - b.dt);
-
-    if (futuros.length > 0) {
-      const prox = futuros[0];
-      name.textContent = `Próximo: ${prox.nome}`;
-      meta.textContent = `${prox.data} · Check-in indisponível fora da data`;
-    } else {
-      name.textContent = "Nenhum encontro hoje";
-      meta.textContent = "Check-in desabilitado · Adicione encontros na aba Encontros";
-    }
-    sPresLbl.textContent = "Presentes — Check-in";
-
-    sideBox.style.display = "";
-    sideBox.className = "sidebar-encontro enc-inactive";
-    sideBox.innerHTML = `
-      <div class="sidebar-enc-label inactive">Sem encontro hoje</div>
-      <div class="sidebar-enc-name" style="color:var(--text-1)">${futuros.length > 0 ? 'Próximo: '+futuros[0].nome : 'Nenhum agendado'}</div>
-      <div class="sidebar-enc-date">${futuros.length > 0 ? futuros[0].data : ''}</div>`;
-  } else {
+  if (!encontroAtivo) {
+    // Sem dados
     banner.className = "encontro-banner none";
-    dot.className    = "encontro-dot none";
-    name.className   = "encontro-name none";
-    name.textContent = "Aba \"Encontros\" não configurada";
-    meta.textContent = "Crie a aba com colunas Nome e DataInicio na planilha";
-    sideBox.style.display = "none";
-    sPresLbl.textContent = "Presentes — Check-in";
+    ebDot.className = "eb-dot none";
+    ebName.className = "eb-name none";
+    ebName.textContent = "Aba \"Encontros\" não configurada";
+    ebMeta.textContent = "";
+    pill.className = "enc-pill none";
+    sideDot.className = "enc-dot none";
+    sideLabel.className = "enc-label none";
+    sideLabel.textContent = "Sem encontro";
+    sideName.textContent = "—";
+    sideDate.textContent = "";
+    sPresLbl.textContent = "Presentes";
+    return;
+  }
+
+  sideName.textContent = encontroAtivo.nome;
+  sideDate.textContent = encontroAtivo.dataStr;
+
+  if (encontroHoje) {
+    banner.className = "encontro-banner active";
+    ebDot.className  = "eb-dot active";
+    ebName.className = "eb-name active";
+    ebName.textContent = encontroAtivo.nome;
+    ebMeta.textContent = `· ${encontroAtivo.dataStr} · Check-in habilitado`;
+
+    pill.className      = "enc-pill active";
+    sideDot.className   = "enc-dot active";
+    sideLabel.className = "enc-label active";
+    sideLabel.textContent = "Encontro hoje ✓";
+    sPresLbl.textContent  = `Presentes — ${encontroAtivo.nome}`;
+  } else {
+    // Encontro existe mas não é hoje
+    const dt = parseDataBR(encontroAtivo.dataStr);
+    const hoje = new Date();
+    const isFuturo = dt && dt > hoje;
+
+    banner.className = "encontro-banner inactive";
+    ebDot.className  = "eb-dot inactive";
+    ebName.className = "eb-name inactive";
+    ebName.textContent = encontroAtivo.nome;
+    ebMeta.textContent = isFuturo
+      ? `· ${encontroAtivo.dataStr} · Check-in disponível na data`
+      : `· ${encontroAtivo.dataStr} · Check-in encerrado`;
+
+    pill.className      = "enc-pill inactive";
+    sideDot.className   = "enc-dot inactive";
+    sideLabel.className = "enc-label inactive";
+    sideLabel.textContent = isFuturo ? "Próximo encontro" : "Encontro encerrado";
+    sPresLbl.textContent  = "Presentes";
   }
 }
 
@@ -712,24 +673,24 @@ function atualizarBannerEncontro() {
 // STATS
 // ============================================================
 function atualizarStats() {
-  const t = dados.length;
-  const pg = dados.filter(r => (r[iP]||"").toUpperCase() === "SIM").length;
-  const cf = dados.filter(r => r[iF] && r[iF].trim()).length;
-  const pres = dados.filter(r => {
-    const ci = r._ciIdx >= 0 ? (r[r._ciIdx] || "") : "";
-    return ci.trim().length > 0;
-  }).length;
+  const t   = dados.length;
+  const pg  = dados.filter(r => (r[iP]||"").toUpperCase() === "SIM").length;
+  const cf  = dados.filter(r => r[iF] && r[iF].trim()).length;
+  const pres= iCI >= 0
+    ? dados.filter(r => r[iCI] && r[iCI].trim()).length
+    : 0;
 
-  document.getElementById("sTotal").textContent = t;
-  document.getElementById("sPagos").textContent = pg;
-  document.getElementById("sPend").textContent = t - pg;
-  document.getElementById("sFoto").textContent = cf;
-  document.getElementById("sPresentes").textContent = encontroAtivo ? pres : "—";
-  document.getElementById("mTotal").textContent = t;
-  document.getElementById("mPagos").textContent = pg;
-  document.getElementById("mPend").textContent = t - pg;
-  document.getElementById("mFoto").textContent = cf;
-  document.getElementById("mPresentes").textContent = encontroAtivo ? pres : "—";
+  const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setEl("sTotal",    t);
+  setEl("sPagos",    pg);
+  setEl("sPend",     t - pg);
+  setEl("sFoto",     cf);
+  setEl("sPresentes", encontroHoje ? pres : "—");
+  setEl("mTotal",    t);
+  setEl("mPagos",    pg);
+  setEl("mPend",     t - pg);
+  setEl("mFoto",     cf);
+  setEl("mPresentes", encontroHoje ? pres : "—");
 }
 
 // ============================================================
@@ -737,28 +698,23 @@ function atualizarStats() {
 // ============================================================
 function toggleFiltro(tipo) {
   filtroAtivo = filtroAtivo === tipo ? null : tipo;
-  ["chipCheckin","chipPago","chipPend","chipFoto","chipMed","chipRest"].forEach(id => {
-    document.getElementById(id).className = "filter-chip";
-  });
-  if (filtroAtivo === "checkin") document.getElementById("chipCheckin").className = "filter-chip active-green";
-  if (filtroAtivo === "pago")    document.getElementById("chipPago").className    = "filter-chip active-yellow";
-  if (filtroAtivo === "pend")    document.getElementById("chipPend").className    = "filter-chip active-orange";
-  if (filtroAtivo === "foto")    document.getElementById("chipFoto").className    = "filter-chip active-yellow";
-  if (filtroAtivo === "med")     document.getElementById("chipMed").className     = "filter-chip active-orange";
-  if (filtroAtivo === "rest")    document.getElementById("chipRest").className    = "filter-chip active-red";
+  ["chipCheckin","chipPago","chipPend","chipFoto","chipMed","chipRest","chipRetorno"].forEach(id =>
+    document.getElementById(id).className = "filter-chip"
+  );
+  const map = { checkin:"active-green", pago:"active-yellow", pend:"active-orange", foto:"active-yellow", med:"active-orange", rest:"active-red", retorno:"active-blue" };
+  if (filtroAtivo && map[filtroAtivo])
+    document.getElementById("chip" + filtroAtivo.charAt(0).toUpperCase() + filtroAtivo.slice(1)).className = "filter-chip " + map[filtroAtivo];
   filtrar();
 }
 
 function toggleFiltroMobile() {
-  const order = [null, "checkin", "pend", "pago", "foto", "med", "rest"];
-  let idx = order.indexOf(filtroAtivo);
-  idx = (idx+1) % order.length;
-  filtroAtivo = order[idx];
+  const order = [null,"checkin","pend","pago","foto","med","rest","retorno"];
+  filtroAtivo = order[(order.indexOf(filtroAtivo) + 1) % order.length];
   const chip = document.getElementById("chipMobile");
   chip.className = "filter-chip";
-  const map = { null:"Filtrar", checkin:["Presentes","active-green"], pend:["Pendente","active-orange"], pago:["Pago","active-yellow"], foto:["Com Foto","active-yellow"], med:["Medicação","active-orange"], rest:["Restrição","active-red"] };
-  if (!filtroAtivo) { chip.textContent = "Filtrar"; }
-  else { chip.textContent = map[filtroAtivo][0]; chip.classList.add(map[filtroAtivo][1]); }
+  const labels = { null:"Filtrar", checkin:["Presentes","active-green"], pend:["Pendente","active-orange"], pago:["Pago","active-yellow"], foto:["Com Foto","active-yellow"], med:["Medicação","active-orange"], rest:["Restrição","active-red"], retorno:["Retornante","active-blue"] };
+  if (!filtroAtivo) chip.textContent = "Filtrar";
+  else { chip.textContent = labels[filtroAtivo][0]; chip.classList.add(labels[filtroAtivo][1]); }
   filtrar();
 }
 
@@ -768,15 +724,17 @@ function filtrarMobile() {
 }
 
 function filtrar() {
-  const q = (document.getElementById("busca").value||"").toLowerCase();
+  const q = (document.getElementById("busca").value || "").toLowerCase();
   filtrados = dados.filter(r => {
     const n = (r[2]||"").toLowerCase(), e = (r[1]||"").toLowerCase();
-    const mq = !q || n.includes(q) || e.includes(q);
+    const mq   = !q || n.includes(q) || e.includes(q);
     const pago = (r[iP]||"").toUpperCase() === "SIM";
     const foto = !!(r[iF] && r[iF].trim());
     const rest = (r[7]||"").toLowerCase().includes("sim");
     const med  = (r[9]||"").toLowerCase().includes("sim");
-    const ci   = r._ciIdx >= 0 ? !!(r[r._ciIdx] && r[r._ciIdx].trim()) : false;
+    const ci   = iCI >= 0 ? !!(r[iCI] && r[iCI].trim()) : false;
+    const ri   = dados.indexOf(r);
+    const retorno = !!(historicoMap[ri] && historicoMap[ri].length);
     let mp = true;
     if (filtroAtivo === "checkin") mp = ci;
     if (filtroAtivo === "pago")    mp = pago;
@@ -784,6 +742,7 @@ function filtrar() {
     if (filtroAtivo === "foto")    mp = foto;
     if (filtroAtivo === "med")     mp = med;
     if (filtroAtivo === "rest")    mp = rest;
+    if (filtroAtivo === "retorno") mp = retorno;
     return mq && mp;
   });
   document.getElementById("sCount").textContent = filtrados.length;
@@ -794,64 +753,63 @@ function filtrar() {
 // RENDER LIST
 // ============================================================
 function renderLista() {
-  document.getElementById("sCount").textContent = filtrados.length;
   if (!filtrados.length) {
     document.getElementById("lista").innerHTML = `<div class="empty">Nenhum participante encontrado.</div>`;
     return;
   }
   let html = "";
   filtrados.forEach(row => {
-    const ri = dados.indexOf(row);
-    const nome   = row[2] || "—";
-    const email  = row[1] || "";
-    const nasc   = row[4] || "—";
-    const resp   = row[5] || "—";
-    const pago   = (row[iP]||"").toUpperCase() === "SIM";
-    const fotoRaw= row[iF] || "";
-    const foto   = fixDriveUrl(fotoRaw);
-    const rest   = (row[7]||"").toLowerCase().includes("sim");
-    const med    = (row[9]||"").toLowerCase().includes("sim");
+    const ri    = dados.indexOf(row);
+    const nome  = row[2] || "—";
+    const email = row[1] || "";
+    const nasc  = row[4] || "—";
+    const resp  = row[5] || "—";
+    const pago  = (row[iP]||"").toUpperCase() === "SIM";
+    const foto  = fixDriveUrl(row[iF] || "");
+    const rest  = (row[7]||"").toLowerCase().includes("sim");
+    const med   = (row[9]||"").toLowerCase().includes("sim");
+    const ci    = iCI >= 0 ? (row[iCI] || "").trim() : "";
+    const checkin = ci.length > 0;
+    const ini   = initials(nome);
+    const hist  = historicoMap[ri];
 
-    // Check-in do encontro ativo
-    const ciVal = row._ciIdx >= 0 ? (row[row._ciIdx] || "") : "";
-    const checkin = ciVal.trim().length > 0;
-
-    const ini = initials(nome);
-
-    const pgChip = pago
+    const pgChip  = pago
       ? `<span class="chip chip-yellow"><span class="dot dot-y"></span>Pago</span>`
       : `<span class="chip chip-orange"><span class="dot dot-o"></span>Pendente</span>`;
-    const rChip = rest ? `<span class="chip chip-red">Restrição</span>` : "";
-    const mChip = med  ? `<span class="chip chip-orange">Medicação</span>` : "";
-    const ciChip= checkin && encontroAtivo ? `<span class="chip chip-green"><span class="dot dot-g"></span>Presente</span>` : "";
+    const ciChip  = checkin && encontroHoje ? `<span class="chip chip-green"><span class="dot dot-g"></span>Presente</span>` : "";
+    const rChip   = rest ? `<span class="chip chip-red">Restrição</span>` : "";
+    const mChip   = med  ? `<span class="chip chip-orange">Medicação</span>` : "";
+    const histChip= (hist && hist.length)
+      ? `<span class="chip chip-blue" title="Já fez check-in em: ${fmtHistoricoLista(hist)}">↺ Retornante</span>`
+      : "";
 
     const avInner = foto
-      ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.innerHTML='<span>${ini}</span>'"><div class="photo-overlay">🔍</div>`
+      ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.innerHTML='<span>${ini}</span>'">`
+        + `<div class="photo-overlay">🔍</div>`
       : `<span>${ini}</span>`;
 
-    // Card quick check-in action
+    // Ação de check-in no card
     let ciAction = "";
-    if (!encontroAtivo) {
-      // Sem encontro hoje — mostra cadeado
-      ciAction = `<button class="ci-action ci-locked" title="Sem encontro hoje" disabled>🔒</button><div class="ci-label">Inativo</div>`;
+    if (!encontroHoje) {
+      ciAction = `<button class="ci-action ci-locked" disabled title="Check-in indisponível fora da data">🔒</button><div class="ci-label">Bloqueado</div>`;
     } else if (checkin) {
-      ciAction = `<button class="ci-action ci-done" title="Presente — toque para abrir e revogar" onclick="event.stopPropagation();abrirModal(${ri})">✓</button><div class="ci-label" style="color:var(--accent-g)">Presente</div>`;
+      ciAction = `<button class="ci-action ci-done" onclick="event.stopPropagation();abrirModal(${ri})" title="Presente — clique para revogar">✓</button><div class="ci-label" style="color:var(--accent-g)">Presente</div>`;
     } else if (foto) {
-      ciAction = `<button class="ci-action ci-ready" title="Realizar check-in" onclick="event.stopPropagation();quickCheckin(${ri})">✔</button><div class="ci-label">Check-in</div>`;
+      ciAction = `<button class="ci-action ci-ready" onclick="event.stopPropagation();quickCheckin(${ri})" title="Realizar check-in">✔</button><div class="ci-label">Check-in</div>`;
     } else {
-      ciAction = `<button class="ci-action ci-nofoto" title="Foto necessária para check-in" onclick="event.stopPropagation();abrirModal(${ri})">📷</button><div class="ci-label">Foto<br>neces.</div>`;
+      ciAction = `<button class="ci-action ci-nofoto" onclick="event.stopPropagation();abrirModal(${ri})" title="Foto necessária">📷</button><div class="ci-label">Foto<br>neces.</div>`;
     }
 
     html += `
-      <div class="card ${checkin && encontroAtivo ? 'card-checkedin' : ''}" onclick="abrirModal(${ri})">
+      <div class="card ${checkin && encontroHoje ? 'card-checkedin' : ''}" onclick="abrirModal(${ri})">
         <div class="card-inner">
-          <div class="avatar ${checkin && encontroAtivo ? 'avatar-checkedin' : ''}" onclick="event.stopPropagation();${foto ? `verFoto('${foto}')` : ''}" title="${foto ? 'Ver foto' : nome}">
-            ${avInner}
-          </div>
+          <div class="avatar ${checkin && encontroHoje ? 'avatar-checkedin' : ''}"
+               onclick="event.stopPropagation();${foto ? `verFoto('${foto}')` : ''}"
+               title="${foto ? 'Ver foto' : nome}">${avInner}</div>
           <div class="card-info">
             <div class="card-name">${nome}</div>
             <div class="card-email">${email}</div>
-            <div class="card-chips">${pgChip}${ciChip}${rChip}${mChip}</div>
+            <div class="card-chips">${pgChip}${ciChip}${histChip}${rChip}${mChip}</div>
           </div>
           <div class="card-checkin-zone">${ciAction}</div>
         </div>
@@ -860,7 +818,7 @@ function renderLista() {
           <span class="card-footer-val">${nasc}</span>
           <span class="card-footer-sep">|</span>
           <span class="card-footer-lbl">Resp.</span>
-          <span class="card-footer-val" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${resp}</span>
+          <span class="card-footer-val" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${resp}</span>
         </div>
       </div>`;
   });
@@ -868,61 +826,31 @@ function renderLista() {
 }
 
 // ============================================================
-// QUICK CHECK-IN (from card)
+// QUICK CHECK-IN
 // ============================================================
 async function quickCheckin(ri) {
-  if (!encontroAtivo) {
-    showToast("Sem encontro ativo hoje. Check-in bloqueado.", "error");
-    return;
-  }
-  const row = dados[ri];
+  if (!encontroHoje) { showToast("Check-in só disponível na data do encontro.", "error"); return; }
+  const row  = dados[ri];
   const nome = row[2] || "?";
   const foto = fixDriveUrl(row[iF] || "");
+  if (!foto) { showToast("Adicione uma foto antes do check-in.", "error"); return; }
+  if (iCI >= 0 && row[iCI] && row[iCI].trim()) { showToast(`${nome} já realizou check-in.`, "info"); return; }
 
-  if (!foto) {
-    showToast("Adicione uma foto antes do check-in.", "error");
-    return;
-  }
-  if (row._ciIdx >= 0 && row[row._ciIdx] && row[row._ciIdx].trim()) {
-    showToast(`${nome} já está com check-in realizado.`, "info");
-    return;
-  }
   const ts = fmtTimestamp();
-
-  // Se coluna ainda não existe localmente, a referenciamos via _ciIdx
-  if (row._ciIdx >= 0) {
-    dados[ri][row._ciIdx] = ts;
-  }
-
+  if (iCI >= 0) dados[ri][iCI] = ts;
   renderLista();
   atualizarStats();
   showToast(`Check-in de ${nome} realizado! ✓`, "success");
-
   try {
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        rowIndex: ri,
-        checkin: ts,
-        encontroNome: encontroAtivo.nome
-      })
-    });
-  } catch(err) {
-    console.error("Erro ao salvar check-in:", err);
-  }
+    await fetch(API_URL, { method:"POST", body: JSON.stringify({ rowIndex: ri, checkin: ts, encontroNome: encontroAtivo.nome }) });
+  } catch(err) { console.error(err); }
 }
 
 // ============================================================
 // LIGHTBOX
 // ============================================================
-function verFoto(url) {
-  if (!url) return;
-  document.getElementById("lightboxImg").src = url;
-  document.getElementById("lightboxBg").classList.add("open");
-}
-function fecharLightbox() {
-  document.getElementById("lightboxBg").classList.remove("open");
-}
+function verFoto(url) { if (!url) return; document.getElementById("lightboxImg").src = url; document.getElementById("lightboxBg").classList.add("open"); }
+function fecharLightbox() { document.getElementById("lightboxBg").classList.remove("open"); }
 
 // ============================================================
 // MODAL PRINCIPAL
@@ -930,74 +858,65 @@ function fecharLightbox() {
 function abrirModal(ri) {
   rowAtual = ri;
   fotoNovaBase64 = null; fotoNovoMime = null; fotoNovoNome = null;
-  _checkinConfirmStep = false;
-  _revogarConfirmStep = false;
+  _checkinConfirmStep = false; _revogarConfirmStep = false;
   if (_checkinTimer) { clearTimeout(_checkinTimer); _checkinTimer = null; }
   if (_revogarTimer) { clearTimeout(_revogarTimer); _revogarTimer = null; }
 
-  const row  = dados[ri];
-  const nome = row[2] || "—";
-  const email= row[1] || "";
-  const fotoRaw = row[iF] || "";
-  const foto = fixDriveUrl(fotoRaw);
-  const pago = (row[iP]||"").toUpperCase() === "SIM";
-  const ciVal= row._ciIdx >= 0 ? (row[row._ciIdx] || "") : "";
-  const checkin = ciVal.trim().length > 0 ? ciVal : null;
+  const row   = dados[ri];
+  const nome  = row[2] || "—";
+  const email = row[1] || "";
+  const foto  = fixDriveUrl(row[iF] || "");
+  const pago  = (row[iP]||"").toUpperCase() === "SIM";
+  const ciVal = iCI >= 0 ? (row[iCI] || "").trim() : "";
+  const checkin = ciVal.length > 0 ? ciVal : null;
+  const hist  = historicoMap[ri];
   _pagoSelecionado = pago;
   const ini = initials(nome);
 
   document.getElementById("mNome").textContent = nome;
-  document.getElementById("mSub").textContent = email;
+  document.getElementById("mSub").textContent  = email;
   const av = document.getElementById("mAvatar");
-  av.innerHTML = foto ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.innerHTML='${ini}'">` : ini;
+  av.innerHTML = foto ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.textContent='${ini}'">` : ini;
 
-  const rest   = (row[7]||"").toLowerCase().includes("sim");
-  const med    = (row[9]||"").toLowerCase().includes("sim");
-  const alerMed= (row[11]||"").toLowerCase().includes("sim");
-  const sair   = (row[13]||"").toLowerCase().includes("sim");
-  const sacrs  = (row[16]||"—").split(",").map(s=>s.trim()).filter(Boolean);
-  const sacrHtml = sacrs.map(s=>`<span class="chip chip-gray">${s}</span>`).join("");
+  const rest    = (row[7]||"").toLowerCase().includes("sim");
+  const med     = (row[9]||"").toLowerCase().includes("sim");
+  const alerMed = (row[11]||"").toLowerCase().includes("sim");
+  const sair    = (row[13]||"").toLowerCase().includes("sim");
+  const sacrs   = (row[16]||"—").split(",").map(s=>s.trim()).filter(Boolean);
+  const sacrHtml= sacrs.map(s=>`<span class="chip chip-gray">${s}</span>`).join("");
 
-  // ── Monta seção de check-in ──
-  let ciSectionClass = "section";
-  let ciSectionTitle = "✦ Check-in do encontro";
+  // ── Aviso de histórico: já participou de outro(s) encontro(s) ──
+  let histHtml = "";
+  if (hist && hist.length) {
+    histHtml = `
+      <div class="foto-herdada-notice">
+        <span class="fhn-icon">↺</span>
+        <span class="fhn-text"><strong>Já fez check-in em outro(s) encontro(s):</strong> ${fmtHistoricoLista(hist)}</span>
+      </div>`;
+  }
+
+  // ── Seção de check-in ──
+  let ciSecClass = "section section-checkin";
+  let ciSecTitle = "✦ Check-in — " + (encontroAtivo ? encontroAtivo.nome : "Encontro");
   let ciHtml = "";
 
-  if (!encontroAtivo) {
-    // Sem encontro hoje
-    ciSectionClass = "section section-checkin-locked";
-    ciSectionTitle = "⏸ Check-in indisponível";
-
-    // Lista todos os encontros com seus status para este participante
-    let encRows = "";
-    if (encontros.length > 0) {
-      encRows = `<div class="checkin-locked-encounters">`;
-      encontros.forEach(enc => {
-        // Tenta achar a coluna deste encontro nos dados
-        // (headers só disponível via dados — lemos do primeiro item)
-        // Usamos a propriedade _ciIdx apenas do encontroAtivo; para outros encontros,
-        // o valor na planilha pode ter sido carregado se a coluna existe
-        encRows += `
-          <div class="enc-row">
-            <span class="enc-row-name">${enc.nome}</span>
-            <span class="enc-row-date">${enc.data}</span>
-          </div>`;
-      });
-      encRows += `</div>`;
-    }
-
+  if (!encontroHoje) {
+    ciSecClass = "section section-locked";
+    ciSecTitle = "⏸ Check-in indisponível";
+    const isFuturo = encontroAtivo ? (parseDataBR(encontroAtivo.dataStr) > new Date()) : false;
     ciHtml = `
-      <div class="checkin-locked-banner">
-        <div class="checkin-locked-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-          Check-in bloqueado — sem encontro hoje
+      <div style="padding:12px 14px;background:rgba(251,146,60,.07);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);">
+        <div style="font-size:13px;font-weight:600;color:var(--accent-o);display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          ${encontroAtivo
+            ? (isFuturo
+                ? `Check-in disponível em ${encontroAtivo.dataStr}`
+                : `Encontro encerrado — ${encontroAtivo.dataStr}`)
+            : "Nenhum encontro configurado"}
         </div>
-        <div class="checkin-locked-sub">O check-in só é liberado na data de início cadastrada na aba "Encontros" da planilha.</div>
-        ${encRows}
+        <div style="font-size:12px;color:rgba(251,146,60,.7)">O check-in só é liberado na data cadastrada na aba "Encontros".</div>
       </div>`;
   } else if (checkin) {
-    // Check-in realizado
-    ciSectionClass = "section section-checkin";
     ciHtml = `
       <div class="checkin-done-banner">
         <div class="checkin-done-circle">✓</div>
@@ -1008,57 +927,42 @@ function abrirModal(ri) {
         </div>
       </div>
       <button class="revoke-btn" id="revokeBtn" onclick="iniciarRevogarCheckin()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
         Revogar check-in
       </button>`;
   } else if (foto || fotoNovaBase64) {
-    // Encontro ativo, tem foto, sem check-in
-    ciSectionClass = "section section-checkin";
     ciHtml = `
       <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-        Realizar Check-in — ${encontroAtivo.nome}
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+        Realizar Check-in
       </button>
       <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${nome}</div>`;
   } else {
-    // Encontro ativo, sem foto
-    ciSectionClass = "section section-checkin-nofoto";
-    ciSectionTitle = "⚠ Check-in — foto obrigatória";
+    ciSecClass = "section section-nofoto";
+    ciSecTitle = "⚠ Foto obrigatória para check-in";
     ciHtml = `
-      <div class="checkin-no-foto-banner">
-        <div class="checkin-no-foto-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Foto obrigatória para check-in
-        </div>
-        <div class="checkin-no-foto-sub">Adicione uma foto abaixo e salve para liberar o check-in no encontro <strong style="color:var(--accent-o)">${encontroAtivo.nome}</strong>.</div>
+      <div class="checkin-no-foto-banner" style="padding:12px 14px;background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);border-radius:var(--radius-sm);margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:600;color:var(--accent-o);margin-bottom:4px;">Sem foto cadastrada</div>
+        <div style="font-size:12px;color:rgba(251,146,60,.7)">Adicione a foto abaixo e salve para liberar o check-in.</div>
       </div>
       <div class="foto-actions" style="max-width:100%">
-        <button class="foto-btn" onclick="abrirGaleria()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          Galeria
-        </button>
-        <button class="foto-btn" onclick="abrirCamera()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          Câmera
-        </button>
+        <button class="foto-btn" onclick="abrirGaleria()">📂 Galeria</button>
+        <button class="foto-btn" onclick="abrirCamera()">📷 Câmera</button>
       </div>`;
   }
 
-  // Monta foto section
-  let fotoHtml = "";
-  if (foto) {
-    fotoHtml = `
-      <div class="foto-preview-wrap" onclick="verFoto('${foto}')" title="Clique para ampliar">
-        <img id="fotoAtual" src="${foto}" onerror="this.onerror=null;this.parentElement.outerHTML='<div class=foto-empty id=fotoEmpty><div class=foto-empty-icon>📷</div><span>Erro ao carregar</span></div>'">
-        <div class="foto-preview-overlay"><span style="font-size:28px">🔍</span><span>Ver foto completa</span></div>
-      </div>`;
-  } else {
-    fotoHtml = `<div class="foto-empty" id="fotoEmpty"><div class="foto-empty-icon">📷</div><span>Nenhuma foto cadastrada</span></div>`;
-  }
+  // ── Foto preview ──
+  let fotoHtml = foto
+    ? `<div class="foto-preview-wrap" onclick="verFoto('${foto}')" title="Clique para ampliar">
+        <img id="fotoAtual" src="${foto}">
+        <div class="foto-preview-overlay"><span style="font-size:26px">🔍</span><span>Ver foto</span></div>
+       </div>`
+    : `<div class="foto-empty"><div class="foto-empty-icon">📷</div><span>Nenhuma foto cadastrada</span></div>`;
 
   document.getElementById("mBody").innerHTML = `
-    <div class="${ciSectionClass}">
-      <div class="section-title">${ciSectionTitle}</div>
+    ${histHtml}
+    <div class="${ciSecClass}">
+      <div class="section-title">${ciSecTitle}</div>
       <div class="section-body" id="checkinSectionBody">${ciHtml}</div>
     </div>
 
@@ -1078,10 +982,10 @@ function abrirModal(ri) {
       <div class="section-title">Saúde e alimentação</div>
       <div class="section-body">
         <div class="grid-2">
-          <div class="data-item"><div class="lbl">Restrição alimentar</div><div class="val">${rest ? "Sim — "+(row[8]||"") : "Não"}</div></div>
-          <div class="data-item"><div class="lbl">Medicação</div><div class="val">${med ? "Sim — "+(row[10]||"") : "Não"}</div></div>
-          <div class="data-item"><div class="lbl">Alergia a medicação</div><div class="val">${alerMed ? "Sim — "+(row[12]||"") : "Não"}</div></div>
-          <div class="data-item"><div class="lbl">Precisará sair</div><div class="val">${sair ? "Sim — "+(row[14]||"") : "Não"}</div></div>
+          <div class="data-item"><div class="lbl">Restrição alimentar</div><div class="val">${rest?"Sim — "+(row[8]||""):"Não"}</div></div>
+          <div class="data-item"><div class="lbl">Medicação</div><div class="val">${med?"Sim — "+(row[10]||""):"Não"}</div></div>
+          <div class="data-item"><div class="lbl">Alergia a medicação</div><div class="val">${alerMed?"Sim — "+(row[12]||""):"Não"}</div></div>
+          <div class="data-item"><div class="lbl">Precisará sair</div><div class="val">${sair?"Sim — "+(row[14]||""):"Não"}</div></div>
         </div>
       </div>
     </div>
@@ -1089,7 +993,7 @@ function abrirModal(ri) {
     <div class="section">
       <div class="section-title">Histórico religioso</div>
       <div class="section-body">
-        <div class="data-item" style="margin-bottom:12px"><div class="lbl">Já fez retiro</div><div class="val">${row[15]||"—"}</div></div>
+        <div class="data-item" style="margin-bottom:10px"><div class="lbl">Já fez retiro</div><div class="val">${row[15]||"—"}</div></div>
         <div class="data-item"><div class="lbl">Sacramentos</div><div class="sacr-wrap">${sacrHtml}</div></div>
       </div>
     </div>
@@ -1101,11 +1005,11 @@ function abrirModal(ri) {
           ${fotoHtml}
           <div class="foto-actions">
             <button class="foto-btn" onclick="abrirGaleria()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
               Galeria
             </button>
             <button class="foto-btn" onclick="abrirCamera()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
               Câmera
             </button>
           </div>
@@ -1117,8 +1021,8 @@ function abrirModal(ri) {
       <div class="section-title">Status de pagamento</div>
       <div class="section-body">
         <div class="payment-toggle">
-          <button class="payment-opt ${pago ? 'sel-yellow' : ''}" id="optPago" onclick="setPago(true)">Pago</button>
-          <button class="payment-opt ${pago ? '' : 'sel-orange'}" id="optPend" onclick="setPago(false)">Pendente</button>
+          <button class="payment-opt ${pago?'sel-yellow':''}" id="optPago" onclick="setPago(true)">Pago</button>
+          <button class="payment-opt ${pago?'':'sel-orange'}" id="optPend" onclick="setPago(false)">Pendente</button>
         </div>
         <button class="save-btn" id="saveBtn" onclick="salvar()">Salvar alterações</button>
       </div>
@@ -1129,12 +1033,10 @@ function abrirModal(ri) {
 
 function fecharModal() {
   document.getElementById("modalBg").classList.remove("open");
-  _checkinConfirmStep = false;
-  _revogarConfirmStep = false;
+  _checkinConfirmStep = false; _revogarConfirmStep = false;
   if (_checkinTimer) { clearTimeout(_checkinTimer); _checkinTimer = null; }
   if (_revogarTimer) { clearTimeout(_revogarTimer); _revogarTimer = null; }
 }
-
 function setPago(v) {
   _pagoSelecionado = v;
   document.getElementById("optPago").className = "payment-opt " + (v ? "sel-yellow" : "");
@@ -1142,41 +1044,32 @@ function setPago(v) {
 }
 
 // ============================================================
-// CHECK-IN MODAL — Double-tap confirmation
+// CHECK-IN MODAL — double-tap
 // ============================================================
 function iniciarCheckinModal() {
-  if (!encontroAtivo) {
-    showToast("Sem encontro ativo hoje. Check-in bloqueado.", "error");
-    return;
-  }
-  const row = dados[rowAtual];
+  if (!encontroHoje) { showToast("Check-in só disponível na data do encontro.", "error"); return; }
+  const row  = dados[rowAtual];
   const foto = fixDriveUrl(row[iF] || "");
+  if (!foto && !fotoNovaBase64) { showToast("Adicione e salve uma foto primeiro!", "error"); return; }
 
-  if (!foto && !fotoNovaBase64) {
-    showToast("Adicione e salve uma foto primeiro!", "error");
-    return;
-  }
-
-  const btn = document.getElementById("checkinModalBtn");
+  const btn  = document.getElementById("checkinModalBtn");
   const hint = document.getElementById("checkinHint");
   if (!btn) return;
 
   if (!_checkinConfirmStep) {
     _checkinConfirmStep = true;
     btn.classList.add("confirming");
-    btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Confirmar presença?`;
-    if (hint) hint.textContent = "Toque novamente para confirmar o check-in.";
-
+    btn.innerHTML = `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Confirmar presença?`;
+    if (hint) hint.textContent = "Toque novamente para confirmar.";
     _checkinTimer = setTimeout(() => {
       _checkinConfirmStep = false;
       if (!btn) return;
       btn.classList.remove("confirming");
-      btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Realizar Check-in — ${encontroAtivo.nome}`;
-      if (hint) hint.textContent = `Toque para confirmar a presença de ${row[2] || ""}`;
+      btn.innerHTML = `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Realizar Check-in`;
+      if (hint) hint.textContent = `Toque para confirmar a presença de ${row[2]||""}`;
     }, 4000);
   } else {
-    clearTimeout(_checkinTimer);
-    _checkinTimer = null;
+    clearTimeout(_checkinTimer); _checkinTimer = null;
     _checkinConfirmStep = false;
     confirmarCheckinModal();
   }
@@ -1185,14 +1078,9 @@ function iniciarCheckinModal() {
 async function confirmarCheckinModal() {
   const btn = document.getElementById("checkinModalBtn");
   if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }
-
   const ts = fmtTimestamp();
-  const row = dados[rowAtual];
-  if (row._ciIdx >= 0) {
-    dados[rowAtual][row._ciIdx] = ts;
-  }
-  atualizarStats();
-  renderLista();
+  if (iCI >= 0) dados[rowAtual][iCI] = ts;
+  atualizarStats(); renderLista();
 
   const body = document.getElementById("checkinSectionBody");
   if (body) {
@@ -1201,132 +1089,93 @@ async function confirmarCheckinModal() {
         <div class="checkin-done-circle">✓</div>
         <div>
           <div class="checkin-done-label">Presente no encontro!</div>
-          <div class="checkin-done-enc">${encontroAtivo.nome}</div>
+          <div class="checkin-done-enc">${encontroAtivo ? encontroAtivo.nome : ""}</div>
           <div class="checkin-done-time">Registrado em ${ts}</div>
         </div>
       </div>
       <button class="revoke-btn" id="revokeBtn" onclick="iniciarRevogarCheckin()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
         Revogar check-in
       </button>`;
   }
-
-  showToast(`Check-in de ${row[2]||"?"} realizado! ✓`, "success");
-
+  showToast(`Check-in de ${dados[rowAtual][2]||"?"} realizado! ✓`, "success");
   try {
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        rowIndex: rowAtual,
-        checkin: ts,
-        encontroNome: encontroAtivo.nome
-      })
-    });
-  } catch(err) {
-    console.error("Erro ao salvar check-in:", err);
-  }
+    await fetch(API_URL, { method:"POST", body: JSON.stringify({ rowIndex: rowAtual, checkin: ts, encontroNome: encontroAtivo ? encontroAtivo.nome : "" }) });
+  } catch(err) { console.error(err); }
 }
 
 // ============================================================
-// REVOGAR CHECK-IN
+// REVOGAR CHECK-IN — double-tap
 // ============================================================
 function iniciarRevogarCheckin() {
   const btn = document.getElementById("revokeBtn");
   if (!btn) return;
-
   if (!_revogarConfirmStep) {
     _revogarConfirmStep = true;
     btn.classList.add("confirming-revoke");
-    btn.innerHTML = `
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      Confirmar revogação?`;
-
+    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg> Confirmar revogação?`;
     _revogarTimer = setTimeout(() => {
       _revogarConfirmStep = false;
       if (!btn) return;
       btn.classList.remove("confirming-revoke");
-      btn.innerHTML = `
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        Revogar check-in`;
+      btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg> Revogar check-in`;
     }, 4000);
   } else {
-    clearTimeout(_revogarTimer);
-    _revogarTimer = null;
+    clearTimeout(_revogarTimer); _revogarTimer = null;
     _revogarConfirmStep = false;
     confirmarRevogarCheckin();
   }
 }
 
 async function confirmarRevogarCheckin() {
-  const btn = document.getElementById("revokeBtn");
+  const btn  = document.getElementById("revokeBtn");
   if (btn) { btn.disabled = true; btn.textContent = "Revogando…"; }
-
   const nome = dados[rowAtual][2] || "?";
-  const row = dados[rowAtual];
-  if (row._ciIdx >= 0) {
-    dados[rowAtual][row._ciIdx] = "";
-  }
-  atualizarStats();
-  renderLista();
+  if (iCI >= 0) dados[rowAtual][iCI] = "";
+  atualizarStats(); renderLista();
 
   const body = document.getElementById("checkinSectionBody");
-  if (body && encontroAtivo) {
+  if (body) {
     body.innerHTML = `
-      <div style="font-size:12px;color:var(--accent-o);background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      <div style="font-size:12px;color:var(--accent-o);background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:7px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
         Check-in revogado.
       </div>
       <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-        Realizar Check-in — ${encontroAtivo.nome}
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+        Realizar Check-in
       </button>
       <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${nome}</div>`;
   }
-
-  showToast(`Check-in de ${nome} revogado.`, "");
-
+  showToast(`Check-in de ${nome} revogado.`);
   try {
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        rowIndex: rowAtual,
-        checkin: "",
-        encontroNome: encontroAtivo.nome
-      })
-    });
-  } catch(err) {
-    console.error("Erro ao revogar check-in:", err);
-  }
+    await fetch(API_URL, { method:"POST", body: JSON.stringify({ rowIndex: rowAtual, checkin: "", encontroNome: encontroAtivo ? encontroAtivo.nome : "" }) });
+  } catch(err) { console.error(err); }
 }
 
 // ============================================================
 // FOTO — CROP
 // ============================================================
 function abrirGaleria() { document.getElementById("inputFotoGaleria").click(); }
-function abrirCamera()  { document.getElementById("inputFotoCamera").click(); }
+function abrirCamera()  { document.getElementById("inputFotoCamera").click();  }
 
 function processarFoto(file) {
   if (!file) return;
-  fotoNovoMime = file.type;
-  fotoNovoNome = file.name;
+  fotoNovoMime = file.type; fotoNovoNome = file.name;
   const reader = new FileReader();
   reader.onloadend = e => {
     document.getElementById("imageToCrop").src = e.target.result;
     document.getElementById("cropModalBg").classList.add("open");
     if (cropper) cropper.destroy();
     cropper = new Cropper(document.getElementById("imageToCrop"), {
-      aspectRatio: 1, viewMode: 1, zoomable: true, dragMode: "move",
-      autoCropArea: 1, guides: true, cropBoxMovable: true, cropBoxResizable: true,
-      toggleDragModeOnDblclick: false,
+      aspectRatio:1, viewMode:1, zoomable:true, dragMode:"move",
+      autoCropArea:1, guides:true, cropBoxMovable:true, cropBoxResizable:true,
+      toggleDragModeOnDblclick:false
     });
   };
   reader.readAsDataURL(file);
 }
-
-function fecharCrop() {
-  document.getElementById("cropModalBg").classList.remove("open");
-  if (cropper) { cropper.destroy(); cropper = null; }
-}
+function fecharCrop() { document.getElementById("cropModalBg").classList.remove("open"); if (cropper) { cropper.destroy(); cropper = null; } }
 
 function aplicarCrop() {
   if (!cropper) return;
@@ -1335,99 +1184,75 @@ function aplicarCrop() {
 
   const container = document.querySelector("#mBody .foto-container");
   if (container) {
-    const oldPreview = container.querySelector(".foto-preview-wrap");
-    const oldEmpty = container.querySelector(".foto-empty");
-    if (oldPreview) oldPreview.remove();
-    if (oldEmpty) oldEmpty.remove();
+    const old = container.querySelector(".foto-preview-wrap, .foto-empty");
+    if (old) old.remove();
     const wrap = document.createElement("div");
     wrap.className = "foto-preview-wrap";
-    wrap.title = "Clique para ampliar";
     wrap.onclick = () => verFoto(fotoNovaBase64);
-    wrap.innerHTML = `<img id="fotoAtual" src="${fotoNovaBase64}"><div class="foto-preview-overlay"><span style="font-size:28px">🔍</span><span>Ver foto completa</span></div>`;
-    const actions = container.querySelector(".foto-actions");
-    container.insertBefore(wrap, actions);
+    wrap.innerHTML = `<img src="${fotoNovaBase64}"><div class="foto-preview-overlay"><span style="font-size:26px">🔍</span><span>Ver foto</span></div>`;
+    container.insertBefore(wrap, container.querySelector(".foto-actions"));
   }
+  document.getElementById("mAvatar").innerHTML = `<img src="${fotoNovaBase64}">`;
 
-  const av = document.getElementById("mAvatar");
-  av.innerHTML = `<img src="${fotoNovaBase64}">`;
-
-  // Habilita check-in se encontro ativo e sem check-in
-  if (encontroAtivo) {
-    const row = dados[rowAtual];
-    const ciVal = row._ciIdx >= 0 ? (row[row._ciIdx] || "") : "";
-    const temCheckin = ciVal.trim().length > 0;
-    if (!temCheckin) {
-      const ciBody = document.getElementById("checkinSectionBody");
-      if (ciBody) {
-        const nome = row[2] || "";
-        ciBody.innerHTML = `
-          <div style="font-size:12px;color:var(--accent-g);background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:12px;">
-            ✓ Foto adicionada — salve para liberar o check-in permanentemente.
-          </div>
-          <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-            Realizar Check-in — ${encontroAtivo.nome}
-          </button>
-          <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${nome}</div>`;
-      }
+  // Habilita check-in se encontro ativo e sem CI ainda
+  if (encontroHoje) {
+    const ciBody = document.getElementById("checkinSectionBody");
+    const ciVal  = iCI >= 0 ? (dados[rowAtual][iCI] || "").trim() : "";
+    if (ciBody && !ciVal) {
+      ciBody.innerHTML = `
+        <div style="font-size:12px;color:var(--accent-g);background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px;">
+          ✓ Foto adicionada — salve para liberar o check-in permanentemente.
+        </div>
+        <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          Realizar Check-in
+        </button>
+        <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${dados[rowAtual][2]||""}</div>`;
     }
   }
-
   fecharCrop();
   showToast("Foto recortada! Clique em Salvar para enviar.", "info");
 }
 
-document.getElementById("inputFotoGaleria").addEventListener("change", function() { processarFoto(this.files[0]); this.value=""; });
-document.getElementById("inputFotoCamera").addEventListener("change", function() { processarFoto(this.files[0]); this.value=""; });
+document.getElementById("inputFotoGaleria").addEventListener("change", function() { processarFoto(this.files[0]); this.value = ""; });
+document.getElementById("inputFotoCamera").addEventListener("change",  function() { processarFoto(this.files[0]); this.value = ""; });
 
 // ============================================================
 // SAVE
 // ============================================================
 async function salvar() {
   const btn = document.getElementById("saveBtn");
-  btn.textContent = "Salvando…";
-  btn.disabled = true;
-
-  const payload = {
-    rowIndex: rowAtual,
-    pago: _pagoSelecionado ? "SIM" : "NÃO",
-    fotoBase64: fotoNovaBase64,
-    mimeType: fotoNovoMime,
-    nomeArquivo: fotoNovoNome
-  };
-
+  btn.textContent = "Salvando…"; btn.disabled = true;
   try {
-    await fetch(API_URL, { method:"POST", body: JSON.stringify(payload) });
+    await fetch(API_URL, { method:"POST", body: JSON.stringify({
+      rowIndex:     rowAtual,
+      pago:         _pagoSelecionado ? "SIM" : "NÃO",
+      fotoBase64:   fotoNovaBase64,
+      mimeType:     fotoNovoMime,
+      nomeArquivo:  fotoNovoNome,
+      encontroNome: encontroAtivo ? encontroAtivo.nome : ""
+    })});
     showToast("Salvo com sucesso! ✓", "success");
     setTimeout(() => { fecharModal(); carregarDados(); }, 600);
   } catch(err) {
     console.error(err);
     showToast("Erro ao salvar. Tente novamente.", "error");
-    btn.textContent = "Tentar novamente";
-    btn.disabled = false;
+    btn.textContent = "Tentar novamente"; btn.disabled = false;
   }
 }
 
 // ============================================================
-// KEYBOARD
+// KEYBOARD / TOUCH
 // ============================================================
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    fecharLightbox(); fecharModal(); fecharCrop(); closeSidebar();
-  }
+  if (e.key === "Escape") { fecharLightbox(); fecharModal(); fecharCrop(); closeSidebar(); }
 });
-
-// ============================================================
-// BLOQUEIO DE ZOOM NO IOS
-// ============================================================
-document.addEventListener('touchmove', function(e) {
-  if (e.touches.length > 1) e.preventDefault();
-}, { passive: false });
-let lastTouchEnd = 0;
-document.addEventListener('touchend', function(e) {
-  const now = (new Date()).getTime();
-  if (now - lastTouchEnd <= 300) e.preventDefault();
-  lastTouchEnd = now;
+document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive:false });
+let _lastTouch = 0;
+document.addEventListener("touchend", e => {
+  const now = Date.now();
+  if (now - _lastTouch <= 300) e.preventDefault();
+  _lastTouch = now;
 }, false);
 
 // ============================================================
