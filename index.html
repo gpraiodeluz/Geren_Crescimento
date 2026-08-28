@@ -453,17 +453,23 @@ input[type=file]{display:none;}
 <input type="file" id="inputFotoCamera" accept="image/*" capture="environment">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ============================================================
-// CONFIG — substitua pela URL do seu Apps Script publicado
+// CONFIGURAÇÃO SUPABASE & APPS SCRIPT
 // ============================================================
-const API_URL = "https://script.google.com/macros/s/AKfycbwX87QCGUQg6jO5Cx1R-TZAY8_-W9q6e2YwX4ZWdJHHWjDkdhsP5JVXVBrM3Yb1MUE-/exec";
+const SUPABASE_URL = "https://ntzdqizdvqexcvuifdkx.supabase.co"; // sua URL
+const SUPABASE_ANON_KEY = "sb_publishable_EPvEph275vALt30cjnJUbw_AP3Jv9mT"; // coloque sua chave anon aqui
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// URL do Apps Script para sincronização da planilha em segundo plano
+const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbwX87QCGUQg6jO5Cx1R-TZAY8_-W9q6e2YwX4ZWdJHHWjDkdhsP5JVXVBrM3Yb1MUE-/exec";
 
 // ============================================================
-// STATE
+// STATE & VARIÁVEIS GLOBAIS
 // ============================================================
 let dados = [], filtrados = [];
-let iP = -1, iF = -1, iCI = -1; // índices de coluna
+let iP = 17, iF = 18, iCI = 19; // índices de coluna no array mapeado
 let rowAtual = -1;
 let filtroAtivo = null;
 let fotoNovaBase64 = null, fotoNovoMime = null, fotoNovoNome = null;
@@ -472,16 +478,13 @@ let _pagoSelecionado = true;
 let _checkinConfirmStep = false, _checkinTimer = null;
 let _revogarConfirmStep = false, _revogarTimer = null;
 
-// Encontro ativo vindo do backend
+// Encontro ativo vindo do Supabase
 let encontroAtivo  = null; // { nome, dataStr }
 let todosEncontros = [];
-// Indica se o encontro está acontecendo hoje
 let encontroHoje   = false;
 
-// Rastreia quais rows têm foto herdada (índice na lista dados)
+// Rastreia fotos herdadas e histórico de presenças
 let fotosHerdadas = new Set();
-
-// Histórico de presença em outros encontros: { "<índice da linha>": [ {encontro, data}, ... ] }
 let historicoMap = {};
 
 // ============================================================
@@ -491,16 +494,10 @@ function initials(n) {
   const p = (n || "?").trim().split(" ");
   return p.length >= 2 ? (p[0][0]+p[p.length-1][0]).toUpperCase() : (p[0][0]||"?").toUpperCase();
 }
-function fixDriveUrl(url) {
-  if (!url || !url.trim()) return "";
-  url = url.trim();
-  if (url.includes("lh3.googleusercontent.com")) return url;
-  let id = null;
-  const m1 = url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
-  if (m1) id = m1[1];
-  if (!id) { const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/); if (m2) id = m2[1]; }
-  if (id) return `https://lh3.googleusercontent.com/d/${id}`;
-  return url;
+function chavePessoa(email, nascimento) {
+  const e = (email || "").toString().trim().toLowerCase();
+  const n = (nascimento || "").toString().trim();
+  return e + "|" + n;
 }
 function fmtTimestamp() {
   return new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
@@ -526,7 +523,7 @@ function fmtHistoricoLista(hist) {
 }
 
 // ============================================================
-// TOAST
+// TOAST & SIDEBAR MOBILE
 // ============================================================
 function showToast(msg, type = "") {
   const el = document.getElementById("toast");
@@ -534,80 +531,118 @@ function showToast(msg, type = "") {
   el.className = `toast ${type} show`;
   setTimeout(() => el.classList.remove("show"), 3200);
 }
-
-// ============================================================
-// SIDEBAR MOBILE
-// ============================================================
 function openSidebar()  { document.getElementById("sidebar").classList.add("mobile-open"); document.getElementById("sidebarOverlay").classList.add("open"); }
 function closeSidebar() { document.getElementById("sidebar").classList.remove("mobile-open"); document.getElementById("sidebarOverlay").classList.remove("open"); }
 
 // ============================================================
-// LOAD DATA
+// CARREGAR DADOS DO SUPABASE
 // ============================================================
 async function carregarDados() {
   document.getElementById("lista").innerHTML = `<div class="loading"><div class="loading-spinner"></div>Carregando dados…</div>`;
   try {
-    const res  = await fetch(API_URL);
-    const json = await res.text();
-    renderizar(json);
-  } catch(err) {
-    console.error(err);
-    document.getElementById("lista").innerHTML = `<div class="empty">Erro de conexão. Tente novamente.</div>`;
-  }
-}
+    // 1. Busca encontros ordenados pela data mais recente
+    const { data: encs, error: encError } = await _supabase
+      .from('encontros')
+      .select('*')
+      .order('data_inicio', { ascending: false });
 
-function renderizar(json) {
-  const payload = JSON.parse(json);
+    if (encError || !encs || encs.length === 0) {
+      document.getElementById("lista").innerHTML = `<div class="empty">Nenhum encontro cadastrado.</div>`;
+      atualizarBanner();
+      return;
+    }
 
-  if (payload.erro) {
-    document.getElementById("lista").innerHTML = `<div class="empty">⚠ ${payload.erro}</div>`;
-    return;
-  }
+    todosEncontros = encs.map(e => {
+      const [y, m, d] = e.data_inicio.split("-");
+      return { nome: e.nome, dataStr: `${d}/${m}/${y}`, dtRaw: e.data_inicio };
+    });
 
-  const rawData = payload.inscricoes || [];
-  encontroAtivo  = payload.encontroAtivo  || null;
-  todosEncontros = payload.todosEncontros || [];
-  historicoMap   = payload.historico      || {};
-
-  // Verifica se o encontro ativo é hoje
-  encontroHoje = false;
-  if (encontroAtivo) {
+    encontroAtivo = todosEncontros[0];
     const dt = parseDataBR(encontroAtivo.dataStr);
     encontroHoje = dt ? isSameDay(dt, new Date()) : false;
+
+    // 2. Busca inscrições do encontro ativo e histórico global
+    const [resInscricoes, resGlobal] = await Promise.all([
+      _supabase.from('inscricoes').select('*').eq('encontro_nome', encontroAtivo.nome).order('id', { ascending: true }),
+      _supabase.from('inscricoes').select('chave_pessoa, encontro_nome, checkin, foto_url')
+    ]);
+
+    const inscData = resInscricoes.data || [];
+    const globalData = resGlobal.data || [];
+
+    const fotoMap = {};
+    const histMapTemp = {};
+
+    globalData.forEach(row => {
+      if (row.foto_url && !fotoMap[row.chave_pessoa]) {
+        fotoMap[row.chave_pessoa] = row.foto_url;
+      }
+      if (row.checkin && row.encontro_nome !== encontroAtivo.nome) {
+        if (!histMapTemp[row.chave_pessoa]) histMapTemp[row.chave_pessoa] = [];
+        histMapTemp[row.chave_pessoa].push({ encontro: row.encontro_nome, data: row.checkin });
+      }
+    });
+
+    // 3. Monta o array `dados` compatível com a interface
+    historicoMap = {};
+    fotosHerdadas.clear();
+
+    dados = inscData.map((reg, idx) => {
+      const ch = reg.chave_pessoa;
+      if (histMapTemp[ch]) historicoMap[idx] = histMapTemp[ch];
+
+      let foto = reg.foto_url;
+      if (!foto && fotoMap[ch]) {
+        foto = fotoMap[ch];
+        fotosHerdadas.add(idx);
+      }
+
+      return [
+        reg.carimbo_data_hora,        // [0]
+        reg.email,                    // [1]
+        reg.nome,                     // [2]
+        reg.telefone,                 // [3]
+        reg.nascimento,               // [4]
+        reg.responsavel,              // [5]
+        reg.tel_responsavel,          // [6]
+        reg.restricao_alimentar,      // [7]
+        reg.restricao_alimentar_desc, // [8]
+        reg.medicacao,                // [9]
+        reg.medicacao_desc,           // [10]
+        reg.alergia_medicamento,      // [11]
+        reg.alergia_medicamento_desc, // [12]
+        reg.precisa_sair,             // [13]
+        reg.precisa_sair_desc,        // [14]
+        reg.ja_fez_retiro,            // [15]
+        reg.sacramentos,              // [16]
+        reg.pago,                     // [17]
+        foto,                         // [18]
+        reg.checkin,                  // [19]
+        reg.id,                       // [20] ID no Supabase
+        reg.row_index                 // [21] Linha na Planilha
+      ];
+    });
+
+    filtrados = [...dados];
+    atualizarStats();
+    atualizarBanner();
+    filtrar();
+
+  } catch(err) {
+    console.error(err);
+    document.getElementById("lista").innerHTML = `<div class="empty">Erro ao carregar dados do Supabase.</div>`;
   }
-
-  // Cabeçalho
-  const headers = rawData[0] || [];
-  iP  = headers.indexOf("PAGO");
-  iF  = headers.indexOf("Foto");
-  iCI = headers.indexOf("Checkin");
-
-  // Detecta linhas com foto herdada:
-  // Se a planilha na coluna Foto estava vazia e o backend injetou um valor,
-  // o backend não sinaliza mais com _fotoHerdada (removido antes de retornar),
-  // então não há como distinguir aqui — apenas mostramos a foto normalmente.
-  // O badge "herdada" fica reservado para o que vier com flag no futuro.
-  // (O enriquecimento é transparente para o usuário.)
-  fotosHerdadas.clear();
-
-  dados = rawData.slice(1);
-  filtrados = [...dados];
-  atualizarStats();
-  atualizarBanner();
-  filtrar();
 }
 
 // ============================================================
-// BANNER & SIDEBAR PILL
+// BANNER & STATS
 // ============================================================
 function atualizarBanner() {
-  // Banner main
-  const banner = document.getElementById("encontroBanner");
-  const ebDot  = document.getElementById("ebDot");
-  const ebName = document.getElementById("ebName");
-  const ebMeta = document.getElementById("ebMeta");
+  const banner  = document.getElementById("encontroBanner");
+  const ebDot   = document.getElementById("ebDot");
+  const ebName  = document.getElementById("ebName");
+  const ebMeta  = document.getElementById("ebMeta");
 
-  // Sidebar pill
   const pill      = document.getElementById("sideEncPill");
   const sideDot   = document.getElementById("sideEncDot");
   const sideLabel = document.getElementById("sideEncLabel");
@@ -616,11 +651,10 @@ function atualizarBanner() {
   const sPresLbl  = document.getElementById("sPresLbl");
 
   if (!encontroAtivo) {
-    // Sem dados
     banner.className = "encontro-banner none";
     ebDot.className = "eb-dot none";
     ebName.className = "eb-name none";
-    ebName.textContent = "Aba \"Encontros\" não configurada";
+    ebName.textContent = "Sem encontro cadastrado";
     ebMeta.textContent = "";
     pill.className = "enc-pill none";
     sideDot.className = "enc-dot none";
@@ -648,7 +682,6 @@ function atualizarBanner() {
     sideLabel.textContent = "Encontro hoje ✓";
     sPresLbl.textContent  = `Presentes — ${encontroAtivo.nome}`;
   } else {
-    // Encontro existe mas não é hoje
     const dt = parseDataBR(encontroAtivo.dataStr);
     const hoje = new Date();
     const isFuturo = dt && dt > hoje;
@@ -669,16 +702,11 @@ function atualizarBanner() {
   }
 }
 
-// ============================================================
-// STATS
-// ============================================================
 function atualizarStats() {
   const t   = dados.length;
   const pg  = dados.filter(r => (r[iP]||"").toUpperCase() === "SIM").length;
   const cf  = dados.filter(r => r[iF] && r[iF].trim()).length;
-  const pres= iCI >= 0
-    ? dados.filter(r => r[iCI] && r[iCI].trim()).length
-    : 0;
+  const pres= dados.filter(r => r[iCI] && r[iCI].trim()).length;
 
   const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   setEl("sTotal",    t);
@@ -694,16 +722,19 @@ function atualizarStats() {
 }
 
 // ============================================================
-// FILTER
+// FILTROS
 // ============================================================
 function toggleFiltro(tipo) {
   filtroAtivo = filtroAtivo === tipo ? null : tipo;
-  ["chipCheckin","chipPago","chipPend","chipFoto","chipMed","chipRest","chipRetorno"].forEach(id =>
-    document.getElementById(id).className = "filter-chip"
-  );
+  ["chipCheckin","chipPago","chipPend","chipFoto","chipMed","chipRest","chipRetorno"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.className = "filter-chip";
+  });
   const map = { checkin:"active-green", pago:"active-yellow", pend:"active-orange", foto:"active-yellow", med:"active-orange", rest:"active-red", retorno:"active-blue" };
-  if (filtroAtivo && map[filtroAtivo])
-    document.getElementById("chip" + filtroAtivo.charAt(0).toUpperCase() + filtroAtivo.slice(1)).className = "filter-chip " + map[filtroAtivo];
+  if (filtroAtivo && map[filtroAtivo]) {
+    const chipEl = document.getElementById("chip" + filtroAtivo.charAt(0).toUpperCase() + filtroAtivo.slice(1));
+    if (chipEl) chipEl.className = "filter-chip " + map[filtroAtivo];
+  }
   filtrar();
 }
 
@@ -732,9 +763,10 @@ function filtrar() {
     const foto = !!(r[iF] && r[iF].trim());
     const rest = (r[7]||"").toLowerCase().includes("sim");
     const med  = (r[9]||"").toLowerCase().includes("sim");
-    const ci   = iCI >= 0 ? !!(r[iCI] && r[iCI].trim()) : false;
+    const ci   = !!(r[iCI] && r[iCI].trim());
     const ri   = dados.indexOf(r);
     const retorno = !!(historicoMap[ri] && historicoMap[ri].length);
+
     let mp = true;
     if (filtroAtivo === "checkin") mp = ci;
     if (filtroAtivo === "pago")    mp = pago;
@@ -750,7 +782,7 @@ function filtrar() {
 }
 
 // ============================================================
-// RENDER LIST
+// RENDERIZAÇÃO DA LISTA
 // ============================================================
 function renderLista() {
   if (!filtrados.length) {
@@ -765,10 +797,10 @@ function renderLista() {
     const nasc  = row[4] || "—";
     const resp  = row[5] || "—";
     const pago  = (row[iP]||"").toUpperCase() === "SIM";
-    const foto  = fixDriveUrl(row[iF] || "");
+    const foto  = row[iF] || "";
     const rest  = (row[7]||"").toLowerCase().includes("sim");
     const med   = (row[9]||"").toLowerCase().includes("sim");
-    const ci    = iCI >= 0 ? (row[iCI] || "").trim() : "";
+    const ci    = (row[iCI] || "").trim();
     const checkin = ci.length > 0;
     const ini   = initials(nome);
     const hist  = historicoMap[ri];
@@ -788,12 +820,11 @@ function renderLista() {
         + `<div class="photo-overlay">🔍</div>`
       : `<span>${ini}</span>`;
 
-    // Ação de check-in no card
     let ciAction = "";
     if (!encontroHoje) {
       ciAction = `<button class="ci-action ci-locked" disabled title="Check-in indisponível fora da data">🔒</button><div class="ci-label">Bloqueado</div>`;
     } else if (checkin) {
-      ciAction = `<button class="ci-action ci-done" onclick="event.stopPropagation();abrirModal(${ri})" title="Presente — clique para revogar">✓</button><div class="ci-label" style="color:var(--accent-g)">Presente</div>`;
+      ciAction = `<button class="ci-action ci-done" onclick="event.stopPropagation();abrirModal(${ri})" title="Presente — toque para ver">✓</button><div class="ci-label" style="color:var(--accent-g)">Presente</div>`;
     } else if (foto) {
       ciAction = `<button class="ci-action ci-ready" onclick="event.stopPropagation();quickCheckin(${ri})" title="Realizar check-in">✔</button><div class="ci-label">Check-in</div>`;
     } else {
@@ -826,24 +857,32 @@ function renderLista() {
 }
 
 // ============================================================
-// QUICK CHECK-IN
+// CHECK-IN DIRETO NO SUPABASE
 // ============================================================
 async function quickCheckin(ri) {
   if (!encontroHoje) { showToast("Check-in só disponível na data do encontro.", "error"); return; }
   const row  = dados[ri];
   const nome = row[2] || "?";
-  const foto = fixDriveUrl(row[iF] || "");
+  const foto = row[iF] || "";
   if (!foto) { showToast("Adicione uma foto antes do check-in.", "error"); return; }
-  if (iCI >= 0 && row[iCI] && row[iCI].trim()) { showToast(`${nome} já realizou check-in.`, "info"); return; }
+  if (row[iCI] && row[iCI].trim()) { showToast(`${nome} já realizou check-in.`, "info"); return; }
 
   const ts = fmtTimestamp();
-  if (iCI >= 0) dados[ri][iCI] = ts;
+  dados[ri][iCI] = ts;
   renderLista();
   atualizarStats();
   showToast(`Check-in de ${nome} realizado! ✓`, "success");
-  try {
-    await fetch(API_URL, { method:"POST", body: JSON.stringify({ rowIndex: ri, checkin: ts, encontroNome: encontroAtivo.nome }) });
-  } catch(err) { console.error(err); }
+
+  const recId = row[20];
+  const sheetRowIdx = row[21];
+  await _supabase.from('inscricoes').update({ checkin: ts }).eq('id', recId);
+
+  // Sincroniza em background com a planilha
+  fetch(GOOGLE_SHEET_API, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify({ rowIndex: sheetRowIdx, checkin: ts, encontroNome: encontroAtivo.nome })
+  }).catch(console.error);
 }
 
 // ============================================================
@@ -853,7 +892,7 @@ function verFoto(url) { if (!url) return; document.getElementById("lightboxImg")
 function fecharLightbox() { document.getElementById("lightboxBg").classList.remove("open"); }
 
 // ============================================================
-// MODAL PRINCIPAL
+// MODAL DETALHES
 // ============================================================
 function abrirModal(ri) {
   rowAtual = ri;
@@ -865,9 +904,9 @@ function abrirModal(ri) {
   const row   = dados[ri];
   const nome  = row[2] || "—";
   const email = row[1] || "";
-  const foto  = fixDriveUrl(row[iF] || "");
+  const foto  = row[iF] || "";
   const pago  = (row[iP]||"").toUpperCase() === "SIM";
-  const ciVal = iCI >= 0 ? (row[iCI] || "").trim() : "";
+  const ciVal = (row[iCI] || "").trim();
   const checkin = ciVal.length > 0 ? ciVal : null;
   const hist  = historicoMap[ri];
   _pagoSelecionado = pago;
@@ -885,7 +924,6 @@ function abrirModal(ri) {
   const sacrs   = (row[16]||"—").split(",").map(s=>s.trim()).filter(Boolean);
   const sacrHtml= sacrs.map(s=>`<span class="chip chip-gray">${s}</span>`).join("");
 
-  // ── Aviso de histórico: já participou de outro(s) encontro(s) ──
   let histHtml = "";
   if (hist && hist.length) {
     histHtml = `
@@ -895,7 +933,6 @@ function abrirModal(ri) {
       </div>`;
   }
 
-  // ── Seção de check-in ──
   let ciSecClass = "section section-checkin";
   let ciSecTitle = "✦ Check-in — " + (encontroAtivo ? encontroAtivo.nome : "Encontro");
   let ciHtml = "";
@@ -914,7 +951,7 @@ function abrirModal(ri) {
                 : `Encontro encerrado — ${encontroAtivo.dataStr}`)
             : "Nenhum encontro configurado"}
         </div>
-        <div style="font-size:12px;color:rgba(251,146,60,.7)">O check-in só é liberado na data cadastrada na aba "Encontros".</div>
+        <div style="font-size:12px;color:rgba(251,146,60,.7)">O check-in só é liberado na data cadastrada no Supabase.</div>
       </div>`;
   } else if (checkin) {
     ciHtml = `
@@ -951,7 +988,6 @@ function abrirModal(ri) {
       </div>`;
   }
 
-  // ── Foto preview ──
   let fotoHtml = foto
     ? `<div class="foto-preview-wrap" onclick="verFoto('${foto}')" title="Clique para ampliar">
         <img id="fotoAtual" src="${foto}">
@@ -1004,14 +1040,8 @@ function abrirModal(ri) {
         <div class="foto-container">
           ${fotoHtml}
           <div class="foto-actions">
-            <button class="foto-btn" onclick="abrirGaleria()">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-              Galeria
-            </button>
-            <button class="foto-btn" onclick="abrirCamera()">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-              Câmera
-            </button>
+            <button class="foto-btn" onclick="abrirGaleria()">Galeria</button>
+            <button class="foto-btn" onclick="abrirCamera()">Câmera</button>
           </div>
         </div>
       </div>
@@ -1044,12 +1074,12 @@ function setPago(v) {
 }
 
 // ============================================================
-// CHECK-IN MODAL — double-tap
+// CHECK-IN / REVOGAR NO MODAL
 // ============================================================
 function iniciarCheckinModal() {
   if (!encontroHoje) { showToast("Check-in só disponível na data do encontro.", "error"); return; }
   const row  = dados[rowAtual];
-  const foto = fixDriveUrl(row[iF] || "");
+  const foto = row[iF] || "";
   if (!foto && !fotoNovaBase64) { showToast("Adicione e salve uma foto primeiro!", "error"); return; }
 
   const btn  = document.getElementById("checkinModalBtn");
@@ -1079,7 +1109,7 @@ async function confirmarCheckinModal() {
   const btn = document.getElementById("checkinModalBtn");
   if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }
   const ts = fmtTimestamp();
-  if (iCI >= 0) dados[rowAtual][iCI] = ts;
+  dados[rowAtual][iCI] = ts;
   atualizarStats(); renderLista();
 
   const body = document.getElementById("checkinSectionBody");
@@ -1099,14 +1129,18 @@ async function confirmarCheckinModal() {
       </button>`;
   }
   showToast(`Check-in de ${dados[rowAtual][2]||"?"} realizado! ✓`, "success");
-  try {
-    await fetch(API_URL, { method:"POST", body: JSON.stringify({ rowIndex: rowAtual, checkin: ts, encontroNome: encontroAtivo ? encontroAtivo.nome : "" }) });
-  } catch(err) { console.error(err); }
+
+  const recId = dados[rowAtual][20];
+  const sheetRowIdx = dados[rowAtual][21];
+  await _supabase.from('inscricoes').update({ checkin: ts }).eq('id', recId);
+
+  fetch(GOOGLE_SHEET_API, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify({ rowIndex: sheetRowIdx, checkin: ts, encontroNome: encontroAtivo ? encontroAtivo.nome : "" })
+  }).catch(console.error);
 }
 
-// ============================================================
-// REVOGAR CHECK-IN — double-tap
-// ============================================================
 function iniciarRevogarCheckin() {
   const btn = document.getElementById("revokeBtn");
   if (!btn) return;
@@ -1128,33 +1162,34 @@ function iniciarRevogarCheckin() {
 }
 
 async function confirmarRevogarCheckin() {
-  const btn  = document.getElementById("revokeBtn");
+  const btn = document.getElementById("revokeBtn");
   if (btn) { btn.disabled = true; btn.textContent = "Revogando…"; }
   const nome = dados[rowAtual][2] || "?";
-  if (iCI >= 0) dados[rowAtual][iCI] = "";
+  dados[rowAtual][iCI] = "";
   atualizarStats(); renderLista();
 
   const body = document.getElementById("checkinSectionBody");
   if (body) {
     body.innerHTML = `
-      <div style="font-size:12px;color:var(--accent-o);background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:7px;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        Check-in revogado.
-      </div>
-      <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-        Realizar Check-in
-      </button>
+      <div style="font-size:12px;color:var(--accent-o);background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px;">Check-in revogado.</div>
+      <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">Realizar Check-in</button>
       <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${nome}</div>`;
   }
   showToast(`Check-in de ${nome} revogado.`);
-  try {
-    await fetch(API_URL, { method:"POST", body: JSON.stringify({ rowIndex: rowAtual, checkin: "", encontroNome: encontroAtivo ? encontroAtivo.nome : "" }) });
-  } catch(err) { console.error(err); }
+
+  const recId = dados[rowAtual][20];
+  const sheetRowIdx = dados[rowAtual][21];
+  await _supabase.from('inscricoes').update({ checkin: "" }).eq('id', recId);
+
+  fetch(GOOGLE_SHEET_API, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify({ rowIndex: sheetRowIdx, checkin: "", encontroNome: encontroAtivo ? encontroAtivo.nome : "" })
+  }).catch(console.error);
 }
 
 // ============================================================
-// FOTO — CROP
+// FOTO — RECORTE E UPLOAD
 // ============================================================
 function abrirGaleria() { document.getElementById("inputFotoGaleria").click(); }
 function abrirCamera()  { document.getElementById("inputFotoCamera").click();  }
@@ -1194,19 +1229,15 @@ function aplicarCrop() {
   }
   document.getElementById("mAvatar").innerHTML = `<img src="${fotoNovaBase64}">`;
 
-  // Habilita check-in se encontro ativo e sem CI ainda
   if (encontroHoje) {
     const ciBody = document.getElementById("checkinSectionBody");
-    const ciVal  = iCI >= 0 ? (dados[rowAtual][iCI] || "").trim() : "";
+    const ciVal  = (dados[rowAtual][iCI] || "").trim();
     if (ciBody && !ciVal) {
       ciBody.innerHTML = `
         <div style="font-size:12px;color:var(--accent-g);background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px;">
           ✓ Foto adicionada — salve para liberar o check-in permanentemente.
         </div>
-        <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-          Realizar Check-in
-        </button>
+        <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">Realizar Check-in</button>
         <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${dados[rowAtual][2]||""}</div>`;
     }
   }
@@ -1218,31 +1249,70 @@ document.getElementById("inputFotoGaleria").addEventListener("change", function(
 document.getElementById("inputFotoCamera").addEventListener("change",  function() { processarFoto(this.files[0]); this.value = ""; });
 
 // ============================================================
-// SAVE
+// SALVAR (SUPABASE STORAGE + BANCO + SYNC PLANILHA)
 // ============================================================
 async function salvar() {
   const btn = document.getElementById("saveBtn");
   btn.textContent = "Salvando…"; btn.disabled = true;
+
+  const row = dados[rowAtual];
+  const recId = row[20];
+  const sheetRowIdx = row[21];
+  let novaFotoUrl = row[iF];
+
   try {
-    await fetch(API_URL, { method:"POST", body: JSON.stringify({
-      rowIndex:     rowAtual,
-      pago:         _pagoSelecionado ? "SIM" : "NÃO",
-      fotoBase64:   fotoNovaBase64,
-      mimeType:     fotoNovoMime,
-      nomeArquivo:  fotoNovoNome,
-      encontroNome: encontroAtivo ? encontroAtivo.nome : ""
-    })});
+    if (fotoNovaBase64) {
+      const blob = await (await fetch(fotoNovaBase64)).blob();
+      const fileName = `foto_${recId}_${Date.now()}.jpg`;
+      const { data: uploadData, error: uploadErr } = await _supabase.storage
+        .from('fotos')
+        .upload(fileName, blob, { contentType: 'image/jpeg', upsert: true });
+
+      if (uploadErr) throw uploadErr;
+
+      const { data: publicUrlData } = _supabase.storage.from('fotos').getPublicUrl(fileName);
+      novaFotoUrl = publicUrlData.publicUrl;
+    }
+
+    const novoPago = _pagoSelecionado ? "SIM" : "NÃO";
+
+    // 1. Atualiza no Supabase
+    await _supabase.from('inscricoes').update({ pago: novoPago, foto_url: novaFotoUrl }).eq('id', recId);
+    if (fotoNovaBase64) {
+      const chave = chavePessoa(row[1], row[4]);
+      await _supabase.from('inscricoes').update({ foto_url: novaFotoUrl }).eq('chave_pessoa', chave);
+    }
+
+    // 2. Atualiza UI local
+    row[iP] = novoPago;
+    row[iF] = novaFotoUrl;
+    renderLista();
+    atualizarStats();
+
     showToast("Salvo com sucesso! ✓", "success");
-    setTimeout(() => { fecharModal(); carregarDados(); }, 600);
+    fecharModal();
+
+    // 3. Sincroniza com a planilha em background
+    fetch(GOOGLE_SHEET_API, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify({
+        rowIndex: sheetRowIdx,
+        pago: novoPago,
+        fotoUrl: novaFotoUrl,
+        encontroNome: encontroAtivo ? encontroAtivo.nome : ""
+      })
+    }).catch(console.error);
+
   } catch(err) {
     console.error(err);
-    showToast("Erro ao salvar. Tente novamente.", "error");
+    showToast("Erro ao salvar.", "error");
     btn.textContent = "Tentar novamente"; btn.disabled = false;
   }
 }
 
 // ============================================================
-// KEYBOARD / TOUCH
+// TECLADO E TOUCH
 // ============================================================
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") { fecharLightbox(); fecharModal(); fecharCrop(); closeSidebar(); }
@@ -1256,7 +1326,7 @@ document.addEventListener("touchend", e => {
 }, false);
 
 // ============================================================
-// INIT
+// INICIALIZAÇÃO
 // ============================================================
 carregarDados();
 </script>
