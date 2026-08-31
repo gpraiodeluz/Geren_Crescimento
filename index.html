@@ -33,6 +33,8 @@
   --accent-g: #4ADE80;
   --accent-g-dim: rgba(74,222,128,.12);
   --accent-g-mid: rgba(74,222,128,.25);
+  --accent-b: #60A5FA;
+  --accent-b-dim: rgba(96,165,250,.12);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
@@ -57,7 +59,6 @@ body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);fon
 .sidebar-logo-text{font-family:var(--font-display);font-size:18px;color:var(--text-0);line-height:1.15;}
 .sidebar-logo-sub{font-size:10px;color:var(--text-2);letter-spacing:.5px;text-transform:uppercase;font-weight:500;margin-top:2px;}
 
-/* Encontro ativo pill */
 .enc-pill{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius-md);margin-bottom:14px;}
 .enc-pill.active{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);}
 .enc-pill.inactive{background:rgba(251,146,60,.07);border:1px solid rgba(251,146,60,.2);}
@@ -66,7 +67,6 @@ body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);fon
 .enc-dot.active{background:var(--accent-g);box-shadow:0 0 8px rgba(74,222,128,.5);}
 .enc-dot.inactive{background:var(--accent-o);}
 .enc-dot.none{background:var(--text-2);}
-.enc-info{}
 .enc-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:3px;}
 .enc-label.active{color:var(--accent-g);}
 .enc-label.inactive{color:var(--accent-o);}
@@ -89,6 +89,13 @@ body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);fon
 .search-field input:focus{border-color:var(--border-2);}
 .search-field input::placeholder{color:var(--text-2);}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-2);font-size:15px;pointer-events:none;}
+
+/* Novo seletor de encontro */
+.select-field{position:relative;margin-bottom:10px;}
+.custom-select{width:100%;height:38px;background:var(--bg-2);border:1px solid var(--border-1);border-radius:var(--radius-sm);color:var(--text-0);font-family:var(--font-body);font-size:13px;padding:0 10px;outline:none;cursor:pointer;}
+.custom-select:focus{border-color:var(--border-2);}
+.custom-select option{background:var(--bg-1);color:var(--text-0);}
+
 .filter-row{display:flex;flex-wrap:wrap;gap:5px;}
 .filter-chip{flex:1;min-width:60px;height:34px;border:1px solid var(--border-1);border-radius:20px;background:transparent;color:var(--text-1);font-family:var(--font-body);font-size:11px;font-weight:500;cursor:pointer;transition:all var(--transition);padding:0 6px;}
 .filter-chip.active-yellow{background:var(--accent-y-dim);border-color:var(--accent-y);color:var(--accent-y);}
@@ -105,8 +112,6 @@ body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);fon
 
 /* ─── MAIN ───────────────────────────────────────── */
 .main{display:flex;flex-direction:column;min-height:100vh;overflow:hidden;}
-
-/* Banner encontro — topo da main */
 .encontro-banner{padding:10px 20px;display:flex;align-items:center;gap:10px;font-size:13px;border-bottom:1px solid var(--border-0);}
 .encontro-banner.active{background:rgba(74,222,128,.05);border-bottom-color:rgba(74,222,128,.18);}
 .encontro-banner.inactive{background:rgba(251,146,60,.05);border-bottom-color:rgba(251,146,60,.18);}
@@ -121,7 +126,6 @@ body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);fon
 .eb-name.none{color:var(--text-2);}
 .eb-meta{color:var(--text-2);font-size:12px;}
 
-/* Mobile topbar */
 .mobile-topbar{display:none;padding:14px 16px;background:var(--bg-1);border-bottom:1px solid var(--border-0);align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
 @media(max-width:900px){.mobile-topbar{display:flex;}}
 .mobile-menu-btn,.mobile-refresh{width:38px;height:38px;border-radius:var(--radius-sm);background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-0);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;}
@@ -138,9 +142,10 @@ body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);fon
 .mobile-stat-number.orange{color:var(--accent-o);}
 .mobile-stat-number.green{color:var(--accent-g);}
 
-.mobile-search{display:none;padding:10px 14px;background:var(--bg-1);border-bottom:1px solid var(--border-0);gap:8px;}
+.mobile-search{display:none;padding:10px 14px;background:var(--bg-1);border-bottom:1px solid var(--border-0);gap:8px;flex-direction:column;}
 @media(max-width:900px){.mobile-search{display:flex;}}
-.mobile-search .search-field{flex:1;margin:0;}
+.mobile-search-row{display:flex;gap:8px;width:100%;}
+.mobile-search-row .search-field{flex:1;margin:0;}
 
 /* ─── LIST ───────────────────────────────────────── */
 .list-wrapper{flex:1;overflow-y:auto;padding:18px;}
@@ -156,13 +161,10 @@ body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);fon
 /* ─── AVATAR ─────────────────────────────────────── */
 .avatar{width:50px;height:50px;border-radius:var(--radius-md);flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,#3f3314,#5c4a17);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--accent-y);border:1px solid var(--border-1);cursor:pointer;transition:opacity var(--transition);position:relative;}
 .avatar.avatar-checkedin{border-color:rgba(74,222,128,.4);}
-.avatar.avatar-herdada{border-color:rgba(96,165,250,.4);}
 .avatar:hover{opacity:.85;}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block;}
 .avatar .photo-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--transition);font-size:18px;}
 .avatar:hover .photo-overlay{opacity:1;}
-/* Badge foto herdada */
-.avatar .herdada-badge{position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;background:rgba(96,165,250,.9);border:1.5px solid var(--bg-1);display:flex;align-items:center;justify-content:center;font-size:8px;line-height:1;}
 
 .card-info{flex:1;min-width:0;}
 .card-name{font-size:14px;font-weight:600;color:var(--text-0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -226,12 +228,19 @@ body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);fon
 .section-title{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-2);font-weight:600;padding:11px 15px;border-bottom:1px solid var(--border-0);background:rgba(0,0,0,.15);}
 .section.section-checkin .section-title{color:var(--accent-g);}
 .section.section-locked .section-title{color:var(--accent-o);}
+.section.section-hist .section-title{color:var(--accent-b);}
 .section-body{padding:15px;}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;}
 @media(max-width:480px){.grid-2{grid-template-columns:1fr;gap:9px;}}
 .data-item .lbl{font-size:10px;color:var(--text-2);margin-bottom:2px;font-weight:500;}
 .data-item .val{font-size:13px;color:var(--text-0);font-weight:500;line-height:1.4;}
 .sacr-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;}
+
+/* ─── HISTÓRICO DE CHECKINS NO MODAL ─────────────── */
+.hist-list{display:flex;flex-direction:column;gap:8px;}
+.hist-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border-0);border-radius:var(--radius-sm);}
+.hist-item-enc{font-size:13px;font-weight:600;color:var(--text-0);display:flex;align-items:center;gap:6px;}
+.hist-item-time{font-size:11px;color:var(--accent-g);font-weight:500;}
 
 /* ─── CHECK-IN UI ────────────────────────────────── */
 .checkin-done-banner{display:flex;align-items:center;gap:14px;padding:13px 15px;background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);border-radius:var(--radius-sm);}
@@ -248,12 +257,6 @@ body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);fon
 .revoke-btn{width:100%;height:38px;border-radius:var(--radius-sm);border:1px solid var(--border-1);background:transparent;color:var(--text-2);font-family:var(--font-body);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all var(--transition);margin-top:9px;}
 .revoke-btn:hover{background:var(--accent-r-dim);border-color:rgba(239,68,68,.3);color:var(--accent-r);}
 .revoke-btn.confirming-revoke{background:var(--accent-r-dim);border-color:rgba(239,68,68,.4);color:var(--accent-r);}
-
-/* ─── FOTO HERDADA / HISTÓRICO NOTICE ─────────────── */
-.foto-herdada-notice{display:flex;align-items:flex-start;gap:8px;padding:10px 13px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:var(--radius-sm);margin-bottom:12px;font-size:12px;}
-.foto-herdada-notice .fhn-icon{font-size:15px;flex-shrink:0;margin-top:1px;}
-.foto-herdada-notice .fhn-text{color:rgba(96,165,250,.9);line-height:1.5;}
-.foto-herdada-notice strong{color:#60A5FA;}
 
 /* ─── FOTO SECTION ───────────────────────────────── */
 .foto-container{display:flex;flex-direction:column;align-items:center;gap:13px;}
@@ -343,9 +346,18 @@ input[type=file]{display:none;}
       </div>
     </div>
     <div class="sidebar-body">
+      
+      <!-- Novo filtro de histórico por encontro -->
+      <div class="sidebar-section-title">Filtrar por Histórico de Check-in</div>
+      <div class="select-field">
+        <select class="custom-select" id="filtroEncontroHist" onchange="selecionarFiltroEncontro(this.value)">
+          <option value="">Todos os encontros</option>
+        </select>
+      </div>
+
       <div class="search-field">
         <span class="search-icon">⌕</span>
-        <input type="text" id="busca" placeholder="Buscar participante..." oninput="filtrar()">
+        <input type="text" id="busca" placeholder="Buscar por nome ou email..." oninput="filtrar()">
       </div>
       <div class="filter-row">
         <button class="filter-chip" id="chipCheckin" onclick="toggleFiltro('checkin')">Presentes</button>
@@ -396,11 +408,18 @@ input[type=file]{display:none;}
     </div>
 
     <div class="mobile-search">
-      <div class="search-field">
-        <span class="search-icon">⌕</span>
-        <input type="text" id="buscaMobile" placeholder="Buscar..." oninput="filtrarMobile()">
+      <div class="select-field" style="margin:0;">
+        <select class="custom-select" id="filtroEncontroHistMobile" onchange="selecionarFiltroEncontro(this.value)">
+          <option value="">Todos os encontros</option>
+        </select>
       </div>
-      <button class="filter-chip" id="chipMobile" onclick="toggleFiltroMobile()" style="min-width:76px">Filtrar</button>
+      <div class="mobile-search-row">
+        <div class="search-field">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="buscaMobile" placeholder="Buscar..." oninput="filtrarMobile()">
+        </div>
+        <button class="filter-chip" id="chipMobile" onclick="toggleFiltroMobile()" style="min-width:76px">Filtrar</button>
+      </div>
     </div>
 
     <div class="list-wrapper">
@@ -458,34 +477,33 @@ input[type=file]{display:none;}
 // ============================================================
 // CONFIGURAÇÃO SUPABASE & APPS SCRIPT
 // ============================================================
-const SUPABASE_URL = "https://ntzdqizdvqexcvuifdkx.supabase.co"; // sua URL
-const SUPABASE_ANON_KEY = "sb_publishable_EPvEph275vALt30cjnJUbw_AP3Jv9mT"; // coloque sua chave anon aqui
+const SUPABASE_URL = "https://ntzdqizdvqexcvuifdkx.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_EPvEph275vALt30cjnJUbw_AP3Jv9mT";
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// URL do Apps Script para sincronização da planilha em segundo plano
 const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbwX87QCGUQg6jO5Cx1R-TZAY8_-W9q6e2YwX4ZWdJHHWjDkdhsP5JVXVBrM3Yb1MUE-/exec";
 
 // ============================================================
 // STATE & VARIÁVEIS GLOBAIS
 // ============================================================
 let dados = [], filtrados = [];
-let iP = 17, iF = 18, iCI = 19; // índices de coluna no array mapeado
+let iP = 17, iF = 18, iCI = 19;
 let rowAtual = -1;
 let filtroAtivo = null;
+let filtroEncontroSelecionado = ""; // Encontro selecionado no dropdown de histórico
 let fotoNovaBase64 = null, fotoNovoMime = null, fotoNovoNome = null;
 let cropper = null;
 let _pagoSelecionado = true;
 let _checkinConfirmStep = false, _checkinTimer = null;
 let _revogarConfirmStep = false, _revogarTimer = null;
 
-// Encontro ativo vindo do Supabase
-let encontroAtivo  = null; // { nome, dataStr }
+let encontroAtivo  = null;
 let todosEncontros = [];
 let encontroHoje   = false;
 
-// Rastreia fotos herdadas e histórico de presenças
 let fotosHerdadas = new Set();
-let historicoMap = {};
+let historicoMap = {};       // Histórico externo (outros encontros)
+let historicoCompleto = {};  // Todos os check-ins por participante (incluindo atual)
 
 // ============================================================
 // UTILS
@@ -540,7 +558,6 @@ function closeSidebar() { document.getElementById("sidebar").classList.remove("m
 async function carregarDados() {
   document.getElementById("lista").innerHTML = `<div class="loading"><div class="loading-spinner"></div>Carregando dados…</div>`;
   try {
-    // 1. Busca encontros ordenados pela data mais recente
     const { data: encs, error: encError } = await _supabase
       .from('encontros')
       .select('*')
@@ -553,15 +570,17 @@ async function carregarDados() {
     }
 
     todosEncontros = encs.map(e => {
-      const [y, m, d] = e.data_inicio.split("-");
-      return { nome: e.nome, dataStr: `${d}/${m}/${y}`, dtRaw: e.data_inicio };
+      const [y, m, d] = (e.data_inicio || "").split("-");
+      return { nome: e.nome, dataStr: d ? `${d}/${m}/${y}` : "", dtRaw: e.data_inicio };
     });
 
     encontroAtivo = todosEncontros[0];
     const dt = parseDataBR(encontroAtivo.dataStr);
     encontroHoje = dt ? isSameDay(dt, new Date()) : false;
 
-    // 2. Busca inscrições do encontro ativo e histórico global
+    // Popula dropdowns de encontros para filtro de histórico
+    popularSelectEncontros();
+
     const [resInscricoes, resGlobal] = await Promise.all([
       _supabase.from('inscricoes').select('*').eq('encontro_nome', encontroAtivo.nome).order('id', { ascending: true }),
       _supabase.from('inscricoes').select('chave_pessoa, encontro_nome, checkin, foto_url')
@@ -572,24 +591,32 @@ async function carregarDados() {
 
     const fotoMap = {};
     const histMapTemp = {};
+    const histCompletoTemp = {};
 
     globalData.forEach(row => {
-      if (row.foto_url && !fotoMap[row.chave_pessoa]) {
-        fotoMap[row.chave_pessoa] = row.foto_url;
+      const ch = row.chave_pessoa;
+      if (row.foto_url && !fotoMap[ch]) {
+        fotoMap[ch] = row.foto_url;
       }
-      if (row.checkin && row.encontro_nome !== encontroAtivo.nome) {
-        if (!histMapTemp[row.chave_pessoa]) histMapTemp[row.chave_pessoa] = [];
-        histMapTemp[row.chave_pessoa].push({ encontro: row.encontro_nome, data: row.checkin });
+      if (row.checkin && row.checkin.trim()) {
+        if (!histCompletoTemp[ch]) histCompletoTemp[ch] = [];
+        histCompletoTemp[ch].push({ encontro: row.encontro_nome, data: row.checkin });
+
+        if (row.encontro_nome !== encontroAtivo.nome) {
+          if (!histMapTemp[ch]) histMapTemp[ch] = [];
+          histMapTemp[ch].push({ encontro: row.encontro_nome, data: row.checkin });
+        }
       }
     });
 
-    // 3. Monta o array `dados` compatível com a interface
     historicoMap = {};
+    historicoCompleto = {};
     fotosHerdadas.clear();
 
     dados = inscData.map((reg, idx) => {
       const ch = reg.chave_pessoa;
       if (histMapTemp[ch]) historicoMap[idx] = histMapTemp[ch];
+      if (histCompletoTemp[ch]) historicoCompleto[idx] = histCompletoTemp[ch];
 
       let foto = reg.foto_url;
       if (!foto && fotoMap[ch]) {
@@ -632,6 +659,26 @@ async function carregarDados() {
     console.error(err);
     document.getElementById("lista").innerHTML = `<div class="empty">Erro ao carregar dados do Supabase.</div>`;
   }
+}
+
+function popularSelectEncontros() {
+  const selects = [document.getElementById("filtroEncontroHist"), document.getElementById("filtroEncontroHistMobile")];
+  let options = `<option value="">Todos os encontros</option>`;
+  todosEncontros.forEach(e => {
+    options += `<option value="${e.nome}">${e.nome} (${e.dataStr})</option>`;
+  });
+  selects.forEach(s => {
+    if (s) s.innerHTML = options;
+  });
+}
+
+function selecionarFiltroEncontro(nomeEnc) {
+  filtroEncontroSelecionado = nomeEnc || "";
+  const s1 = document.getElementById("filtroEncontroHist");
+  const s2 = document.getElementById("filtroEncontroHistMobile");
+  if (s1) s1.value = filtroEncontroSelecionado;
+  if (s2) s2.value = filtroEncontroSelecionado;
+  filtrar();
 }
 
 // ============================================================
@@ -722,7 +769,7 @@ function atualizarStats() {
 }
 
 // ============================================================
-// FILTROS
+// FILTROS & BUSCA
 // ============================================================
 function toggleFiltro(tipo) {
   filtroAtivo = filtroAtivo === tipo ? null : tipo;
@@ -775,8 +822,18 @@ function filtrar() {
     if (filtroAtivo === "med")     mp = med;
     if (filtroAtivo === "rest")    mp = rest;
     if (filtroAtivo === "retorno") mp = retorno;
-    return mq && mp;
+
+    // Filtro por encontro específico com check-in
+    let mEnc = true;
+    if (filtroEncontroSelecionado) {
+      const histTotal = historicoCompleto[ri] || [];
+      const fezCheckinNoEncontro = histTotal.some(h => h.encontro === filtroEncontroSelecionado);
+      mEnc = fezCheckinNoEncontro;
+    }
+
+    return mq && mp && mEnc;
   });
+
   document.getElementById("sCount").textContent = filtrados.length;
   renderLista();
 }
@@ -812,7 +869,7 @@ function renderLista() {
     const rChip   = rest ? `<span class="chip chip-red">Restrição</span>` : "";
     const mChip   = med  ? `<span class="chip chip-orange">Medicação</span>` : "";
     const histChip= (hist && hist.length)
-      ? `<span class="chip chip-blue" title="Já fez check-in em: ${fmtHistoricoLista(hist)}">↺ Retornante</span>`
+      ? `<span class="chip chip-blue" title="Check-in anterior: ${fmtHistoricoLista(hist)}">↺ ${hist.length}x Retiro</span>`
       : "";
 
     const avInner = foto
@@ -869,6 +926,11 @@ async function quickCheckin(ri) {
 
   const ts = fmtTimestamp();
   dados[ri][iCI] = ts;
+  
+  // Atualiza histórico completo em memória
+  if (!historicoCompleto[ri]) historicoCompleto[ri] = [];
+  historicoCompleto[ri].push({ encontro: encontroAtivo.nome, data: ts });
+
   renderLista();
   atualizarStats();
   showToast(`Check-in de ${nome} realizado! ✓`, "success");
@@ -877,7 +939,6 @@ async function quickCheckin(ri) {
   const sheetRowIdx = row[21];
   await _supabase.from('inscricoes').update({ checkin: ts }).eq('id', recId);
 
-  // Sincroniza em background com a planilha
   fetch(GOOGLE_SHEET_API, {
     method: "POST",
     mode: "no-cors",
@@ -892,7 +953,7 @@ function verFoto(url) { if (!url) return; document.getElementById("lightboxImg")
 function fecharLightbox() { document.getElementById("lightboxBg").classList.remove("open"); }
 
 // ============================================================
-// MODAL DETALHES
+// MODAL DETALHES COM HISTÓRICO EXPANDIDO
 // ============================================================
 function abrirModal(ri) {
   rowAtual = ri;
@@ -901,14 +962,14 @@ function abrirModal(ri) {
   if (_checkinTimer) { clearTimeout(_checkinTimer); _checkinTimer = null; }
   if (_revogarTimer) { clearTimeout(_revogarTimer); _revogarTimer = null; }
 
-  const row   = dados[ri];
-  const nome  = row[2] || "—";
-  const email = row[1] || "";
-  const foto  = row[iF] || "";
-  const pago  = (row[iP]||"").toUpperCase() === "SIM";
-  const ciVal = (row[iCI] || "").trim();
+  const row    = dados[ri];
+  const nome   = row[2] || "—";
+  const email  = row[1] || "";
+  const foto   = row[iF] || "";
+  const pago   = (row[iP]||"").toUpperCase() === "SIM";
+  const ciVal  = (row[iCI] || "").trim();
   const checkin = ciVal.length > 0 ? ciVal : null;
-  const hist  = historicoMap[ri];
+  const histCompleto = historicoCompleto[ri] || [];
   _pagoSelecionado = pago;
   const ini = initials(nome);
 
@@ -924,12 +985,22 @@ function abrirModal(ri) {
   const sacrs   = (row[16]||"—").split(",").map(s=>s.trim()).filter(Boolean);
   const sacrHtml= sacrs.map(s=>`<span class="chip chip-gray">${s}</span>`).join("");
 
-  let histHtml = "";
-  if (hist && hist.length) {
-    histHtml = `
-      <div class="foto-herdada-notice">
-        <span class="fhn-icon">↺</span>
-        <span class="fhn-text"><strong>Já fez check-in em outro(s) encontro(s):</strong> ${fmtHistoricoLista(hist)}</span>
+  // Montagem do histórico detalhado de encontros
+  let historicoSecHtml = "";
+  if (histCompleto.length > 0) {
+    const itensHist = histCompleto.map(h => `
+      <div class="hist-item">
+        <div class="hist-item-enc"><span>✦</span> ${h.encontro}</div>
+        <div class="hist-item-time">Check-in: ${h.data || "Confirmado"}</div>
+      </div>
+    `).join("");
+
+    historicoSecHtml = `
+      <div class="section section-hist">
+        <div class="section-title">Histórico de Encontros e Presenças</div>
+        <div class="section-body">
+          <div class="hist-list">${itensHist}</div>
+        </div>
       </div>`;
   }
 
@@ -996,7 +1067,8 @@ function abrirModal(ri) {
     : `<div class="foto-empty"><div class="foto-empty-icon">📷</div><span>Nenhuma foto cadastrada</span></div>`;
 
   document.getElementById("mBody").innerHTML = `
-    ${histHtml}
+    ${historicoSecHtml}
+
     <div class="${ciSecClass}">
       <div class="section-title">${ciSecTitle}</div>
       <div class="section-body" id="checkinSectionBody">${ciHtml}</div>
@@ -1110,6 +1182,10 @@ async function confirmarCheckinModal() {
   if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }
   const ts = fmtTimestamp();
   dados[rowAtual][iCI] = ts;
+
+  if (!historicoCompleto[rowAtual]) historicoCompleto[rowAtual] = [];
+  historicoCompleto[rowAtual].push({ encontro: encontroAtivo.nome, data: ts });
+
   atualizarStats(); renderLista();
 
   const body = document.getElementById("checkinSectionBody");
@@ -1166,6 +1242,11 @@ async function confirmarRevogarCheckin() {
   if (btn) { btn.disabled = true; btn.textContent = "Revogando…"; }
   const nome = dados[rowAtual][2] || "?";
   dados[rowAtual][iCI] = "";
+
+  if (historicoCompleto[rowAtual]) {
+    historicoCompleto[rowAtual] = historicoCompleto[rowAtual].filter(h => h.encontro !== encontroAtivo.nome);
+  }
+
   atualizarStats(); renderLista();
 
   const body = document.getElementById("checkinSectionBody");
@@ -1276,14 +1357,12 @@ async function salvar() {
 
     const novoPago = _pagoSelecionado ? "SIM" : "NÃO";
 
-    // 1. Atualiza no Supabase
     await _supabase.from('inscricoes').update({ pago: novoPago, foto_url: novaFotoUrl }).eq('id', recId);
     if (fotoNovaBase64) {
       const chave = chavePessoa(row[1], row[4]);
       await _supabase.from('inscricoes').update({ foto_url: novaFotoUrl }).eq('chave_pessoa', chave);
     }
 
-    // 2. Atualiza UI local
     row[iP] = novoPago;
     row[iF] = novaFotoUrl;
     renderLista();
@@ -1292,7 +1371,6 @@ async function salvar() {
     showToast("Salvo com sucesso! ✓", "success");
     fecharModal();
 
-    // 3. Sincroniza com a planilha em background
     fetch(GOOGLE_SHEET_API, {
       method: "POST",
       mode: "no-cors",
