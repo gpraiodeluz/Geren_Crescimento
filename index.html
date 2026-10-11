@@ -301,7 +301,7 @@
       pointer-events: none;
     }
 
-    /* Novo seletor de encontro */
+    /* Seletor de encontro */
     .select-field {
       position: relative;
       margin-bottom: 10px;
@@ -662,6 +662,7 @@
       cursor: pointer;
       transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
       overflow: hidden;
+      position: relative;
     }
 
     @media(min-width:1400px) {
@@ -690,13 +691,13 @@
       padding: 14px;
     }
 
-    /* ─── AVATAR ─────────────────────────────────────── */
+    /* ─── AVATAR & BADGE TOP 10 ────────────────────── */
     .avatar {
       width: 50px;
       height: 50px;
       border-radius: var(--radius-md);
       flex-shrink: 0;
-      overflow: hidden;
+      overflow: visible;
       background: linear-gradient(135deg, #3f3314, #5c4a17);
       display: flex;
       align-items: center;
@@ -723,6 +724,7 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      border-radius: var(--radius-md);
     }
 
     .avatar .photo-overlay {
@@ -735,10 +737,27 @@
       opacity: 0;
       transition: opacity var(--transition);
       font-size: 18px;
+      border-radius: var(--radius-md);
     }
 
     .avatar:hover .photo-overlay {
       opacity: 1;
+    }
+
+    .badge-pos {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: linear-gradient(135deg, var(--accent-y), #d97706);
+      color: #18181b;
+      font-size: 10px;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 2px 6px;
+      border: 1.5px solid var(--bg-1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      z-index: 5;
+      letter-spacing: -0.3px;
     }
 
     .card-info {
@@ -1712,7 +1731,7 @@
       </div>
       <div class="sidebar-body">
 
-        <!-- Novo: Seletor de Encontro Ativo -->
+        <!-- Seletor de Encontro Ativo -->
         <div class="sidebar-section-title">Selecionar Encontro</div>
         <div class="select-field">
           <select class="custom-select" id="selectEncontro" onchange="mudarEncontro(this.value)">
@@ -1919,23 +1938,21 @@
       return hist.map(h => h.data ? `${h.encontro} (${h.data})` : h.encontro).join(", ");
     }
 
-function formatarUrlFoto(url) {
-  if (!url) return "";
-  // Se for do Supabase, passa direto
-  if (url.includes("supabase.co")) return url;
-  
-  // Extrai o ID da imagem
-  let idMatch = url.match(/lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/) ||
-                url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/) ||
-                url.match(/id=([a-zA-Z0-9_-]+)/);
-                
-  if (idMatch && idMatch[1]) {
-    // Força o visualizador direto universal do Google Drive
-    return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
-  }
-  
-  return url;
-}
+    function formatarUrlFoto(url) {
+      if (!url) return "";
+      if (url.includes("supabase.co")) return url;
+
+      let idMatch = url.match(/lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/) ||
+        url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+        url.match(/id=([a-zA-Z0-9_-]+)/);
+
+      if (idMatch && idMatch[1]) {
+        return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+      }
+
+      return url;
+    }
+
     // ============================================================
     // TOAST & SIDEBAR MOBILE
     // ============================================================
@@ -1973,7 +1990,6 @@ function formatarUrlFoto(url) {
         if (!encontroAtivo) {
           encontroAtivo = todosEncontros[0];
         } else {
-          // Garante que o encontro selecionado ainda existe
           const exists = todosEncontros.find(e => e.nome === encontroAtivo.nome);
           encontroAtivo = exists ? exists : todosEncontros[0];
         }
@@ -1983,7 +1999,6 @@ function formatarUrlFoto(url) {
 
         popularSelectEncontros();
 
-        // Puxa as inscrições APENAS do encontro ativo e DEPOIS todas as inscrições para montar o perfil
         const [resInscricoes, resGlobal] = await Promise.all([
           _supabase.from('inscricoes').select('*').eq('encontro_nome', encontroAtivo.nome).order('id', { ascending: true }),
           _supabase.from('inscricoes').select('chave_pessoa, encontro_nome, checkin, foto_url, telefone, responsavel, tel_responsavel, restricao_alimentar, restricao_alimentar_desc, medicacao, medicacao_desc, alergia_medicamento, alergia_medicamento_desc, sacramentos, ja_fez_retiro')
@@ -1996,12 +2011,10 @@ function formatarUrlFoto(url) {
         const histMapTemp = {};
         const histCompletoTemp = {};
 
-        // 1. Monta o Perfil Global para herança (dados mais recentes substituem os mais antigos na iteração)
         globalData.forEach(row => {
           const ch = row.chave_pessoa;
           if (!perfilMap[ch]) perfilMap[ch] = {};
 
-          // Herança: se existir nos dados antigos, guarda no perfil
           if (row.foto_url) perfilMap[ch].foto_url = row.foto_url;
           if (row.telefone) perfilMap[ch].telefone = row.telefone;
           if (row.responsavel) perfilMap[ch].responsavel = row.responsavel;
@@ -2015,7 +2028,6 @@ function formatarUrlFoto(url) {
           if (row.sacramentos) perfilMap[ch].sacramentos = row.sacramentos;
           if (row.ja_fez_retiro) perfilMap[ch].ja_fez_retiro = row.ja_fez_retiro;
 
-          // Histórico de Check-in
           if (row.checkin && row.checkin.trim()) {
             if (!histCompletoTemp[ch]) histCompletoTemp[ch] = [];
             histCompletoTemp[ch].push({ encontro: row.encontro_nome, data: row.checkin });
@@ -2031,24 +2043,21 @@ function formatarUrlFoto(url) {
         historicoCompleto = {};
         fotosHerdadas.clear();
 
-        // 2. Mapeia as Inscrições do Encontro Ativo usando Herança (Fallback)
-dados = inscData.map((reg, idx) => {
-      const ch = reg.chave_pessoa;
-      const perfil = perfilMap[ch] || {};
+        dados = inscData.map((reg, idx) => {
+          const ch = reg.chave_pessoa;
+          const perfil = perfilMap[ch] || {};
 
-      if (histMapTemp[ch]) historicoMap[idx] = histMapTemp[ch];
-      if (histCompletoTemp[ch]) historicoCompleto[idx] = histCompletoTemp[ch];
+          if (histMapTemp[ch]) historicoMap[idx] = histMapTemp[ch];
+          if (histCompletoTemp[ch]) historicoCompleto[idx] = histCompletoTemp[ch];
 
-      let foto = reg.foto_url;
-      if (!foto && perfil.foto_url) {
-        foto = perfil.foto_url;
-        fotosHerdadas.add(idx);
-      }
+          let foto = reg.foto_url;
+          if (!foto && perfil.foto_url) {
+            foto = perfil.foto_url;
+            fotosHerdadas.add(idx);
+          }
 
-      // A CONVERSÃO DEVE FICAR EXATAMENTE AQUI:
-      foto = formatarUrlFoto(foto);
+          foto = formatarUrlFoto(foto);
 
-          // Merge: se o valor da nova inscrição estiver vazio, preenche com o do Perfil Global
           const telefone = reg.telefone || perfil.telefone || "";
           const responsavel = reg.responsavel || perfil.responsavel || "";
           const tel_responsavel = reg.tel_responsavel || perfil.tel_responsavel || "";
@@ -2279,6 +2288,7 @@ dados = inscData.map((reg, idx) => {
       let html = "";
       filtrados.forEach(row => {
         const ri = dados.indexOf(row);
+        const posicaoOriginal = ri + 1; // Posição calculada de cadastro
         const nome = row[2] || "—";
         const email = row[1] || "";
         const nasc = row[4] || "—";
@@ -2291,6 +2301,11 @@ dados = inscData.map((reg, idx) => {
         const checkin = ci.length > 0;
         const ini = initials(nome);
         const hist = historicoMap[ri];
+
+        // Indicador numérico para os 10 primeiros inscritos
+        const badgeTop10 = (posicaoOriginal <= 10)
+          ? `<span class="badge-pos" title="${posicaoOriginal}º Inscrito">#${posicaoOriginal}</span>`
+          : "";
 
         const pgChip = pago
           ? `<span class="chip chip-yellow"><span class="dot dot-y"></span>Pago</span>`
@@ -2319,11 +2334,14 @@ dados = inscData.map((reg, idx) => {
         }
 
         html += `
-      <div class="card ${checkin && encontroHoje ? 'card-checkedin' : ''}" onclick="abrirModal(${ri})">
-        <div class="card-inner">
-          <div class="avatar ${checkin && encontroHoje ? 'avatar-checkedin' : ''}"
-               onclick="event.stopPropagation();${foto ? `verFoto('${foto}')` : ''}"
-               title="${foto ? 'Ver foto' : nome}">${avInner}</div>
+<div class="card ${checkin && encontroHoje ? 'card-checkedin' : ''}" onclick="abrirModal(${ri})">
+  ${badgeTop10}
+  <div class="card-inner">
+    <div class="avatar ${checkin && encontroHoje ? 'avatar-checkedin' : ''}"
+         onclick="event.stopPropagation();${foto ? `verFoto('${foto}')` : ''}"
+         title="${foto ? 'Ver foto' : nome}">
+      ${avInner}
+    </div>
           <div class="card-info">
             <div class="card-name">${nome}</div>
             <div class="card-email">${email}</div>
@@ -2414,7 +2432,6 @@ dados = inscData.map((reg, idx) => {
       const sacrs = (row[16] || "—").split(",").map(s => s.trim()).filter(Boolean);
       const sacrHtml = sacrs.map(s => `<span class="chip chip-gray">${s}</span>`).join("");
 
-      // Montagem do histórico detalhado de encontros
       let historicoSecHtml = "";
       if (histCompleto.length > 0) {
         const itensHist = histCompleto.map(h => `
@@ -2788,7 +2805,6 @@ dados = inscData.map((reg, idx) => {
 
         await _supabase.from('inscricoes').update({ pago: novoPago, foto_url: novaFotoUrl }).eq('id', recId);
 
-        // Atualiza a foto em TODAS as inscrições antigas daquela pessoa
         if (fotoNovaBase64) {
           const chave = chavePessoa(row[1], row[4]);
           await _supabase.from('inscricoes').update({ foto_url: novaFotoUrl }).eq('chave_pessoa', chave);
