@@ -1,894 +1,2324 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Inscrições — Encontro de Jovens</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-<style>
-:root {
-  --font-body: 'DM Sans', sans-serif;
-  --font-display: 'DM Serif Display', serif;
-  --bg-0: #121212;
-  --bg-1: #18181b;
-  --bg-2: #27272a;
-  --bg-3: #3f3f46;
-  --bg-glass: rgba(24,24,27,.85);
-  --border-0: rgba(255,255,255,.05);
-  --border-1: rgba(255,255,255,.10);
-  --border-2: rgba(255,255,255,.15);
-  --text-0: #f4f4f5;
-  --text-1: #a1a1aa;
-  --text-2: #71717a;
-  --accent-y: #FACC15;
-  --accent-y-dim: rgba(250,204,21,.12);
-  --accent-y-mid: rgba(250,204,21,.25);
-  --accent-o: #FB923C;
-  --accent-o-dim: rgba(251,146,60,.12);
-  --accent-r: #EF4444;
-  --accent-r-dim: rgba(239,68,68,.12);
-  --accent-l: #FEF08A;
-  --accent-l-dim: rgba(254,240,138,.12);
-  --accent-g: #4ADE80;
-  --accent-g-dim: rgba(74,222,128,.12);
-  --accent-g-mid: rgba(74,222,128,.25);
-  --accent-b: #60A5FA;
-  --accent-b-dim: rgba(96,165,250,.12);
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
-  --shadow-card: 0 2px 16px rgba(0,0,0,.35);
-  --shadow-modal: 0 24px 80px rgba(0,0,0,.7);
-  --transition: 0.2s cubic-bezier(.4,0,.2,1);
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg-0);color:var(--text-0);font-family:var(--font-body);font-size:15px;min-height:100vh;-webkit-font-smoothing:antialiased;}
-
-/* ─── LAYOUT ─────────────────────────────────────── */
-.layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
-@media(max-width:900px){.layout{grid-template-columns:1fr;}}
-
-/* ─── SIDEBAR ────────────────────────────────────── */
-.sidebar{background:var(--bg-1);border-right:1px solid var(--border-0);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden;}
-.sidebar-header{padding:24px 24px 16px;border-bottom:1px solid var(--border-0);}
-.sidebar-logo{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.sidebar-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent-y),#EAB308);display:flex;align-items:center;justify-content:center;font-size:20px;color:#18181b;flex-shrink:0;}
-.sidebar-logo-text{font-family:var(--font-display);font-size:18px;color:var(--text-0);line-height:1.15;}
-.sidebar-logo-sub{font-size:10px;color:var(--text-2);letter-spacing:.5px;text-transform:uppercase;font-weight:500;margin-top:2px;}
-
-.enc-pill{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius-md);margin-bottom:14px;}
-.enc-pill.active{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);}
-.enc-pill.inactive{background:rgba(251,146,60,.07);border:1px solid rgba(251,146,60,.2);}
-.enc-pill.none{background:var(--bg-2);border:1px solid var(--border-0);}
-.enc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
-.enc-dot.active{background:var(--accent-g);box-shadow:0 0 8px rgba(74,222,128,.5);}
-.enc-dot.inactive{background:var(--accent-o);}
-.enc-dot.none{background:var(--text-2);}
-.enc-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:3px;}
-.enc-label.active{color:var(--accent-g);}
-.enc-label.inactive{color:var(--accent-o);}
-.enc-label.none{color:var(--text-2);}
-.enc-name{font-size:13px;font-weight:600;color:var(--text-0);line-height:1.3;}
-.enc-date{font-size:11px;color:var(--text-2);margin-top:2px;}
-
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.stat-card{background:var(--bg-2);border:1px solid var(--border-0);border-radius:var(--radius-md);padding:10px 12px;}
-.stat-card.full{grid-column:1 / -1;}
-.stat-label{font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:3px;}
-.stat-number{font-size:26px;font-weight:300;font-family:var(--font-display);color:var(--text-0);line-height:1;}
-.stat-number.yellow{color:var(--accent-y);}
-.stat-number.orange{color:var(--accent-o);}
-.stat-number.green{color:var(--accent-g);}
-
-.sidebar-body{padding:16px 24px;flex:1;overflow-y:auto;}
-.search-field{position:relative;margin-bottom:10px;}
-.search-field input{width:100%;height:40px;background:var(--bg-2);border:1px solid var(--border-1);border-radius:var(--radius-sm);color:var(--text-0);font-family:var(--font-body);font-size:14px;padding:0 12px 0 38px;outline:none;transition:border-color var(--transition);}
-.search-field input:focus{border-color:var(--border-2);}
-.search-field input::placeholder{color:var(--text-2);}
-.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-2);font-size:15px;pointer-events:none;}
-
-/* Novo seletor de encontro */
-.select-field{position:relative;margin-bottom:10px;}
-.custom-select{width:100%;height:38px;background:var(--bg-2);border:1px solid var(--border-1);border-radius:var(--radius-sm);color:var(--text-0);font-family:var(--font-body);font-size:13px;padding:0 10px;outline:none;cursor:pointer;}
-.custom-select:focus{border-color:var(--border-2);}
-.custom-select option{background:var(--bg-1);color:var(--text-0);}
-
-.filter-row{display:flex;flex-wrap:wrap;gap:5px;}
-.filter-chip{flex:1;min-width:60px;height:34px;border:1px solid var(--border-1);border-radius:20px;background:transparent;color:var(--text-1);font-family:var(--font-body);font-size:11px;font-weight:500;cursor:pointer;transition:all var(--transition);padding:0 6px;}
-.filter-chip.active-yellow{background:var(--accent-y-dim);border-color:var(--accent-y);color:var(--accent-y);}
-.filter-chip.active-orange{background:var(--accent-o-dim);border-color:var(--accent-o);color:var(--accent-o);}
-.filter-chip.active-red{background:var(--accent-r-dim);border-color:var(--accent-r);color:var(--accent-r);}
-.filter-chip.active-green{background:var(--accent-g-dim);border-color:var(--accent-g);color:var(--accent-g);}
-.filter-chip.active-blue{background:rgba(96,165,250,.12);border-color:#60A5FA;color:#60A5FA;}
-.sidebar-divider{height:1px;background:var(--border-0);margin:14px 0;}
-.sidebar-section-title{font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:7px;}
-.sidebar-counter{font-size:12px;color:var(--text-1);display:flex;align-items:center;justify-content:space-between;}
-.sidebar-count-val{font-weight:600;color:var(--text-0);}
-.refresh-btn-side{width:100%;height:38px;border-radius:var(--radius-sm);background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-1);font-family:var(--font-body);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all var(--transition);margin-top:auto;}
-.refresh-btn-side:hover{background:var(--bg-3);border-color:var(--border-2);color:var(--text-0);}
-
-/* ─── MAIN ───────────────────────────────────────── */
-.main{display:flex;flex-direction:column;min-height:100vh;overflow:hidden;}
-.encontro-banner{padding:10px 20px;display:flex;align-items:center;gap:10px;font-size:13px;border-bottom:1px solid var(--border-0);}
-.encontro-banner.active{background:rgba(74,222,128,.05);border-bottom-color:rgba(74,222,128,.18);}
-.encontro-banner.inactive{background:rgba(251,146,60,.05);border-bottom-color:rgba(251,146,60,.18);}
-.encontro-banner.none{background:rgba(255,255,255,.02);}
-.eb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.eb-dot.active{background:var(--accent-g);box-shadow:0 0 7px rgba(74,222,128,.5);}
-.eb-dot.inactive{background:var(--accent-o);}
-.eb-dot.none{background:var(--text-2);}
-.eb-name{font-weight:600;}
-.eb-name.active{color:var(--accent-g);}
-.eb-name.inactive{color:var(--accent-o);}
-.eb-name.none{color:var(--text-2);}
-.eb-meta{color:var(--text-2);font-size:12px;}
-
-.mobile-topbar{display:none;padding:14px 16px;background:var(--bg-1);border-bottom:1px solid var(--border-0);align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
-@media(max-width:900px){.mobile-topbar{display:flex;}}
-.mobile-menu-btn,.mobile-refresh{width:38px;height:38px;border-radius:var(--radius-sm);background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-0);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;}
-.mobile-refresh{color:var(--text-1);}
-.mobile-title{font-family:var(--font-display);font-size:17px;flex:1;}
-
-.mobile-stats{display:none;padding:10px 14px;gap:7px;background:var(--bg-1);border-bottom:1px solid var(--border-0);overflow-x:auto;}
-.mobile-stats::-webkit-scrollbar{display:none;}
-@media(max-width:900px){.mobile-stats{display:flex;}}
-.mobile-stat{background:var(--bg-2);border:1px solid var(--border-0);border-radius:var(--radius-sm);padding:7px 12px;min-width:max-content;display:flex;flex-direction:column;gap:2px;}
-.mobile-stat-label{font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:.8px;font-weight:600;}
-.mobile-stat-number{font-size:20px;font-weight:300;font-family:var(--font-display);color:var(--text-0);line-height:1;}
-.mobile-stat-number.yellow{color:var(--accent-y);}
-.mobile-stat-number.orange{color:var(--accent-o);}
-.mobile-stat-number.green{color:var(--accent-g);}
-
-.mobile-search{display:none;padding:10px 14px;background:var(--bg-1);border-bottom:1px solid var(--border-0);gap:8px;flex-direction:column;}
-@media(max-width:900px){.mobile-search{display:flex;}}
-.mobile-search-row{display:flex;gap:8px;width:100%;}
-.mobile-search-row .search-field{flex:1;margin:0;}
-
-/* ─── LIST ───────────────────────────────────────── */
-.list-wrapper{flex:1;overflow-y:auto;padding:18px;}
-@media(max-width:600px){.list-wrapper{padding:10px;}}
-@media(min-width:1400px){.list-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}}
-.card{background:var(--bg-1);border:1px solid var(--border-0);border-radius:var(--radius-lg);margin-bottom:9px;cursor:pointer;transition:border-color var(--transition),box-shadow var(--transition),transform var(--transition);overflow:hidden;}
-@media(min-width:1400px){.card{margin-bottom:0;}}
-.card:hover{border-color:var(--border-1);box-shadow:var(--shadow-card);}
-.card:active{transform:scale(.993);}
-.card.card-checkedin{border-color:rgba(74,222,128,.2);}
-.card-inner{display:flex;align-items:center;gap:13px;padding:14px;}
-
-/* ─── AVATAR ─────────────────────────────────────── */
-.avatar{width:50px;height:50px;border-radius:var(--radius-md);flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,#3f3314,#5c4a17);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--accent-y);border:1px solid var(--border-1);cursor:pointer;transition:opacity var(--transition);position:relative;}
-.avatar.avatar-checkedin{border-color:rgba(74,222,128,.4);}
-.avatar:hover{opacity:.85;}
-.avatar img{width:100%;height:100%;object-fit:cover;display:block;}
-.avatar .photo-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--transition);font-size:18px;}
-.avatar:hover .photo-overlay{opacity:1;}
-
-.card-info{flex:1;min-width:0;}
-.card-name{font-size:14px;font-weight:600;color:var(--text-0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-email{font-size:11px;color:var(--text-1);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-chips{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap;}
-.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.2px;}
-.chip-yellow{background:var(--accent-y-dim);color:var(--accent-y);border:1px solid var(--accent-y-mid);}
-.chip-orange{background:var(--accent-o-dim);color:var(--accent-o);border:1px solid rgba(251,146,60,.25);}
-.chip-red{background:var(--accent-r-dim);color:var(--accent-r);border:1px solid rgba(239,68,68,.2);}
-.chip-gray{background:rgba(255,255,255,.06);color:var(--text-1);border:1px solid var(--border-1);}
-.chip-green{background:var(--accent-g-dim);color:var(--accent-g);border:1px solid var(--accent-g-mid);}
-.chip-blue{background:rgba(96,165,250,.12);color:#60A5FA;border:1px solid rgba(96,165,250,.25);}
-.dot{width:4px;height:4px;border-radius:50%;display:inline-block;}
-.dot-y{background:var(--accent-y);}
-.dot-o{background:var(--accent-o);}
-.dot-g{background:var(--accent-g);}
-
-/* ─── CARD CHECK-IN ──────────────────────────────── */
-.card-checkin-zone{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px;}
-.ci-action{width:42px;height:42px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;transition:all var(--transition);border:none;font-family:var(--font-body);}
-.ci-action.ci-ready{background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);color:var(--accent-g);}
-.ci-action.ci-ready:hover{background:rgba(74,222,128,.22);transform:scale(1.06);}
-.ci-action.ci-done{background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);color:var(--accent-g);cursor:default;}
-.ci-action.ci-nofoto{background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);color:var(--accent-o);}
-.ci-action.ci-nofoto:hover{background:rgba(251,146,60,.2);}
-.ci-action.ci-locked{background:rgba(255,255,255,.03);border:1px solid var(--border-0);color:var(--text-2);cursor:default;}
-.ci-label{font-size:8px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;text-align:center;color:var(--text-2);}
-
-.card-footer{border-top:1px solid var(--border-0);padding:8px 14px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.12);font-size:11px;}
-.card-footer-lbl{color:var(--text-2);}
-.card-footer-val{color:var(--text-0);font-weight:600;}
-.card-footer-sep{color:var(--border-1);margin:0 6px;}
-
-.empty,.loading{text-align:center;padding:64px 20px;color:var(--text-2);font-size:14px;}
-.loading-spinner{width:30px;height:30px;border:2px solid var(--border-1);border-top-color:var(--accent-y);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* ─── MODAL ──────────────────────────────────────── */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:800;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
-.modal-bg.open{display:flex;animation:fadein .2s;}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
-.modal{background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-xl) var(--radius-xl) 0 0;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-modal);animation:slideup .28s cubic-bezier(.4,0,.2,1);}
-@keyframes slideup{from{transform:translateY(48px);opacity:0}to{transform:translateY(0);opacity:1}}
-@media(min-width:900px){.modal-bg{align-items:center;}.modal{border-radius:var(--radius-xl);max-height:88vh;}}
-.modal::-webkit-scrollbar{width:4px;}
-.modal::-webkit-scrollbar-track{background:transparent;}
-.modal::-webkit-scrollbar-thumb{background:var(--border-1);border-radius:2px;}
-.modal-head{padding:18px 20px;border-bottom:1px solid var(--border-0);display:flex;align-items:center;gap:13px;position:sticky;top:0;background:var(--bg-glass);backdrop-filter:blur(12px);z-index:10;}
-.modal-avatar{width:50px;height:50px;border-radius:var(--radius-md);overflow:hidden;background:linear-gradient(135deg,#3f3314,#5c4a17);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--accent-y);flex-shrink:0;border:1px solid var(--border-1);}
-.modal-avatar img{width:100%;height:100%;object-fit:cover;}
-.modal-head-info{flex:1;min-width:0;}
-.modal-name{font-size:16px;font-weight:600;}
-.modal-sub{font-size:11px;color:var(--text-1);margin-top:1px;}
-.close-btn{width:34px;height:34px;border-radius:50%;background:var(--bg-2);border:1px solid var(--border-1);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-1);font-size:15px;transition:all var(--transition);flex-shrink:0;}
-.close-btn:hover{background:var(--bg-3);color:var(--text-0);}
-.modal-body{padding:18px;}
-.section{background:var(--bg-2);border:1px solid var(--border-0);border-radius:var(--radius-md);overflow:hidden;margin-bottom:10px;}
-.section.section-checkin{border-color:rgba(74,222,128,.2);}
-.section.section-locked{border-color:rgba(251,146,60,.2);}
-.section.section-nofoto{border-color:rgba(251,146,60,.2);}
-.section-title{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-2);font-weight:600;padding:11px 15px;border-bottom:1px solid var(--border-0);background:rgba(0,0,0,.15);}
-.section.section-checkin .section-title{color:var(--accent-g);}
-.section.section-locked .section-title{color:var(--accent-o);}
-.section.section-hist .section-title{color:var(--accent-b);}
-.section-body{padding:15px;}
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;}
-@media(max-width:480px){.grid-2{grid-template-columns:1fr;gap:9px;}}
-.data-item .lbl{font-size:10px;color:var(--text-2);margin-bottom:2px;font-weight:500;}
-.data-item .val{font-size:13px;color:var(--text-0);font-weight:500;line-height:1.4;}
-.sacr-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;}
-
-/* ─── HISTÓRICO DE CHECKINS NO MODAL ─────────────── */
-.hist-list{display:flex;flex-direction:column;gap:8px;}
-.hist-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border-0);border-radius:var(--radius-sm);}
-.hist-item-enc{font-size:13px;font-weight:600;color:var(--text-0);display:flex;align-items:center;gap:6px;}
-.hist-item-time{font-size:11px;color:var(--accent-g);font-weight:500;}
-
-/* ─── CHECK-IN UI ────────────────────────────────── */
-.checkin-done-banner{display:flex;align-items:center;gap:14px;padding:13px 15px;background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);border-radius:var(--radius-sm);}
-.checkin-done-circle{width:42px;height:42px;border-radius:50%;background:rgba(74,222,128,.2);border:2px solid var(--accent-g);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.checkin-done-label{font-size:14px;font-weight:700;color:var(--accent-g);}
-.checkin-done-enc{font-size:11px;color:rgba(74,222,128,.65);margin-top:1px;}
-.checkin-done-time{font-size:11px;color:rgba(74,222,128,.55);margin-top:1px;}
-.checkin-btn{width:100%;height:56px;background:linear-gradient(135deg,#4ADE80,#22C55E);color:#0a1f12;border:none;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all var(--transition);letter-spacing:.2px;}
-.checkin-btn:hover{opacity:.9;transform:scale(1.01);}
-.checkin-btn:active{transform:scale(.98);}
-.checkin-btn.confirming{background:linear-gradient(135deg,#FB923C,#EA580C);color:#1a0800;}
-.checkin-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-.checkin-hint{font-size:11px;color:var(--text-2);text-align:center;margin-top:7px;}
-.revoke-btn{width:100%;height:38px;border-radius:var(--radius-sm);border:1px solid var(--border-1);background:transparent;color:var(--text-2);font-family:var(--font-body);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all var(--transition);margin-top:9px;}
-.revoke-btn:hover{background:var(--accent-r-dim);border-color:rgba(239,68,68,.3);color:var(--accent-r);}
-.revoke-btn.confirming-revoke{background:var(--accent-r-dim);border-color:rgba(239,68,68,.4);color:var(--accent-r);}
-
-/* ─── FOTO SECTION ───────────────────────────────── */
-.foto-container{display:flex;flex-direction:column;align-items:center;gap:13px;}
-.foto-preview-wrap{width:100%;max-width:220px;aspect-ratio:1/1;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-1);background:var(--bg-3);position:relative;cursor:pointer;}
-.foto-preview-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
-.foto-preview-wrap:hover img{transform:scale(1.04);}
-.foto-preview-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;opacity:0;transition:opacity var(--transition);color:#fff;font-size:12px;font-weight:500;}
-.foto-preview-wrap:hover .foto-preview-overlay{opacity:1;}
-.foto-empty{width:100%;max-width:220px;aspect-ratio:1/1;border-radius:var(--radius-md);border:2px dashed var(--border-1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--text-2);font-size:12px;background:rgba(255,255,255,.02);}
-.foto-empty-icon{font-size:32px;opacity:.4;}
-.foto-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:100%;max-width:280px;}
-.foto-btn{height:42px;border-radius:var(--radius-sm);border:1px solid var(--border-1);background:var(--bg-3);color:var(--text-0);font-family:var(--font-body);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all var(--transition);}
-.foto-btn:hover{background:var(--bg-2);border-color:var(--border-2);}
-
-/* ─── PAYMENT TOGGLE ─────────────────────────────── */
-.payment-toggle{display:grid;grid-template-columns:1fr 1fr;border-radius:var(--radius-sm);border:1px solid var(--border-1);overflow:hidden;margin-top:4px;}
-.payment-opt{height:46px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text-2);background:transparent;transition:all var(--transition);border:none;font-family:var(--font-body);}
-.payment-opt+.payment-opt{border-left:1px solid var(--border-1);}
-.payment-opt.sel-yellow{background:var(--accent-y-dim);color:var(--accent-y);}
-.payment-opt.sel-orange{background:var(--accent-o-dim);color:var(--accent-o);}
-.save-btn{width:100%;height:50px;background:linear-gradient(135deg,var(--accent-y),#EAB308);color:#18181b;border:none;border-radius:var(--radius-sm);font-family:var(--font-body);font-size:14px;font-weight:600;cursor:pointer;margin-top:14px;transition:opacity var(--transition),transform var(--transition);letter-spacing:.2px;}
-.save-btn:hover{opacity:.9;}
-.save-btn:active{transform:scale(.99);}
-.save-btn:disabled{opacity:.5;cursor:not-allowed;}
-
-/* ─── CROP MODAL ─────────────────────────────────── */
-.crop-modal-content{display:flex;flex-direction:column;height:88vh;width:100%;max-width:520px;background:#000;border-radius:var(--radius-xl) var(--radius-xl) 0 0;}
-@media(min-width:900px){.crop-modal-content{border-radius:var(--radius-xl);}}
-.crop-area{flex:1;overflow:hidden;position:relative;background:#000;}
-.crop-footer{padding:15px;background:var(--bg-1);}
-
-/* ─── LIGHTBOX ───────────────────────────────────── */
-.lightbox-bg{z-index:1500;background:rgba(0,0,0,.92);align-items:center;justify-content:center;cursor:zoom-out;}
-.lightbox-content{position:relative;cursor:default;max-width:92vw;max-height:92vh;}
-.lightbox-img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:var(--radius-md);display:block;box-shadow:0 32px 80px rgba(0,0,0,.6);}
-.lightbox-close{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;background:var(--bg-2);border:1px solid var(--border-1);color:var(--text-0);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;}
-
-/* ─── SIDEBAR MOBILE ─────────────────────────────── */
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:499;}
-.sidebar-overlay.open{display:block;}
-@media(max-width:900px){
-  .sidebar{display:flex;position:fixed;left:0;top:0;bottom:0;width:min(310px,85vw);transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:500;}
-  .sidebar.mobile-open{transform:translateX(0);}
-}
-input[type=file]{display:none;}
-.list-wrapper::-webkit-scrollbar{width:4px;}
-.list-wrapper::-webkit-scrollbar-track{background:transparent;}
-.list-wrapper::-webkit-scrollbar-thumb{background:var(--border-0);border-radius:2px;}
-
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg-2);border:1px solid var(--border-1);border-radius:20px;padding:9px 18px;font-size:13px;font-weight:500;color:var(--text-0);z-index:9999;transition:transform .3s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:var(--shadow-modal);pointer-events:none;}
-.toast.show{transform:translateX(-50%) translateY(0);}
-.toast.success{border-color:var(--accent-g);color:var(--accent-g);}
-.toast.error{border-color:var(--accent-r);color:var(--accent-r);}
-.toast.info{border-color:var(--accent-y);color:var(--accent-y);}
-</style>
-</head>
-<body>
-<div class="layout">
-
-  <!-- ─── SIDEBAR ──────────────────── -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-logo">
-        <div class="sidebar-logo-icon">✦</div>
-        <div>
-          <div class="sidebar-logo-text">Inscrições</div>
-          <div class="sidebar-logo-sub">Encontro de Jovens</div>
-        </div>
-      </div>
-      <div class="enc-pill none" id="sideEncPill">
-        <div class="enc-dot none" id="sideEncDot"></div>
-        <div class="enc-info">
-          <div class="enc-label none" id="sideEncLabel">Carregando…</div>
-          <div class="enc-name" id="sideEncName">—</div>
-          <div class="enc-date" id="sideEncDate"></div>
-        </div>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-number" id="sTotal">—</div></div>
-        <div class="stat-card"><div class="stat-label">Pagos</div><div class="stat-number yellow" id="sPagos">—</div></div>
-        <div class="stat-card"><div class="stat-label">Pendentes</div><div class="stat-number orange" id="sPend">—</div></div>
-        <div class="stat-card"><div class="stat-label">Com foto</div><div class="stat-number" id="sFoto">—</div></div>
-        <div class="stat-card full" style="border-color:rgba(74,222,128,.2)">
-          <div class="stat-label" style="color:var(--accent-g)" id="sPresLbl">Presentes</div>
-          <div class="stat-number green" id="sPresentes">—</div>
-        </div>
-      </div>
-    </div>
-    <div class="sidebar-body">
-      
-      <!-- Novo filtro de histórico por encontro -->
-      <div class="sidebar-section-title">Filtrar por Histórico de Check-in</div>
-      <div class="select-field">
-        <select class="custom-select" id="filtroEncontroHist" onchange="selecionarFiltroEncontro(this.value)">
-          <option value="">Todos os encontros</option>
-        </select>
-      </div>
-
-      <div class="search-field">
-        <span class="search-icon">⌕</span>
-        <input type="text" id="busca" placeholder="Buscar por nome ou email..." oninput="filtrar()">
-      </div>
-      <div class="filter-row">
-        <button class="filter-chip" id="chipCheckin" onclick="toggleFiltro('checkin')">Presentes</button>
-        <button class="filter-chip" id="chipPago"    onclick="toggleFiltro('pago')">Pago</button>
-        <button class="filter-chip" id="chipPend"    onclick="toggleFiltro('pend')">Pendente</button>
-        <button class="filter-chip" id="chipFoto"    onclick="toggleFiltro('foto')">Foto</button>
-        <button class="filter-chip" id="chipMed"     onclick="toggleFiltro('med')">Medicação</button>
-        <button class="filter-chip" id="chipRest"    onclick="toggleFiltro('rest')">Restrição</button>
-        <button class="filter-chip" id="chipRetorno" onclick="toggleFiltro('retorno')">Retornante</button>
-      </div>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-section-title">Exibindo</div>
-      <div class="sidebar-counter">
-        <span>Participantes visíveis</span>
-        <span class="sidebar-count-val" id="sCount">—</span>
-      </div>
-      <div class="sidebar-divider"></div>
-      <button class="refresh-btn-side" onclick="carregarDados()"><span>↺</span> Atualizar dados</button>
-    </div>
-  </aside>
-
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-  <!-- ─── MAIN ─────────────────────── -->
-  <main class="main">
-    <div class="mobile-topbar">
-      <button class="mobile-menu-btn" onclick="openSidebar()">☰</button>
-      <span class="mobile-title">Inscrições</span>
-      <button class="mobile-refresh" onclick="carregarDados()">↺</button>
-    </div>
-
-    <!-- Banner encontro -->
-    <div class="encontro-banner none" id="encontroBanner">
-      <div class="eb-dot none" id="ebDot"></div>
-      <span class="eb-name none" id="ebName">—</span>
-      <span class="eb-meta" id="ebMeta"></span>
-    </div>
-
-    <div class="mobile-stats">
-      <div class="mobile-stat"><div class="mobile-stat-label">Total</div><div class="mobile-stat-number" id="mTotal">—</div></div>
-      <div class="mobile-stat"><div class="mobile-stat-label">Pagos</div><div class="mobile-stat-number yellow" id="mPagos">—</div></div>
-      <div class="mobile-stat"><div class="mobile-stat-label">Pendentes</div><div class="mobile-stat-number orange" id="mPend">—</div></div>
-      <div class="mobile-stat"><div class="mobile-stat-label">Foto</div><div class="mobile-stat-number" id="mFoto">—</div></div>
-      <div class="mobile-stat" style="border-color:rgba(74,222,128,.2)">
-        <div class="mobile-stat-label" style="color:var(--accent-g)">Presentes</div>
-        <div class="mobile-stat-number green" id="mPresentes">—</div>
-      </div>
-    </div>
-
-    <div class="mobile-search">
-      <div class="select-field" style="margin:0;">
-        <select class="custom-select" id="filtroEncontroHistMobile" onchange="selecionarFiltroEncontro(this.value)">
-          <option value="">Todos os encontros</option>
-        </select>
-      </div>
-      <div class="mobile-search-row">
-        <div class="search-field">
-          <span class="search-icon">⌕</span>
-          <input type="text" id="buscaMobile" placeholder="Buscar..." oninput="filtrarMobile()">
-        </div>
-        <button class="filter-chip" id="chipMobile" onclick="toggleFiltroMobile()" style="min-width:76px">Filtrar</button>
-      </div>
-    </div>
-
-    <div class="list-wrapper">
-      <div class="list-grid" id="lista">
-        <div class="loading"><div class="loading-spinner"></div>Carregando dados…</div>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- ─── MODAL PRINCIPAL ──────── -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal" id="modalBox">
-    <div class="modal-head">
-      <div class="modal-avatar" id="mAvatar"></div>
-      <div class="modal-head-info">
-        <div class="modal-name" id="mNome"></div>
-        <div class="modal-sub" id="mSub"></div>
-      </div>
-      <button class="close-btn" onclick="fecharModal()">✕</button>
-    </div>
-    <div class="modal-body" id="mBody"></div>
-  </div>
-</div>
-
-<!-- ─── MODAL CROP ────────────── -->
-<div class="modal-bg" id="cropModalBg" style="z-index:1200;">
-  <div class="crop-modal-content">
-    <div class="modal-head" style="border-radius:20px 20px 0 0;background:#111;">
-      <div class="modal-name" style="flex:1;color:#fff;">Ajustar Foto</div>
-      <button class="close-btn" onclick="fecharCrop()">✕</button>
-    </div>
-    <div class="crop-area"><img id="imageToCrop" src="" style="max-width:100%;"></div>
-    <div class="crop-footer">
-      <button class="save-btn" style="margin-top:0;" onclick="aplicarCrop()">Confirmar Recorte</button>
-    </div>
-  </div>
-</div>
-
-<!-- ─── LIGHTBOX ─────────────── -->
-<div class="modal-bg lightbox-bg" id="lightboxBg" onclick="fecharLightbox()">
-  <div class="lightbox-content" onclick="event.stopPropagation()">
-    <button class="lightbox-close" onclick="fecharLightbox()">✕</button>
-    <img class="lightbox-img" id="lightboxImg" src="">
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-<input type="file" id="inputFotoGaleria" accept="image/*">
-<input type="file" id="inputFotoCamera" accept="image/*" capture="environment">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-// ============================================================
-// CONFIGURAÇÃO SUPABASE & APPS SCRIPT
-// ============================================================
-const SUPABASE_URL = "https://ntzdqizdvqexcvuifdkx.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_EPvEph275vALt30cjnJUbw_AP3Jv9mT";
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbwX87QCGUQg6jO5Cx1R-TZAY8_-W9q6e2YwX4ZWdJHHWjDkdhsP5JVXVBrM3Yb1MUE-/exec";
-
-// ============================================================
-// STATE & VARIÁVEIS GLOBAIS
-// ============================================================
-let dados = [], filtrados = [];
-let iP = 17, iF = 18, iCI = 19;
-let rowAtual = -1;
-let filtroAtivo = null;
-let filtroEncontroSelecionado = ""; // Encontro selecionado no dropdown de histórico
-let fotoNovaBase64 = null, fotoNovoMime = null, fotoNovoNome = null;
-let cropper = null;
-let _pagoSelecionado = true;
-let _checkinConfirmStep = false, _checkinTimer = null;
-let _revogarConfirmStep = false, _revogarTimer = null;
-
-let encontroAtivo  = null;
-let todosEncontros = [];
-let encontroHoje   = false;
-
-let fotosHerdadas = new Set();
-let historicoMap = {};       // Histórico externo (outros encontros)
-let historicoCompleto = {};  // Todos os check-ins por participante (incluindo atual)
-
-// ============================================================
-// UTILS
-// ============================================================
-function initials(n) {
-  const p = (n || "?").trim().split(" ");
-  return p.length >= 2 ? (p[0][0]+p[p.length-1][0]).toUpperCase() : (p[0][0]||"?").toUpperCase();
-}
-function chavePessoa(email, nascimento) {
-  const e = (email || "").toString().trim().toLowerCase();
-  const n = (nascimento || "").toString().trim();
-  return e + "|" + n;
-}
-function fmtTimestamp() {
-  return new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
-}
-function parseDataBR(str) {
-  if (!str) return null;
-  const parts = str.toString().trim().split(/[\/\-]/);
-  if (parts.length === 3) {
-    let [d, m, y] = parts.map(Number);
-    if (y < 100) y += 2000;
-    const dt = new Date(y, m - 1, d);
-    return isNaN(dt.getTime()) ? null : dt;
-  }
-  return null;
-}
-function isSameDay(a, b) {
-  return a.getFullYear() === b.getFullYear() &&
-         a.getMonth()    === b.getMonth()    &&
-         a.getDate()     === b.getDate();
-}
-function fmtHistoricoLista(hist) {
-  return hist.map(h => h.data ? `${h.encontro} (${h.data})` : h.encontro).join(", ");
-}
-
-// ============================================================
-// TOAST & SIDEBAR MOBILE
-// ============================================================
-function showToast(msg, type = "") {
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.className = `toast ${type} show`;
-  setTimeout(() => el.classList.remove("show"), 3200);
-}
-function openSidebar()  { document.getElementById("sidebar").classList.add("mobile-open"); document.getElementById("sidebarOverlay").classList.add("open"); }
-function closeSidebar() { document.getElementById("sidebar").classList.remove("mobile-open"); document.getElementById("sidebarOverlay").classList.remove("open"); }
-
-// ============================================================
-// CARREGAR DADOS DO SUPABASE
-// ============================================================
-async function carregarDados() {
-  document.getElementById("lista").innerHTML = `<div class="loading"><div class="loading-spinner"></div>Carregando dados…</div>`;
-  try {
-    const { data: encs, error: encError } = await _supabase
-      .from('encontros')
-      .select('*')
-      .order('data_inicio', { ascending: false });
-
-    if (encError || !encs || encs.length === 0) {
-      document.getElementById("lista").innerHTML = `<div class="empty">Nenhum encontro cadastrado.</div>`;
-      atualizarBanner();
-      return;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Inscrições — Encontro de Jovens</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --font-body: 'DM Sans', sans-serif;
+      --font-display: 'DM Serif Display', serif;
+      --bg-0: #121212;
+      --bg-1: #18181b;
+      --bg-2: #27272a;
+      --bg-3: #3f3f46;
+      --bg-glass: rgba(24, 24, 27, .85);
+      --border-0: rgba(255, 255, 255, .05);
+      --border-1: rgba(255, 255, 255, .10);
+      --border-2: rgba(255, 255, 255, .15);
+      --text-0: #f4f4f5;
+      --text-1: #a1a1aa;
+      --text-2: #71717a;
+      --accent-y: #FACC15;
+      --accent-y-dim: rgba(250, 204, 21, .12);
+      --accent-y-mid: rgba(250, 204, 21, .25);
+      --accent-o: #FB923C;
+      --accent-o-dim: rgba(251, 146, 60, .12);
+      --accent-r: #EF4444;
+      --accent-r-dim: rgba(239, 68, 68, .12);
+      --accent-l: #FEF08A;
+      --accent-l-dim: rgba(254, 240, 138, .12);
+      --accent-g: #4ADE80;
+      --accent-g-dim: rgba(74, 222, 128, .12);
+      --accent-g-mid: rgba(74, 222, 128, .25);
+      --accent-b: #60A5FA;
+      --accent-b-dim: rgba(96, 165, 250, .12);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow-card: 0 2px 16px rgba(0, 0, 0, .35);
+      --shadow-modal: 0 24px 80px rgba(0, 0, 0, .7);
+      --transition: 0.2s cubic-bezier(.4, 0, .2, 1);
     }
 
-    todosEncontros = encs.map(e => {
-      const [y, m, d] = (e.data_inicio || "").split("-");
-      return { nome: e.nome, dataStr: d ? `${d}/${m}/${y}` : "", dtRaw: e.data_inicio };
-    });
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
 
-    encontroAtivo = todosEncontros[0];
-    const dt = parseDataBR(encontroAtivo.dataStr);
-    encontroHoje = dt ? isSameDay(dt, new Date()) : false;
+    html {
+      scroll-behavior: smooth;
+    }
 
-    // Popula dropdowns de encontros para filtro de histórico
-    popularSelectEncontros();
+    body {
+      background: var(--bg-0);
+      color: var(--text-0);
+      font-family: var(--font-body);
+      font-size: 15px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
 
-    const [resInscricoes, resGlobal] = await Promise.all([
-      _supabase.from('inscricoes').select('*').eq('encontro_nome', encontroAtivo.nome).order('id', { ascending: true }),
-      _supabase.from('inscricoes').select('chave_pessoa, encontro_nome, checkin, foto_url')
-    ]);
+    /* ─── LAYOUT ─────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
 
-    const inscData = resInscricoes.data || [];
-    const globalData = resGlobal.data || [];
-
-    const fotoMap = {};
-    const histMapTemp = {};
-    const histCompletoTemp = {};
-
-    globalData.forEach(row => {
-      const ch = row.chave_pessoa;
-      if (row.foto_url && !fotoMap[ch]) {
-        fotoMap[ch] = row.foto_url;
+    @media(max-width:900px) {
+      .layout {
+        grid-template-columns: 1fr;
       }
-      if (row.checkin && row.checkin.trim()) {
-        if (!histCompletoTemp[ch]) histCompletoTemp[ch] = [];
-        histCompletoTemp[ch].push({ encontro: row.encontro_nome, data: row.checkin });
+    }
 
-        if (row.encontro_nome !== encontroAtivo.nome) {
-          if (!histMapTemp[ch]) histMapTemp[ch] = [];
-          histMapTemp[ch].push({ encontro: row.encontro_nome, data: row.checkin });
+    /* ─── SIDEBAR ────────────────────────────────────── */
+    .sidebar {
+      background: var(--bg-1);
+      border-right: 1px solid var(--border-0);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 24px 24px 16px;
+      border-bottom: 1px solid var(--border-0);
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .sidebar-logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-y), #EAB308);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #18181b;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo-text {
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--text-0);
+      line-height: 1.15;
+    }
+
+    .sidebar-logo-sub {
+      font-size: 10px;
+      color: var(--text-2);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .enc-pill {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+    }
+
+    .enc-pill.active {
+      background: rgba(74, 222, 128, .08);
+      border: 1px solid rgba(74, 222, 128, .25);
+    }
+
+    .enc-pill.inactive {
+      background: rgba(251, 146, 60, .07);
+      border: 1px solid rgba(251, 146, 60, .2);
+    }
+
+    .enc-pill.none {
+      background: var(--bg-2);
+      border: 1px solid var(--border-0);
+    }
+
+    .enc-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .enc-dot.active {
+      background: var(--accent-g);
+      box-shadow: 0 0 8px rgba(74, 222, 128, .5);
+    }
+
+    .enc-dot.inactive {
+      background: var(--accent-o);
+    }
+
+    .enc-dot.none {
+      background: var(--text-2);
+    }
+
+    .enc-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .enc-label.active {
+      color: var(--accent-g);
+    }
+
+    .enc-label.inactive {
+      color: var(--accent-o);
+    }
+
+    .enc-label.none {
+      color: var(--text-2);
+    }
+
+    .enc-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-0);
+      line-height: 1.3;
+    }
+
+    .enc-date {
+      font-size: 11px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .stat-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border-0);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+    }
+
+    .stat-card.full {
+      grid-column: 1 / -1;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: var(--text-2);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .stat-number {
+      font-size: 26px;
+      font-weight: 300;
+      font-family: var(--font-display);
+      color: var(--text-0);
+      line-height: 1;
+    }
+
+    .stat-number.yellow {
+      color: var(--accent-y);
+    }
+
+    .stat-number.orange {
+      color: var(--accent-o);
+    }
+
+    .stat-number.green {
+      color: var(--accent-g);
+    }
+
+    .sidebar-body {
+      padding: 16px 24px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .search-field {
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .search-field input {
+      width: 100%;
+      height: 40px;
+      background: var(--bg-2);
+      border: 1px solid var(--border-1);
+      border-radius: var(--radius-sm);
+      color: var(--text-0);
+      font-family: var(--font-body);
+      font-size: 14px;
+      padding: 0 12px 0 38px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .search-field input:focus {
+      border-color: var(--border-2);
+    }
+
+    .search-field input::placeholder {
+      color: var(--text-2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-2);
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    /* Novo seletor de encontro */
+    .select-field {
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .custom-select {
+      width: 100%;
+      height: 38px;
+      background: var(--bg-2);
+      border: 1px solid var(--border-1);
+      border-radius: var(--radius-sm);
+      color: var(--text-0);
+      font-family: var(--font-body);
+      font-size: 13px;
+      padding: 0 10px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .custom-select:focus {
+      border-color: var(--border-2);
+    }
+
+    .custom-select option {
+      background: var(--bg-1);
+      color: var(--text-0);
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .filter-chip {
+      flex: 1;
+      min-width: 60px;
+      height: 34px;
+      border: 1px solid var(--border-1);
+      border-radius: 20px;
+      background: transparent;
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+      padding: 0 6px;
+    }
+
+    .filter-chip.active-yellow {
+      background: var(--accent-y-dim);
+      border-color: var(--accent-y);
+      color: var(--accent-y);
+    }
+
+    .filter-chip.active-orange {
+      background: var(--accent-o-dim);
+      border-color: var(--accent-o);
+      color: var(--accent-o);
+    }
+
+    .filter-chip.active-red {
+      background: var(--accent-r-dim);
+      border-color: var(--accent-r);
+      color: var(--accent-r);
+    }
+
+    .filter-chip.active-green {
+      background: var(--accent-g-dim);
+      border-color: var(--accent-g);
+      color: var(--accent-g);
+    }
+
+    .filter-chip.active-blue {
+      background: rgba(96, 165, 250, .12);
+      border-color: #60A5FA;
+      color: #60A5FA;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border-0);
+      margin: 14px 0;
+    }
+
+    .sidebar-section-title {
+      font-size: 9px;
+      color: var(--text-2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    .sidebar-counter {
+      font-size: 12px;
+      color: var(--text-1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-count-val {
+      font-weight: 600;
+      color: var(--text-0);
+    }
+
+    .refresh-btn-side {
+      width: 100%;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-2);
+      border: 1px solid var(--border-1);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all var(--transition);
+      margin-top: auto;
+    }
+
+    .refresh-btn-side:hover {
+      background: var(--bg-3);
+      border-color: var(--border-2);
+      color: var(--text-0);
+    }
+
+    /* ─── MAIN ───────────────────────────────────────── */
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .encontro-banner {
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border-0);
+    }
+
+    .encontro-banner.active {
+      background: rgba(74, 222, 128, .05);
+      border-bottom-color: rgba(74, 222, 128, .18);
+    }
+
+    .encontro-banner.inactive {
+      background: rgba(251, 146, 60, .05);
+      border-bottom-color: rgba(251, 146, 60, .18);
+    }
+
+    .encontro-banner.none {
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .eb-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .eb-dot.active {
+      background: var(--accent-g);
+      box-shadow: 0 0 7px rgba(74, 222, 128, .5);
+    }
+
+    .eb-dot.inactive {
+      background: var(--accent-o);
+    }
+
+    .eb-dot.none {
+      background: var(--text-2);
+    }
+
+    .eb-name {
+      font-weight: 600;
+    }
+
+    .eb-name.active {
+      color: var(--accent-g);
+    }
+
+    .eb-name.inactive {
+      color: var(--accent-o);
+    }
+
+    .eb-name.none {
+      color: var(--text-2);
+    }
+
+    .eb-meta {
+      color: var(--text-2);
+      font-size: 12px;
+    }
+
+    .mobile-topbar {
+      display: none;
+      padding: 14px 16px;
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--border-0);
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    @media(max-width:900px) {
+      .mobile-topbar {
+        display: flex;
+      }
+    }
+
+    .mobile-menu-btn,
+    .mobile-refresh {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-2);
+      border: 1px solid var(--border-1);
+      color: var(--text-0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .mobile-refresh {
+      color: var(--text-1);
+    }
+
+    .mobile-title {
+      font-family: var(--font-display);
+      font-size: 17px;
+      flex: 1;
+    }
+
+    .mobile-stats {
+      display: none;
+      padding: 10px 14px;
+      gap: 7px;
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--border-0);
+      overflow-x: auto;
+    }
+
+    .mobile-stats::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media(max-width:900px) {
+      .mobile-stats {
+        display: flex;
+      }
+    }
+
+    .mobile-stat {
+      background: var(--bg-2);
+      border: 1px solid var(--border-0);
+      border-radius: var(--radius-sm);
+      padding: 7px 12px;
+      min-width: max-content;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .mobile-stat-label {
+      font-size: 9px;
+      color: var(--text-2);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      font-weight: 600;
+    }
+
+    .mobile-stat-number {
+      font-size: 20px;
+      font-weight: 300;
+      font-family: var(--font-display);
+      color: var(--text-0);
+      line-height: 1;
+    }
+
+    .mobile-stat-number.yellow {
+      color: var(--accent-y);
+    }
+
+    .mobile-stat-number.orange {
+      color: var(--accent-o);
+    }
+
+    .mobile-stat-number.green {
+      color: var(--accent-g);
+    }
+
+    .mobile-search {
+      display: none;
+      padding: 10px 14px;
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--border-0);
+      gap: 8px;
+      flex-direction: column;
+    }
+
+    @media(max-width:900px) {
+      .mobile-search {
+        display: flex;
+      }
+    }
+
+    .mobile-search-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .mobile-search-row .search-field {
+      flex: 1;
+      margin: 0;
+    }
+
+    /* ─── LIST ───────────────────────────────────────── */
+    .list-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+    }
+
+    @media(max-width:600px) {
+      .list-wrapper {
+        padding: 10px;
+      }
+    }
+
+    @media(min-width:1400px) {
+      .list-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+    }
+
+    .card {
+      background: var(--bg-1);
+      border: 1px solid var(--border-0);
+      border-radius: var(--radius-lg);
+      margin-bottom: 9px;
+      cursor: pointer;
+      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+      overflow: hidden;
+    }
+
+    @media(min-width:1400px) {
+      .card {
+        margin-bottom: 0;
+      }
+    }
+
+    .card:hover {
+      border-color: var(--border-1);
+      box-shadow: var(--shadow-card);
+    }
+
+    .card:active {
+      transform: scale(.993);
+    }
+
+    .card.card-checkedin {
+      border-color: rgba(74, 222, 128, .2);
+    }
+
+    .card-inner {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 14px;
+    }
+
+    /* ─── AVATAR ─────────────────────────────────────── */
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #3f3314, #5c4a17);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent-y);
+      border: 1px solid var(--border-1);
+      cursor: pointer;
+      transition: opacity var(--transition);
+      position: relative;
+    }
+
+    .avatar.avatar-checkedin {
+      border-color: rgba(74, 222, 128, .4);
+    }
+
+    .avatar:hover {
+      opacity: .85;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .avatar .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+      font-size: 18px;
+    }
+
+    .avatar:hover .photo-overlay {
+      opacity: 1;
+    }
+
+    .card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-0);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-email {
+      font-size: 11px;
+      color: var(--text-1);
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-chips {
+      display: flex;
+      gap: 4px;
+      margin-top: 7px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+
+    .chip-yellow {
+      background: var(--accent-y-dim);
+      color: var(--accent-y);
+      border: 1px solid var(--accent-y-mid);
+    }
+
+    .chip-orange {
+      background: var(--accent-o-dim);
+      color: var(--accent-o);
+      border: 1px solid rgba(251, 146, 60, .25);
+    }
+
+    .chip-red {
+      background: var(--accent-r-dim);
+      color: var(--accent-r);
+      border: 1px solid rgba(239, 68, 68, .2);
+    }
+
+    .chip-gray {
+      background: rgba(255, 255, 255, .06);
+      color: var(--text-1);
+      border: 1px solid var(--border-1);
+    }
+
+    .chip-green {
+      background: var(--accent-g-dim);
+      color: var(--accent-g);
+      border: 1px solid var(--accent-g-mid);
+    }
+
+    .chip-blue {
+      background: rgba(96, 165, 250, .12);
+      color: #60A5FA;
+      border: 1px solid rgba(96, 165, 250, .25);
+    }
+
+    .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-y {
+      background: var(--accent-y);
+    }
+
+    .dot-o {
+      background: var(--accent-o);
+    }
+
+    .dot-g {
+      background: var(--accent-g);
+    }
+
+    /* ─── CARD CHECK-IN ──────────────────────────────── */
+    .card-checkin-zone {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .ci-action {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: none;
+      font-family: var(--font-body);
+    }
+
+    .ci-action.ci-ready {
+      background: var(--accent-g-dim);
+      border: 1px solid var(--accent-g-mid);
+      color: var(--accent-g);
+    }
+
+    .ci-action.ci-ready:hover {
+      background: rgba(74, 222, 128, .22);
+      transform: scale(1.06);
+    }
+
+    .ci-action.ci-done {
+      background: var(--accent-g-dim);
+      border: 1px solid var(--accent-g-mid);
+      color: var(--accent-g);
+      cursor: default;
+    }
+
+    .ci-action.ci-nofoto {
+      background: var(--accent-o-dim);
+      border: 1px solid rgba(251, 146, 60, .25);
+      color: var(--accent-o);
+    }
+
+    .ci-action.ci-nofoto:hover {
+      background: rgba(251, 146, 60, .2);
+    }
+
+    .ci-action.ci-locked {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border-0);
+      color: var(--text-2);
+      cursor: default;
+    }
+
+    .ci-label {
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      text-align: center;
+      color: var(--text-2);
+    }
+
+    .card-footer {
+      border-top: 1px solid var(--border-0);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 0, 0, .12);
+      font-size: 11px;
+    }
+
+    .card-footer-lbl {
+      color: var(--text-2);
+    }
+
+    .card-footer-val {
+      color: var(--text-0);
+      font-weight: 600;
+    }
+
+    .card-footer-sep {
+      color: var(--border-1);
+      margin: 0 6px;
+    }
+
+    .empty,
+    .loading {
+      text-align: center;
+      padding: 64px 20px;
+      color: var(--text-2);
+      font-size: 14px;
+    }
+
+    .loading-spinner {
+      width: 30px;
+      height: 30px;
+      border: 2px solid var(--border-1);
+      border-top-color: var(--accent-y);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto 14px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ─── MODAL ──────────────────────────────────────── */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      z-index: 800;
+      align-items: flex-end;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-bg.open {
+      display: flex;
+      animation: fadein .2s;
+    }
+
+    @keyframes fadein {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .modal {
+      background: var(--bg-1);
+      border: 1px solid var(--border-1);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      width: 100%;
+      max-width: 680px;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-modal);
+      animation: slideup .28s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    @keyframes slideup {
+      from {
+        transform: translateY(48px);
+        opacity: 0
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1
+      }
+    }
+
+    @media(min-width:900px) {
+      .modal-bg {
+        align-items: center;
+      }
+
+      .modal {
+        border-radius: var(--radius-xl);
+        max-height: 88vh;
+      }
+    }
+
+    .modal::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .modal::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .modal::-webkit-scrollbar-thumb {
+      background: var(--border-1);
+      border-radius: 2px;
+    }
+
+    .modal-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-0);
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      position: sticky;
+      top: 0;
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+
+    .modal-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: linear-gradient(135deg, #3f3314, #5c4a17);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent-y);
+      flex-shrink: 0;
+      border: 1px solid var(--border-1);
+    }
+
+    .modal-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-head-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .modal-name {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .modal-sub {
+      font-size: 11px;
+      color: var(--text-1);
+      margin-top: 1px;
+    }
+
+    .close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg-2);
+      border: 1px solid var(--border-1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-1);
+      font-size: 15px;
+      transition: all var(--transition);
+      flex-shrink: 0;
+    }
+
+    .close-btn:hover {
+      background: var(--bg-3);
+      color: var(--text-0);
+    }
+
+    .modal-body {
+      padding: 18px;
+    }
+
+    .section {
+      background: var(--bg-2);
+      border: 1px solid var(--border-0);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .section.section-checkin {
+      border-color: rgba(74, 222, 128, .2);
+    }
+
+    .section.section-locked {
+      border-color: rgba(251, 146, 60, .2);
+    }
+
+    .section.section-nofoto {
+      border-color: rgba(251, 146, 60, .2);
+    }
+
+    .section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-2);
+      font-weight: 600;
+      padding: 11px 15px;
+      border-bottom: 1px solid var(--border-0);
+      background: rgba(0, 0, 0, .15);
+    }
+
+    .section.section-checkin .section-title {
+      color: var(--accent-g);
+    }
+
+    .section.section-locked .section-title {
+      color: var(--accent-o);
+    }
+
+    .section.section-hist .section-title {
+      color: var(--accent-b);
+    }
+
+    .section-body {
+      padding: 15px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 13px;
+    }
+
+    @media(max-width:480px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+        gap: 9px;
+      }
+    }
+
+    .data-item .lbl {
+      font-size: 10px;
+      color: var(--text-2);
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+
+    .data-item .val {
+      font-size: 13px;
+      color: var(--text-0);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .sacr-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 3px;
+    }
+
+    /* ─── HISTÓRICO DE CHECKINS NO MODAL ─────────────── */
+    .hist-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .hist-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border-0);
+      border-radius: var(--radius-sm);
+    }
+
+    .hist-item-enc {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-0);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hist-item-time {
+      font-size: 11px;
+      color: var(--accent-g);
+      font-weight: 500;
+    }
+
+    /* ─── CHECK-IN UI ────────────────────────────────── */
+    .checkin-done-banner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 15px;
+      background: var(--accent-g-dim);
+      border: 1px solid var(--accent-g-mid);
+      border-radius: var(--radius-sm);
+    }
+
+    .checkin-done-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(74, 222, 128, .2);
+      border: 2px solid var(--accent-g);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .checkin-done-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-g);
+    }
+
+    .checkin-done-enc {
+      font-size: 11px;
+      color: rgba(74, 222, 128, .65);
+      margin-top: 1px;
+    }
+
+    .checkin-done-time {
+      font-size: 11px;
+      color: rgba(74, 222, 128, .55);
+      margin-top: 1px;
+    }
+
+    .checkin-btn {
+      width: 100%;
+      height: 56px;
+      background: linear-gradient(135deg, #4ADE80, #22C55E);
+      color: #0a1f12;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all var(--transition);
+      letter-spacing: .2px;
+    }
+
+    .checkin-btn:hover {
+      opacity: .9;
+      transform: scale(1.01);
+    }
+
+    .checkin-btn:active {
+      transform: scale(.98);
+    }
+
+    .checkin-btn.confirming {
+      background: linear-gradient(135deg, #FB923C, #EA580C);
+      color: #1a0800;
+    }
+
+    .checkin-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .checkin-hint {
+      font-size: 11px;
+      color: var(--text-2);
+      text-align: center;
+      margin-top: 7px;
+    }
+
+    .revoke-btn {
+      width: 100%;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-1);
+      background: transparent;
+      color: var(--text-2);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all var(--transition);
+      margin-top: 9px;
+    }
+
+    .revoke-btn:hover {
+      background: var(--accent-r-dim);
+      border-color: rgba(239, 68, 68, .3);
+      color: var(--accent-r);
+    }
+
+    .revoke-btn.confirming-revoke {
+      background: var(--accent-r-dim);
+      border-color: rgba(239, 68, 68, .4);
+      color: var(--accent-r);
+    }
+
+    /* ─── FOTO SECTION ───────────────────────────────── */
+    .foto-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .foto-preview-wrap {
+      width: 100%;
+      max-width: 220px;
+      aspect-ratio: 1/1;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-1);
+      background: var(--bg-3);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .foto-preview-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .3s;
+    }
+
+    .foto-preview-wrap:hover img {
+      transform: scale(1.04);
+    }
+
+    .foto-preview-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      opacity: 0;
+      transition: opacity var(--transition);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .foto-preview-wrap:hover .foto-preview-overlay {
+      opacity: 1;
+    }
+
+    .foto-empty {
+      width: 100%;
+      max-width: 220px;
+      aspect-ratio: 1/1;
+      border-radius: var(--radius-md);
+      border: 2px dashed var(--border-1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: var(--text-2);
+      font-size: 12px;
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .foto-empty-icon {
+      font-size: 32px;
+      opacity: .4;
+    }
+
+    .foto-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .foto-btn {
+      height: 42px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-1);
+      background: var(--bg-3);
+      color: var(--text-0);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: all var(--transition);
+    }
+
+    .foto-btn:hover {
+      background: var(--bg-2);
+      border-color: var(--border-2);
+    }
+
+    /* ─── PAYMENT TOGGLE ─────────────────────────────── */
+    .payment-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-1);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .payment-opt {
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--text-2);
+      background: transparent;
+      transition: all var(--transition);
+      border: none;
+      font-family: var(--font-body);
+    }
+
+    .payment-opt+.payment-opt {
+      border-left: 1px solid var(--border-1);
+    }
+
+    .payment-opt.sel-yellow {
+      background: var(--accent-y-dim);
+      color: var(--accent-y);
+    }
+
+    .payment-opt.sel-orange {
+      background: var(--accent-o-dim);
+      color: var(--accent-o);
+    }
+
+    .save-btn {
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(135deg, var(--accent-y), #EAB308);
+      color: #18181b;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: opacity var(--transition), transform var(--transition);
+      letter-spacing: .2px;
+    }
+
+    .save-btn:hover {
+      opacity: .9;
+    }
+
+    .save-btn:active {
+      transform: scale(.99);
+    }
+
+    .save-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    /* ─── CROP MODAL ─────────────────────────────────── */
+    .crop-modal-content {
+      display: flex;
+      flex-direction: column;
+      height: 88vh;
+      width: 100%;
+      max-width: 520px;
+      background: #000;
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+
+    @media(min-width:900px) {
+      .crop-modal-content {
+        border-radius: var(--radius-xl);
+      }
+    }
+
+    .crop-area {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      background: #000;
+    }
+
+    .crop-footer {
+      padding: 15px;
+      background: var(--bg-1);
+    }
+
+    /* ─── LIGHTBOX ───────────────────────────────────── */
+    .lightbox-bg {
+      z-index: 1500;
+      background: rgba(0, 0, 0, .92);
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+
+    .lightbox-content {
+      position: relative;
+      cursor: default;
+      max-width: 92vw;
+      max-height: 92vh;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      display: block;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .6);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg-2);
+      border: 1px solid var(--border-1);
+      color: var(--text-0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    /* ─── SIDEBAR MOBILE ─────────────────────────────── */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .6);
+      z-index: 499;
+    }
+
+    .sidebar-overlay.open {
+      display: block;
+    }
+
+    @media(max-width:900px) {
+      .sidebar {
+        display: flex;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: min(310px, 85vw);
+        transform: translateX(-100%);
+        transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+        z-index: 500;
+      }
+
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+    }
+
+    input[type=file] {
+      display: none;
+    }
+
+    .list-wrapper::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .list-wrapper::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .list-wrapper::-webkit-scrollbar-thumb {
+      background: var(--border-0);
+      border-radius: 2px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-2);
+      border: 1px solid var(--border-1);
+      border-radius: 20px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-0);
+      z-index: 9999;
+      transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+      white-space: nowrap;
+      box-shadow: var(--shadow-modal);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      border-color: var(--accent-g);
+      color: var(--accent-g);
+    }
+
+    .toast.error {
+      border-color: var(--accent-r);
+      color: var(--accent-r);
+    }
+
+    .toast.info {
+      border-color: var(--accent-y);
+      color: var(--accent-y);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+
+    <!-- ─── SIDEBAR ──────────────────── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">✦</div>
+          <div>
+            <div class="sidebar-logo-text">Inscrições</div>
+            <div class="sidebar-logo-sub">Encontro de Jovens</div>
+          </div>
+        </div>
+        <div class="enc-pill none" id="sideEncPill">
+          <div class="enc-dot none" id="sideEncDot"></div>
+          <div class="enc-info">
+            <div class="enc-label none" id="sideEncLabel">Carregando…</div>
+            <div class="enc-name" id="sideEncName">—</div>
+            <div class="enc-date" id="sideEncDate"></div>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total</div>
+            <div class="stat-number" id="sTotal">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pagos</div>
+            <div class="stat-number yellow" id="sPagos">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pendentes</div>
+            <div class="stat-number orange" id="sPend">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Com foto</div>
+            <div class="stat-number" id="sFoto">—</div>
+          </div>
+          <div class="stat-card full" style="border-color:rgba(74,222,128,.2)">
+            <div class="stat-label" style="color:var(--accent-g)" id="sPresLbl">Presentes</div>
+            <div class="stat-number green" id="sPresentes">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-body">
+
+        <!-- Novo: Seletor de Encontro Ativo -->
+        <div class="sidebar-section-title">Selecionar Encontro</div>
+        <div class="select-field">
+          <select class="custom-select" id="selectEncontro" onchange="mudarEncontro(this.value)">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+
+        <div class="search-field">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="busca" placeholder="Buscar por nome ou email..." oninput="filtrar()">
+        </div>
+        <div class="filter-row">
+          <button class="filter-chip" id="chipCheckin" onclick="toggleFiltro('checkin')">Presentes</button>
+          <button class="filter-chip" id="chipPago" onclick="toggleFiltro('pago')">Pago</button>
+          <button class="filter-chip" id="chipPend" onclick="toggleFiltro('pend')">Pendente</button>
+          <button class="filter-chip" id="chipFoto" onclick="toggleFiltro('foto')">Foto</button>
+          <button class="filter-chip" id="chipMed" onclick="toggleFiltro('med')">Medicação</button>
+          <button class="filter-chip" id="chipRest" onclick="toggleFiltro('rest')">Restrição</button>
+          <button class="filter-chip" id="chipRetorno" onclick="toggleFiltro('retorno')">Retornante</button>
+        </div>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section-title">Exibindo</div>
+        <div class="sidebar-counter">
+          <span>Participantes visíveis</span>
+          <span class="sidebar-count-val" id="sCount">—</span>
+        </div>
+        <div class="sidebar-divider"></div>
+        <button class="refresh-btn-side" onclick="carregarDados()"><span>↺</span> Atualizar dados</button>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- ─── MAIN ─────────────────────── -->
+    <main class="main">
+      <div class="mobile-topbar">
+        <button class="mobile-menu-btn" onclick="openSidebar()">☰</button>
+        <span class="mobile-title">Inscrições</span>
+        <button class="mobile-refresh" onclick="carregarDados()">↺</button>
+      </div>
+
+      <!-- Banner encontro -->
+      <div class="encontro-banner none" id="encontroBanner">
+        <div class="eb-dot none" id="ebDot"></div>
+        <span class="eb-name none" id="ebName">—</span>
+        <span class="eb-meta" id="ebMeta"></span>
+      </div>
+
+      <div class="mobile-stats">
+        <div class="mobile-stat">
+          <div class="mobile-stat-label">Total</div>
+          <div class="mobile-stat-number" id="mTotal">—</div>
+        </div>
+        <div class="mobile-stat">
+          <div class="mobile-stat-label">Pagos</div>
+          <div class="mobile-stat-number yellow" id="mPagos">—</div>
+        </div>
+        <div class="mobile-stat">
+          <div class="mobile-stat-label">Pendentes</div>
+          <div class="mobile-stat-number orange" id="mPend">—</div>
+        </div>
+        <div class="mobile-stat">
+          <div class="mobile-stat-label">Foto</div>
+          <div class="mobile-stat-number" id="mFoto">—</div>
+        </div>
+        <div class="mobile-stat" style="border-color:rgba(74,222,128,.2)">
+          <div class="mobile-stat-label" style="color:var(--accent-g)">Presentes</div>
+          <div class="mobile-stat-number green" id="mPresentes">—</div>
+        </div>
+      </div>
+
+      <div class="mobile-search">
+        <div class="select-field" style="margin:0;">
+          <select class="custom-select" id="selectEncontroMobile" onchange="mudarEncontro(this.value)">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+        <div class="mobile-search-row">
+          <div class="search-field">
+            <span class="search-icon">⌕</span>
+            <input type="text" id="buscaMobile" placeholder="Buscar..." oninput="filtrarMobile()">
+          </div>
+          <button class="filter-chip" id="chipMobile" onclick="toggleFiltroMobile()"
+            style="min-width:76px">Filtrar</button>
+        </div>
+      </div>
+
+      <div class="list-wrapper">
+        <div class="list-grid" id="lista">
+          <div class="loading">
+            <div class="loading-spinner"></div>Carregando dados…
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ─── MODAL PRINCIPAL ──────── -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal" id="modalBox">
+      <div class="modal-head">
+        <div class="modal-avatar" id="mAvatar"></div>
+        <div class="modal-head-info">
+          <div class="modal-name" id="mNome"></div>
+          <div class="modal-sub" id="mSub"></div>
+        </div>
+        <button class="close-btn" onclick="fecharModal()">✕</button>
+      </div>
+      <div class="modal-body" id="mBody"></div>
+    </div>
+  </div>
+
+  <!-- ─── MODAL CROP ────────────── -->
+  <div class="modal-bg" id="cropModalBg" style="z-index:1200;">
+    <div class="crop-modal-content">
+      <div class="modal-head" style="border-radius:20px 20px 0 0;background:#111;">
+        <div class="modal-name" style="flex:1;color:#fff;">Ajustar Foto</div>
+        <button class="close-btn" onclick="fecharCrop()">✕</button>
+      </div>
+      <div class="crop-area"><img id="imageToCrop" src="" style="max-width:100%;"></div>
+      <div class="crop-footer">
+        <button class="save-btn" style="margin-top:0;" onclick="aplicarCrop()">Confirmar Recorte</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── LIGHTBOX ─────────────── -->
+  <div class="modal-bg lightbox-bg" id="lightboxBg" onclick="fecharLightbox()">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="fecharLightbox()">✕</button>
+      <img class="lightbox-img" id="lightboxImg" src="">
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <input type="file" id="inputFotoGaleria" accept="image/*">
+  <input type="file" id="inputFotoCamera" accept="image/*" capture="environment">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // ============================================================
+    // CONFIGURAÇÃO SUPABASE & APPS SCRIPT
+    // ============================================================
+    const SUPABASE_URL = "https://ntzdqizdvqexcvuifdkx.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_EPvEph275vALt30cjnJUbw_AP3Jv9mT";
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbwX87QCGUQg6jO5Cx1R-TZAY8_-W9q6e2YwX4ZWdJHHWjDkdhsP5JVXVBrM3Yb1MUE-/exec";
+
+    // ============================================================
+    // STATE & VARIÁVEIS GLOBAIS
+    // ============================================================
+    let dados = [], filtrados = [];
+    let iP = 17, iF = 18, iCI = 19;
+    let rowAtual = -1;
+    let filtroAtivo = null;
+    let fotoNovaBase64 = null, fotoNovoMime = null, fotoNovoNome = null;
+    let cropper = null;
+    let _pagoSelecionado = true;
+    let _checkinConfirmStep = false, _checkinTimer = null;
+    let _revogarConfirmStep = false, _revogarTimer = null;
+
+    let encontroAtivo = null;
+    let todosEncontros = [];
+    let encontroHoje = false;
+
+    let fotosHerdadas = new Set();
+    let historicoMap = {};       // Histórico externo (outros encontros)
+    let historicoCompleto = {};  // Todos os check-ins por participante (incluindo atual)
+
+    // ============================================================
+    // UTILS
+    // ============================================================
+    function initials(n) {
+      const p = (n || "?").trim().split(" ");
+      return p.length >= 2 ? (p[0][0] + p[p.length - 1][0]).toUpperCase() : (p[0][0] || "?").toUpperCase();
+    }
+    function chavePessoa(email, nascimento) {
+      const e = (email || "").toString().trim().toLowerCase();
+      const n = (nascimento || "").toString().trim();
+      return e + "|" + n;
+    }
+    function fmtTimestamp() {
+      return new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+    function parseDataBR(str) {
+      if (!str) return null;
+      const parts = str.toString().trim().split(/[\/\-]/);
+      if (parts.length === 3) {
+        let [d, m, y] = parts.map(Number);
+        if (y < 100) y += 2000;
+        const dt = new Date(y, m - 1, d);
+        return isNaN(dt.getTime()) ? null : dt;
+      }
+      return null;
+    }
+    function isSameDay(a, b) {
+      return a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate();
+    }
+    function fmtHistoricoLista(hist) {
+      return hist.map(h => h.data ? `${h.encontro} (${h.data})` : h.encontro).join(", ");
+    }
+
+function formatarUrlFoto(url) {
+  if (!url) return "";
+  // Se for do Supabase, passa direto
+  if (url.includes("supabase.co")) return url;
+  
+  // Extrai o ID da imagem
+  let idMatch = url.match(/lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/) ||
+                url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+                url.match(/id=([a-zA-Z0-9_-]+)/);
+                
+  if (idMatch && idMatch[1]) {
+    // Força o visualizador direto universal do Google Drive
+    return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+  }
+  
+  return url;
+}
+    // ============================================================
+    // TOAST & SIDEBAR MOBILE
+    // ============================================================
+    function showToast(msg, type = "") {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = `toast ${type} show`;
+      setTimeout(() => el.classList.remove("show"), 3200);
+    }
+    function openSidebar() { document.getElementById("sidebar").classList.add("mobile-open"); document.getElementById("sidebarOverlay").classList.add("open"); }
+    function closeSidebar() { document.getElementById("sidebar").classList.remove("mobile-open"); document.getElementById("sidebarOverlay").classList.remove("open"); }
+
+    // ============================================================
+    // CARREGAR DADOS DO SUPABASE
+    // ============================================================
+    async function carregarDados() {
+      document.getElementById("lista").innerHTML = `<div class="loading"><div class="loading-spinner"></div>Carregando dados…</div>`;
+      try {
+        const { data: encs, error: encError } = await _supabase
+          .from('encontros')
+          .select('*')
+          .order('data_inicio', { ascending: false });
+
+        if (encError || !encs || encs.length === 0) {
+          document.getElementById("lista").innerHTML = `<div class="empty">Nenhum encontro cadastrado.</div>`;
+          atualizarBanner();
+          return;
         }
-      }
-    });
 
-    historicoMap = {};
-    historicoCompleto = {};
-    fotosHerdadas.clear();
+        todosEncontros = encs.map(e => {
+          const [y, m, d] = (e.data_inicio || "").split("-");
+          return { nome: e.nome, dataStr: d ? `${d}/${m}/${y}` : "", dtRaw: e.data_inicio };
+        });
 
-    dados = inscData.map((reg, idx) => {
+        if (!encontroAtivo) {
+          encontroAtivo = todosEncontros[0];
+        } else {
+          // Garante que o encontro selecionado ainda existe
+          const exists = todosEncontros.find(e => e.nome === encontroAtivo.nome);
+          encontroAtivo = exists ? exists : todosEncontros[0];
+        }
+
+        const dt = parseDataBR(encontroAtivo.dataStr);
+        encontroHoje = dt ? isSameDay(dt, new Date()) : false;
+
+        popularSelectEncontros();
+
+        // Puxa as inscrições APENAS do encontro ativo e DEPOIS todas as inscrições para montar o perfil
+        const [resInscricoes, resGlobal] = await Promise.all([
+          _supabase.from('inscricoes').select('*').eq('encontro_nome', encontroAtivo.nome).order('id', { ascending: true }),
+          _supabase.from('inscricoes').select('chave_pessoa, encontro_nome, checkin, foto_url, telefone, responsavel, tel_responsavel, restricao_alimentar, restricao_alimentar_desc, medicacao, medicacao_desc, alergia_medicamento, alergia_medicamento_desc, sacramentos, ja_fez_retiro')
+        ]);
+
+        const inscData = resInscricoes.data || [];
+        const globalData = resGlobal.data || [];
+
+        const perfilMap = {};
+        const histMapTemp = {};
+        const histCompletoTemp = {};
+
+        // 1. Monta o Perfil Global para herança (dados mais recentes substituem os mais antigos na iteração)
+        globalData.forEach(row => {
+          const ch = row.chave_pessoa;
+          if (!perfilMap[ch]) perfilMap[ch] = {};
+
+          // Herança: se existir nos dados antigos, guarda no perfil
+          if (row.foto_url) perfilMap[ch].foto_url = row.foto_url;
+          if (row.telefone) perfilMap[ch].telefone = row.telefone;
+          if (row.responsavel) perfilMap[ch].responsavel = row.responsavel;
+          if (row.tel_responsavel) perfilMap[ch].tel_responsavel = row.tel_responsavel;
+          if (row.restricao_alimentar) perfilMap[ch].restricao_alimentar = row.restricao_alimentar;
+          if (row.restricao_alimentar_desc) perfilMap[ch].restricao_alimentar_desc = row.restricao_alimentar_desc;
+          if (row.medicacao) perfilMap[ch].medicacao = row.medicacao;
+          if (row.medicacao_desc) perfilMap[ch].medicacao_desc = row.medicacao_desc;
+          if (row.alergia_medicamento) perfilMap[ch].alergia_medicamento = row.alergia_medicamento;
+          if (row.alergia_medicamento_desc) perfilMap[ch].alergia_medicamento_desc = row.alergia_medicamento_desc;
+          if (row.sacramentos) perfilMap[ch].sacramentos = row.sacramentos;
+          if (row.ja_fez_retiro) perfilMap[ch].ja_fez_retiro = row.ja_fez_retiro;
+
+          // Histórico de Check-in
+          if (row.checkin && row.checkin.trim()) {
+            if (!histCompletoTemp[ch]) histCompletoTemp[ch] = [];
+            histCompletoTemp[ch].push({ encontro: row.encontro_nome, data: row.checkin });
+
+            if (row.encontro_nome !== encontroAtivo.nome) {
+              if (!histMapTemp[ch]) histMapTemp[ch] = [];
+              histMapTemp[ch].push({ encontro: row.encontro_nome, data: row.checkin });
+            }
+          }
+        });
+
+        historicoMap = {};
+        historicoCompleto = {};
+        fotosHerdadas.clear();
+
+        // 2. Mapeia as Inscrições do Encontro Ativo usando Herança (Fallback)
+dados = inscData.map((reg, idx) => {
       const ch = reg.chave_pessoa;
+      const perfil = perfilMap[ch] || {};
+
       if (histMapTemp[ch]) historicoMap[idx] = histMapTemp[ch];
       if (histCompletoTemp[ch]) historicoCompleto[idx] = histCompletoTemp[ch];
 
       let foto = reg.foto_url;
-      if (!foto && fotoMap[ch]) {
-        foto = fotoMap[ch];
+      if (!foto && perfil.foto_url) {
+        foto = perfil.foto_url;
         fotosHerdadas.add(idx);
       }
 
-      return [
-        reg.carimbo_data_hora,        // [0]
-        reg.email,                    // [1]
-        reg.nome,                     // [2]
-        reg.telefone,                 // [3]
-        reg.nascimento,               // [4]
-        reg.responsavel,              // [5]
-        reg.tel_responsavel,          // [6]
-        reg.restricao_alimentar,      // [7]
-        reg.restricao_alimentar_desc, // [8]
-        reg.medicacao,                // [9]
-        reg.medicacao_desc,           // [10]
-        reg.alergia_medicamento,      // [11]
-        reg.alergia_medicamento_desc, // [12]
-        reg.precisa_sair,             // [13]
-        reg.precisa_sair_desc,        // [14]
-        reg.ja_fez_retiro,            // [15]
-        reg.sacramentos,              // [16]
-        reg.pago,                     // [17]
-        foto,                         // [18]
-        reg.checkin,                  // [19]
-        reg.id,                       // [20] ID no Supabase
-        reg.row_index                 // [21] Linha na Planilha
-      ];
-    });
+      // A CONVERSÃO DEVE FICAR EXATAMENTE AQUI:
+      foto = formatarUrlFoto(foto);
 
-    filtrados = [...dados];
-    atualizarStats();
-    atualizarBanner();
-    filtrar();
+          // Merge: se o valor da nova inscrição estiver vazio, preenche com o do Perfil Global
+          const telefone = reg.telefone || perfil.telefone || "";
+          const responsavel = reg.responsavel || perfil.responsavel || "";
+          const tel_responsavel = reg.tel_responsavel || perfil.tel_responsavel || "";
+          const restr = reg.restricao_alimentar || perfil.restricao_alimentar || "";
+          const restr_desc = reg.restricao_alimentar_desc || perfil.restricao_alimentar_desc || "";
+          const med = reg.medicacao || perfil.medicacao || "";
+          const med_desc = reg.medicacao_desc || perfil.medicacao_desc || "";
+          const alerMed = reg.alergia_medicamento || perfil.alergia_medicamento || "";
+          const alerMed_desc = reg.alergia_medicamento_desc || perfil.alergia_medicamento_desc || "";
+          const retiro = reg.ja_fez_retiro || perfil.ja_fez_retiro || "";
+          const sacrs = reg.sacramentos || perfil.sacramentos || "";
 
-  } catch(err) {
-    console.error(err);
-    document.getElementById("lista").innerHTML = `<div class="empty">Erro ao carregar dados do Supabase.</div>`;
-  }
-}
+          return [
+            reg.carimbo_data_hora,        // [0]
+            reg.email,                    // [1]
+            reg.nome,                     // [2]
+            telefone,                     // [3]
+            reg.nascimento,               // [4]
+            responsavel,                  // [5]
+            tel_responsavel,              // [6]
+            restr,                        // [7]
+            restr_desc,                   // [8]
+            med,                          // [9]
+            med_desc,                     // [10]
+            alerMed,                      // [11]
+            alerMed_desc,                 // [12]
+            reg.precisa_sair,             // [13]
+            reg.precisa_sair_desc,        // [14]
+            retiro,                       // [15]
+            sacrs,                        // [16]
+            reg.pago,                     // [17]
+            foto,                         // [18]
+            reg.checkin,                  // [19]
+            reg.id,                       // [20]
+            reg.row_index                 // [21]
+          ];
+        });
 
-function popularSelectEncontros() {
-  const selects = [document.getElementById("filtroEncontroHist"), document.getElementById("filtroEncontroHistMobile")];
-  let options = `<option value="">Todos os encontros</option>`;
-  todosEncontros.forEach(e => {
-    options += `<option value="${e.nome}">${e.nome} (${e.dataStr})</option>`;
-  });
-  selects.forEach(s => {
-    if (s) s.innerHTML = options;
-  });
-}
+        filtrados = [...dados];
+        atualizarStats();
+        atualizarBanner();
+        filtrar();
 
-function selecionarFiltroEncontro(nomeEnc) {
-  filtroEncontroSelecionado = nomeEnc || "";
-  const s1 = document.getElementById("filtroEncontroHist");
-  const s2 = document.getElementById("filtroEncontroHistMobile");
-  if (s1) s1.value = filtroEncontroSelecionado;
-  if (s2) s2.value = filtroEncontroSelecionado;
-  filtrar();
-}
-
-// ============================================================
-// BANNER & STATS
-// ============================================================
-function atualizarBanner() {
-  const banner  = document.getElementById("encontroBanner");
-  const ebDot   = document.getElementById("ebDot");
-  const ebName  = document.getElementById("ebName");
-  const ebMeta  = document.getElementById("ebMeta");
-
-  const pill      = document.getElementById("sideEncPill");
-  const sideDot   = document.getElementById("sideEncDot");
-  const sideLabel = document.getElementById("sideEncLabel");
-  const sideName  = document.getElementById("sideEncName");
-  const sideDate  = document.getElementById("sideEncDate");
-  const sPresLbl  = document.getElementById("sPresLbl");
-
-  if (!encontroAtivo) {
-    banner.className = "encontro-banner none";
-    ebDot.className = "eb-dot none";
-    ebName.className = "eb-name none";
-    ebName.textContent = "Sem encontro cadastrado";
-    ebMeta.textContent = "";
-    pill.className = "enc-pill none";
-    sideDot.className = "enc-dot none";
-    sideLabel.className = "enc-label none";
-    sideLabel.textContent = "Sem encontro";
-    sideName.textContent = "—";
-    sideDate.textContent = "";
-    sPresLbl.textContent = "Presentes";
-    return;
-  }
-
-  sideName.textContent = encontroAtivo.nome;
-  sideDate.textContent = encontroAtivo.dataStr;
-
-  if (encontroHoje) {
-    banner.className = "encontro-banner active";
-    ebDot.className  = "eb-dot active";
-    ebName.className = "eb-name active";
-    ebName.textContent = encontroAtivo.nome;
-    ebMeta.textContent = `· ${encontroAtivo.dataStr} · Check-in habilitado`;
-
-    pill.className      = "enc-pill active";
-    sideDot.className   = "enc-dot active";
-    sideLabel.className = "enc-label active";
-    sideLabel.textContent = "Encontro hoje ✓";
-    sPresLbl.textContent  = `Presentes — ${encontroAtivo.nome}`;
-  } else {
-    const dt = parseDataBR(encontroAtivo.dataStr);
-    const hoje = new Date();
-    const isFuturo = dt && dt > hoje;
-
-    banner.className = "encontro-banner inactive";
-    ebDot.className  = "eb-dot inactive";
-    ebName.className = "eb-name inactive";
-    ebName.textContent = encontroAtivo.nome;
-    ebMeta.textContent = isFuturo
-      ? `· ${encontroAtivo.dataStr} · Check-in disponível na data`
-      : `· ${encontroAtivo.dataStr} · Check-in encerrado`;
-
-    pill.className      = "enc-pill inactive";
-    sideDot.className   = "enc-dot inactive";
-    sideLabel.className = "enc-label inactive";
-    sideLabel.textContent = isFuturo ? "Próximo encontro" : "Encontro encerrado";
-    sPresLbl.textContent  = "Presentes";
-  }
-}
-
-function atualizarStats() {
-  const t   = dados.length;
-  const pg  = dados.filter(r => (r[iP]||"").toUpperCase() === "SIM").length;
-  const cf  = dados.filter(r => r[iF] && r[iF].trim()).length;
-  const pres= dados.filter(r => r[iCI] && r[iCI].trim()).length;
-
-  const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  setEl("sTotal",    t);
-  setEl("sPagos",    pg);
-  setEl("sPend",     t - pg);
-  setEl("sFoto",     cf);
-  setEl("sPresentes", encontroHoje ? pres : "—");
-  setEl("mTotal",    t);
-  setEl("mPagos",    pg);
-  setEl("mPend",     t - pg);
-  setEl("mFoto",     cf);
-  setEl("mPresentes", encontroHoje ? pres : "—");
-}
-
-// ============================================================
-// FILTROS & BUSCA
-// ============================================================
-function toggleFiltro(tipo) {
-  filtroAtivo = filtroAtivo === tipo ? null : tipo;
-  ["chipCheckin","chipPago","chipPend","chipFoto","chipMed","chipRest","chipRetorno"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.className = "filter-chip";
-  });
-  const map = { checkin:"active-green", pago:"active-yellow", pend:"active-orange", foto:"active-yellow", med:"active-orange", rest:"active-red", retorno:"active-blue" };
-  if (filtroAtivo && map[filtroAtivo]) {
-    const chipEl = document.getElementById("chip" + filtroAtivo.charAt(0).toUpperCase() + filtroAtivo.slice(1));
-    if (chipEl) chipEl.className = "filter-chip " + map[filtroAtivo];
-  }
-  filtrar();
-}
-
-function toggleFiltroMobile() {
-  const order = [null,"checkin","pend","pago","foto","med","rest","retorno"];
-  filtroAtivo = order[(order.indexOf(filtroAtivo) + 1) % order.length];
-  const chip = document.getElementById("chipMobile");
-  chip.className = "filter-chip";
-  const labels = { null:"Filtrar", checkin:["Presentes","active-green"], pend:["Pendente","active-orange"], pago:["Pago","active-yellow"], foto:["Com Foto","active-yellow"], med:["Medicação","active-orange"], rest:["Restrição","active-red"], retorno:["Retornante","active-blue"] };
-  if (!filtroAtivo) chip.textContent = "Filtrar";
-  else { chip.textContent = labels[filtroAtivo][0]; chip.classList.add(labels[filtroAtivo][1]); }
-  filtrar();
-}
-
-function filtrarMobile() {
-  document.getElementById("busca").value = document.getElementById("buscaMobile").value;
-  filtrar();
-}
-
-function filtrar() {
-  const q = (document.getElementById("busca").value || "").toLowerCase();
-  filtrados = dados.filter(r => {
-    const n = (r[2]||"").toLowerCase(), e = (r[1]||"").toLowerCase();
-    const mq   = !q || n.includes(q) || e.includes(q);
-    const pago = (r[iP]||"").toUpperCase() === "SIM";
-    const foto = !!(r[iF] && r[iF].trim());
-    const rest = (r[7]||"").toLowerCase().includes("sim");
-    const med  = (r[9]||"").toLowerCase().includes("sim");
-    const ci   = !!(r[iCI] && r[iCI].trim());
-    const ri   = dados.indexOf(r);
-    const retorno = !!(historicoMap[ri] && historicoMap[ri].length);
-
-    let mp = true;
-    if (filtroAtivo === "checkin") mp = ci;
-    if (filtroAtivo === "pago")    mp = pago;
-    if (filtroAtivo === "pend")    mp = !pago;
-    if (filtroAtivo === "foto")    mp = foto;
-    if (filtroAtivo === "med")     mp = med;
-    if (filtroAtivo === "rest")    mp = rest;
-    if (filtroAtivo === "retorno") mp = retorno;
-
-    // Filtro por encontro específico com check-in
-    let mEnc = true;
-    if (filtroEncontroSelecionado) {
-      const histTotal = historicoCompleto[ri] || [];
-      const fezCheckinNoEncontro = histTotal.some(h => h.encontro === filtroEncontroSelecionado);
-      mEnc = fezCheckinNoEncontro;
+      } catch (err) {
+        console.error(err);
+        document.getElementById("lista").innerHTML = `<div class="empty">Erro ao carregar dados do Supabase.</div>`;
+      }
     }
 
-    return mq && mp && mEnc;
-  });
-
-  document.getElementById("sCount").textContent = filtrados.length;
-  renderLista();
-}
-
-// ============================================================
-// RENDERIZAÇÃO DA LISTA
-// ============================================================
-function renderLista() {
-  if (!filtrados.length) {
-    document.getElementById("lista").innerHTML = `<div class="empty">Nenhum participante encontrado.</div>`;
-    return;
-  }
-  let html = "";
-  filtrados.forEach(row => {
-    const ri    = dados.indexOf(row);
-    const nome  = row[2] || "—";
-    const email = row[1] || "";
-    const nasc  = row[4] || "—";
-    const resp  = row[5] || "—";
-    const pago  = (row[iP]||"").toUpperCase() === "SIM";
-    const foto  = row[iF] || "";
-    const rest  = (row[7]||"").toLowerCase().includes("sim");
-    const med   = (row[9]||"").toLowerCase().includes("sim");
-    const ci    = (row[iCI] || "").trim();
-    const checkin = ci.length > 0;
-    const ini   = initials(nome);
-    const hist  = historicoMap[ri];
-
-    const pgChip  = pago
-      ? `<span class="chip chip-yellow"><span class="dot dot-y"></span>Pago</span>`
-      : `<span class="chip chip-orange"><span class="dot dot-o"></span>Pendente</span>`;
-    const ciChip  = checkin && encontroHoje ? `<span class="chip chip-green"><span class="dot dot-g"></span>Presente</span>` : "";
-    const rChip   = rest ? `<span class="chip chip-red">Restrição</span>` : "";
-    const mChip   = med  ? `<span class="chip chip-orange">Medicação</span>` : "";
-    const histChip= (hist && hist.length)
-      ? `<span class="chip chip-blue" title="Check-in anterior: ${fmtHistoricoLista(hist)}">↺ ${hist.length}x Retiro</span>`
-      : "";
-
-    const avInner = foto
-      ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.innerHTML='<span>${ini}</span>'">`
-        + `<div class="photo-overlay">🔍</div>`
-      : `<span>${ini}</span>`;
-
-    let ciAction = "";
-    if (!encontroHoje) {
-      ciAction = `<button class="ci-action ci-locked" disabled title="Check-in indisponível fora da data">🔒</button><div class="ci-label">Bloqueado</div>`;
-    } else if (checkin) {
-      ciAction = `<button class="ci-action ci-done" onclick="event.stopPropagation();abrirModal(${ri})" title="Presente — toque para ver">✓</button><div class="ci-label" style="color:var(--accent-g)">Presente</div>`;
-    } else if (foto) {
-      ciAction = `<button class="ci-action ci-ready" onclick="event.stopPropagation();quickCheckin(${ri})" title="Realizar check-in">✔</button><div class="ci-label">Check-in</div>`;
-    } else {
-      ciAction = `<button class="ci-action ci-nofoto" onclick="event.stopPropagation();abrirModal(${ri})" title="Foto necessária">📷</button><div class="ci-label">Foto<br>neces.</div>`;
+    function popularSelectEncontros() {
+      const selects = [document.getElementById("selectEncontro"), document.getElementById("selectEncontroMobile")];
+      let options = "";
+      todosEncontros.forEach(e => {
+        const isSelected = (encontroAtivo && encontroAtivo.nome === e.nome) ? "selected" : "";
+        options += `<option value="${e.nome}" ${isSelected}>${e.nome} (${e.dataStr})</option>`;
+      });
+      selects.forEach(s => {
+        if (s) s.innerHTML = options;
+      });
     }
 
-    html += `
+    function mudarEncontro(nomeEnc) {
+      if (!nomeEnc) return;
+      const enc = todosEncontros.find(e => e.nome === nomeEnc);
+      if (enc) {
+        encontroAtivo = enc;
+        carregarDados();
+      }
+    }
+
+    // ============================================================
+    // BANNER & STATS
+    // ============================================================
+    function atualizarBanner() {
+      const banner = document.getElementById("encontroBanner");
+      const ebDot = document.getElementById("ebDot");
+      const ebName = document.getElementById("ebName");
+      const ebMeta = document.getElementById("ebMeta");
+
+      const pill = document.getElementById("sideEncPill");
+      const sideDot = document.getElementById("sideEncDot");
+      const sideLabel = document.getElementById("sideEncLabel");
+      const sideName = document.getElementById("sideEncName");
+      const sideDate = document.getElementById("sideEncDate");
+      const sPresLbl = document.getElementById("sPresLbl");
+
+      if (!encontroAtivo) {
+        banner.className = "encontro-banner none";
+        ebDot.className = "eb-dot none";
+        ebName.className = "eb-name none";
+        ebName.textContent = "Sem encontro cadastrado";
+        ebMeta.textContent = "";
+        pill.className = "enc-pill none";
+        sideDot.className = "enc-dot none";
+        sideLabel.className = "enc-label none";
+        sideLabel.textContent = "Sem encontro";
+        sideName.textContent = "—";
+        sideDate.textContent = "";
+        sPresLbl.textContent = "Presentes";
+        return;
+      }
+
+      sideName.textContent = encontroAtivo.nome;
+      sideDate.textContent = encontroAtivo.dataStr;
+
+      if (encontroHoje) {
+        banner.className = "encontro-banner active";
+        ebDot.className = "eb-dot active";
+        ebName.className = "eb-name active";
+        ebName.textContent = encontroAtivo.nome;
+        ebMeta.textContent = `· ${encontroAtivo.dataStr} · Check-in habilitado`;
+
+        pill.className = "enc-pill active";
+        sideDot.className = "enc-dot active";
+        sideLabel.className = "enc-label active";
+        sideLabel.textContent = "Encontro hoje ✓";
+        sPresLbl.textContent = `Presentes — ${encontroAtivo.nome}`;
+      } else {
+        const dt = parseDataBR(encontroAtivo.dataStr);
+        const hoje = new Date();
+        const isFuturo = dt && dt > hoje;
+
+        banner.className = "encontro-banner inactive";
+        ebDot.className = "eb-dot inactive";
+        ebName.className = "eb-name inactive";
+        ebName.textContent = encontroAtivo.nome;
+        ebMeta.textContent = isFuturo
+          ? `· ${encontroAtivo.dataStr} · Check-in disponível na data`
+          : `· ${encontroAtivo.dataStr} · Check-in encerrado`;
+
+        pill.className = "enc-pill inactive";
+        sideDot.className = "enc-dot inactive";
+        sideLabel.className = "enc-label inactive";
+        sideLabel.textContent = isFuturo ? "Próximo encontro" : "Encontro encerrado";
+        sPresLbl.textContent = "Presentes";
+      }
+    }
+
+    function atualizarStats() {
+      const t = dados.length;
+      const pg = dados.filter(r => (r[iP] || "").toUpperCase() === "SIM").length;
+      const cf = dados.filter(r => r[iF] && r[iF].trim()).length;
+      const pres = dados.filter(r => r[iCI] && r[iCI].trim()).length;
+
+      const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      setEl("sTotal", t);
+      setEl("sPagos", pg);
+      setEl("sPend", t - pg);
+      setEl("sFoto", cf);
+      setEl("sPresentes", encontroHoje ? pres : "—");
+      setEl("mTotal", t);
+      setEl("mPagos", pg);
+      setEl("mPend", t - pg);
+      setEl("mFoto", cf);
+      setEl("mPresentes", encontroHoje ? pres : "—");
+    }
+
+    // ============================================================
+    // FILTROS & BUSCA
+    // ============================================================
+    function toggleFiltro(tipo) {
+      filtroAtivo = filtroAtivo === tipo ? null : tipo;
+      ["chipCheckin", "chipPago", "chipPend", "chipFoto", "chipMed", "chipRest", "chipRetorno"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.className = "filter-chip";
+      });
+      const map = { checkin: "active-green", pago: "active-yellow", pend: "active-orange", foto: "active-yellow", med: "active-orange", rest: "active-red", retorno: "active-blue" };
+      if (filtroAtivo && map[filtroAtivo]) {
+        const chipEl = document.getElementById("chip" + filtroAtivo.charAt(0).toUpperCase() + filtroAtivo.slice(1));
+        if (chipEl) chipEl.className = "filter-chip " + map[filtroAtivo];
+      }
+      filtrar();
+    }
+
+    function toggleFiltroMobile() {
+      const order = [null, "checkin", "pend", "pago", "foto", "med", "rest", "retorno"];
+      filtroAtivo = order[(order.indexOf(filtroAtivo) + 1) % order.length];
+      const chip = document.getElementById("chipMobile");
+      chip.className = "filter-chip";
+      const labels = { null: "Filtrar", checkin: ["Presentes", "active-green"], pend: ["Pendente", "active-orange"], pago: ["Pago", "active-yellow"], foto: ["Com Foto", "active-yellow"], med: ["Medicação", "active-orange"], rest: ["Restrição", "active-red"], retorno: ["Retornante", "active-blue"] };
+      if (!filtroAtivo) chip.textContent = "Filtrar";
+      else { chip.textContent = labels[filtroAtivo][0]; chip.classList.add(labels[filtroAtivo][1]); }
+      filtrar();
+    }
+
+    function filtrarMobile() {
+      document.getElementById("busca").value = document.getElementById("buscaMobile").value;
+      filtrar();
+    }
+
+    function filtrar() {
+      const q = (document.getElementById("busca").value || "").toLowerCase();
+      filtrados = dados.filter(r => {
+        const n = (r[2] || "").toLowerCase(), e = (r[1] || "").toLowerCase();
+        const mq = !q || n.includes(q) || e.includes(q);
+        const pago = (r[iP] || "").toUpperCase() === "SIM";
+        const foto = !!(r[iF] && r[iF].trim());
+        const rest = (r[7] || "").toLowerCase().includes("sim");
+        const med = (r[9] || "").toLowerCase().includes("sim");
+        const ci = !!(r[iCI] && r[iCI].trim());
+        const ri = dados.indexOf(r);
+        const retorno = !!(historicoMap[ri] && historicoMap[ri].length);
+
+        let mp = true;
+        if (filtroAtivo === "checkin") mp = ci;
+        if (filtroAtivo === "pago") mp = pago;
+        if (filtroAtivo === "pend") mp = !pago;
+        if (filtroAtivo === "foto") mp = foto;
+        if (filtroAtivo === "med") mp = med;
+        if (filtroAtivo === "rest") mp = rest;
+        if (filtroAtivo === "retorno") mp = retorno;
+
+        return mq && mp;
+      });
+
+      document.getElementById("sCount").textContent = filtrados.length;
+      renderLista();
+    }
+
+    // ============================================================
+    // RENDERIZAÇÃO DA LISTA
+    // ============================================================
+    function renderLista() {
+      if (!filtrados.length) {
+        document.getElementById("lista").innerHTML = `<div class="empty">Nenhum participante encontrado neste encontro.</div>`;
+        return;
+      }
+      let html = "";
+      filtrados.forEach(row => {
+        const ri = dados.indexOf(row);
+        const nome = row[2] || "—";
+        const email = row[1] || "";
+        const nasc = row[4] || "—";
+        const resp = row[5] || "—";
+        const pago = (row[iP] || "").toUpperCase() === "SIM";
+        const foto = row[iF] || "";
+        const rest = (row[7] || "").toLowerCase().includes("sim");
+        const med = (row[9] || "").toLowerCase().includes("sim");
+        const ci = (row[iCI] || "").trim();
+        const checkin = ci.length > 0;
+        const ini = initials(nome);
+        const hist = historicoMap[ri];
+
+        const pgChip = pago
+          ? `<span class="chip chip-yellow"><span class="dot dot-y"></span>Pago</span>`
+          : `<span class="chip chip-orange"><span class="dot dot-o"></span>Pendente</span>`;
+        const ciChip = checkin && encontroHoje ? `<span class="chip chip-green"><span class="dot dot-g"></span>Presente</span>` : "";
+        const rChip = rest ? `<span class="chip chip-red">Restrição</span>` : "";
+        const mChip = med ? `<span class="chip chip-orange">Medicação</span>` : "";
+        const histChip = (hist && hist.length)
+          ? `<span class="chip chip-blue" title="Check-in anterior: ${fmtHistoricoLista(hist)}">↺ ${hist.length}x Retiro</span>`
+          : "";
+
+        const avInner = foto
+          ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.innerHTML='<span>${ini}</span>'">`
+          + `<div class="photo-overlay">🔍</div>`
+          : `<span>${ini}</span>`;
+
+        let ciAction = "";
+        if (!encontroHoje) {
+          ciAction = `<button class="ci-action ci-locked" disabled title="Check-in indisponível fora da data">🔒</button><div class="ci-label">Bloqueado</div>`;
+        } else if (checkin) {
+          ciAction = `<button class="ci-action ci-done" onclick="event.stopPropagation();abrirModal(${ri})" title="Presente — toque para ver">✓</button><div class="ci-label" style="color:var(--accent-g)">Presente</div>`;
+        } else if (foto) {
+          ciAction = `<button class="ci-action ci-ready" onclick="event.stopPropagation();quickCheckin(${ri})" title="Realizar check-in">✔</button><div class="ci-label">Check-in</div>`;
+        } else {
+          ciAction = `<button class="ci-action ci-nofoto" onclick="event.stopPropagation();abrirModal(${ri})" title="Foto necessária">📷</button><div class="ci-label">Foto<br>neces.</div>`;
+        }
+
+        html += `
       <div class="card ${checkin && encontroHoje ? 'card-checkedin' : ''}" onclick="abrirModal(${ri})">
         <div class="card-inner">
           <div class="avatar ${checkin && encontroHoje ? 'avatar-checkedin' : ''}"
@@ -909,123 +2339,122 @@ function renderLista() {
           <span class="card-footer-val" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${resp}</span>
         </div>
       </div>`;
-  });
-  document.getElementById("lista").innerHTML = html;
-}
+      });
+      document.getElementById("lista").innerHTML = html;
+    }
 
-// ============================================================
-// CHECK-IN DIRETO NO SUPABASE
-// ============================================================
-async function quickCheckin(ri) {
-  if (!encontroHoje) { showToast("Check-in só disponível na data do encontro.", "error"); return; }
-  const row  = dados[ri];
-  const nome = row[2] || "?";
-  const foto = row[iF] || "";
-  if (!foto) { showToast("Adicione uma foto antes do check-in.", "error"); return; }
-  if (row[iCI] && row[iCI].trim()) { showToast(`${nome} já realizou check-in.`, "info"); return; }
+    // ============================================================
+    // CHECK-IN DIRETO NO SUPABASE
+    // ============================================================
+    async function quickCheckin(ri) {
+      if (!encontroHoje) { showToast("Check-in só disponível na data do encontro.", "error"); return; }
+      const row = dados[ri];
+      const nome = row[2] || "?";
+      const foto = row[iF] || "";
+      if (!foto) { showToast("Adicione uma foto antes do check-in.", "error"); return; }
+      if (row[iCI] && row[iCI].trim()) { showToast(`${nome} já realizou check-in.`, "info"); return; }
 
-  const ts = fmtTimestamp();
-  dados[ri][iCI] = ts;
-  
-  // Atualiza histórico completo em memória
-  if (!historicoCompleto[ri]) historicoCompleto[ri] = [];
-  historicoCompleto[ri].push({ encontro: encontroAtivo.nome, data: ts });
+      const ts = fmtTimestamp();
+      dados[ri][iCI] = ts;
 
-  renderLista();
-  atualizarStats();
-  showToast(`Check-in de ${nome} realizado! ✓`, "success");
+      if (!historicoCompleto[ri]) historicoCompleto[ri] = [];
+      historicoCompleto[ri].push({ encontro: encontroAtivo.nome, data: ts });
 
-  const recId = row[20];
-  const sheetRowIdx = row[21];
-  await _supabase.from('inscricoes').update({ checkin: ts }).eq('id', recId);
+      renderLista();
+      atualizarStats();
+      showToast(`Check-in de ${nome} realizado! ✓`, "success");
 
-  fetch(GOOGLE_SHEET_API, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify({ rowIndex: sheetRowIdx, checkin: ts, encontroNome: encontroAtivo.nome })
-  }).catch(console.error);
-}
+      const recId = row[20];
+      const sheetRowIdx = row[21];
+      await _supabase.from('inscricoes').update({ checkin: ts }).eq('id', recId);
 
-// ============================================================
-// LIGHTBOX
-// ============================================================
-function verFoto(url) { if (!url) return; document.getElementById("lightboxImg").src = url; document.getElementById("lightboxBg").classList.add("open"); }
-function fecharLightbox() { document.getElementById("lightboxBg").classList.remove("open"); }
+      fetch(GOOGLE_SHEET_API, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({ rowIndex: sheetRowIdx, checkin: ts, encontroNome: encontroAtivo.nome })
+      }).catch(console.error);
+    }
 
-// ============================================================
-// MODAL DETALHES COM HISTÓRICO EXPANDIDO
-// ============================================================
-function abrirModal(ri) {
-  rowAtual = ri;
-  fotoNovaBase64 = null; fotoNovoMime = null; fotoNovoNome = null;
-  _checkinConfirmStep = false; _revogarConfirmStep = false;
-  if (_checkinTimer) { clearTimeout(_checkinTimer); _checkinTimer = null; }
-  if (_revogarTimer) { clearTimeout(_revogarTimer); _revogarTimer = null; }
+    // ============================================================
+    // LIGHTBOX
+    // ============================================================
+    function verFoto(url) { if (!url) return; document.getElementById("lightboxImg").src = url; document.getElementById("lightboxBg").classList.add("open"); }
+    function fecharLightbox() { document.getElementById("lightboxBg").classList.remove("open"); }
 
-  const row    = dados[ri];
-  const nome   = row[2] || "—";
-  const email  = row[1] || "";
-  const foto   = row[iF] || "";
-  const pago   = (row[iP]||"").toUpperCase() === "SIM";
-  const ciVal  = (row[iCI] || "").trim();
-  const checkin = ciVal.length > 0 ? ciVal : null;
-  const histCompleto = historicoCompleto[ri] || [];
-  _pagoSelecionado = pago;
-  const ini = initials(nome);
+    // ============================================================
+    // MODAL DETALHES COM HISTÓRICO EXPANDIDO
+    // ============================================================
+    function abrirModal(ri) {
+      rowAtual = ri;
+      fotoNovaBase64 = null; fotoNovoMime = null; fotoNovoNome = null;
+      _checkinConfirmStep = false; _revogarConfirmStep = false;
+      if (_checkinTimer) { clearTimeout(_checkinTimer); _checkinTimer = null; }
+      if (_revogarTimer) { clearTimeout(_revogarTimer); _revogarTimer = null; }
 
-  document.getElementById("mNome").textContent = nome;
-  document.getElementById("mSub").textContent  = email;
-  const av = document.getElementById("mAvatar");
-  av.innerHTML = foto ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.textContent='${ini}'">` : ini;
+      const row = dados[ri];
+      const nome = row[2] || "—";
+      const email = row[1] || "";
+      const foto = row[iF] || "";
+      const pago = (row[iP] || "").toUpperCase() === "SIM";
+      const ciVal = (row[iCI] || "").trim();
+      const checkin = ciVal.length > 0 ? ciVal : null;
+      const histCompleto = historicoCompleto[ri] || [];
+      _pagoSelecionado = pago;
+      const ini = initials(nome);
 
-  const rest    = (row[7]||"").toLowerCase().includes("sim");
-  const med     = (row[9]||"").toLowerCase().includes("sim");
-  const alerMed = (row[11]||"").toLowerCase().includes("sim");
-  const sair    = (row[13]||"").toLowerCase().includes("sim");
-  const sacrs   = (row[16]||"—").split(",").map(s=>s.trim()).filter(Boolean);
-  const sacrHtml= sacrs.map(s=>`<span class="chip chip-gray">${s}</span>`).join("");
+      document.getElementById("mNome").textContent = nome;
+      document.getElementById("mSub").textContent = email;
+      const av = document.getElementById("mAvatar");
+      av.innerHTML = foto ? `<img src="${foto}" onerror="this.onerror=null;this.parentElement.textContent='${ini}'">` : ini;
 
-  // Montagem do histórico detalhado de encontros
-  let historicoSecHtml = "";
-  if (histCompleto.length > 0) {
-    const itensHist = histCompleto.map(h => `
+      const rest = (row[7] || "").toLowerCase().includes("sim");
+      const med = (row[9] || "").toLowerCase().includes("sim");
+      const alerMed = (row[11] || "").toLowerCase().includes("sim");
+      const sair = (row[13] || "").toLowerCase().includes("sim");
+      const sacrs = (row[16] || "—").split(",").map(s => s.trim()).filter(Boolean);
+      const sacrHtml = sacrs.map(s => `<span class="chip chip-gray">${s}</span>`).join("");
+
+      // Montagem do histórico detalhado de encontros
+      let historicoSecHtml = "";
+      if (histCompleto.length > 0) {
+        const itensHist = histCompleto.map(h => `
       <div class="hist-item">
         <div class="hist-item-enc"><span>✦</span> ${h.encontro}</div>
         <div class="hist-item-time">Check-in: ${h.data || "Confirmado"}</div>
       </div>
     `).join("");
 
-    historicoSecHtml = `
+        historicoSecHtml = `
       <div class="section section-hist">
         <div class="section-title">Histórico de Encontros e Presenças</div>
         <div class="section-body">
           <div class="hist-list">${itensHist}</div>
         </div>
       </div>`;
-  }
+      }
 
-  let ciSecClass = "section section-checkin";
-  let ciSecTitle = "✦ Check-in — " + (encontroAtivo ? encontroAtivo.nome : "Encontro");
-  let ciHtml = "";
+      let ciSecClass = "section section-checkin";
+      let ciSecTitle = "✦ Check-in — " + (encontroAtivo ? encontroAtivo.nome : "Encontro");
+      let ciHtml = "";
 
-  if (!encontroHoje) {
-    ciSecClass = "section section-locked";
-    ciSecTitle = "⏸ Check-in indisponível";
-    const isFuturo = encontroAtivo ? (parseDataBR(encontroAtivo.dataStr) > new Date()) : false;
-    ciHtml = `
+      if (!encontroHoje) {
+        ciSecClass = "section section-locked";
+        ciSecTitle = "⏸ Check-in indisponível";
+        const isFuturo = encontroAtivo ? (parseDataBR(encontroAtivo.dataStr) > new Date()) : false;
+        ciHtml = `
       <div style="padding:12px 14px;background:rgba(251,146,60,.07);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);">
         <div style="font-size:13px;font-weight:600;color:var(--accent-o);display:flex;align-items:center;gap:8px;margin-bottom:6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
           ${encontroAtivo
             ? (isFuturo
-                ? `Check-in disponível em ${encontroAtivo.dataStr}`
-                : `Encontro encerrado — ${encontroAtivo.dataStr}`)
+              ? `Check-in disponível em ${encontroAtivo.dataStr}`
+              : `Encontro encerrado — ${encontroAtivo.dataStr}`)
             : "Nenhum encontro configurado"}
         </div>
         <div style="font-size:12px;color:rgba(251,146,60,.7)">O check-in só é liberado na data cadastrada no Supabase.</div>
       </div>`;
-  } else if (checkin) {
-    ciHtml = `
+      } else if (checkin) {
+        ciHtml = `
       <div class="checkin-done-banner">
         <div class="checkin-done-circle">✓</div>
         <div>
@@ -1038,17 +2467,17 @@ function abrirModal(ri) {
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
         Revogar check-in
       </button>`;
-  } else if (foto || fotoNovaBase64) {
-    ciHtml = `
+      } else if (foto || fotoNovaBase64) {
+        ciHtml = `
       <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
         Realizar Check-in
       </button>
       <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${nome}</div>`;
-  } else {
-    ciSecClass = "section section-nofoto";
-    ciSecTitle = "⚠ Foto obrigatória para check-in";
-    ciHtml = `
+      } else {
+        ciSecClass = "section section-nofoto";
+        ciSecTitle = "⚠ Foto obrigatória para check-in";
+        ciHtml = `
       <div class="checkin-no-foto-banner" style="padding:12px 14px;background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);border-radius:var(--radius-sm);margin-bottom:12px;">
         <div style="font-size:13px;font-weight:600;color:var(--accent-o);margin-bottom:4px;">Sem foto cadastrada</div>
         <div style="font-size:12px;color:rgba(251,146,60,.7)">Adicione a foto abaixo e salve para liberar o check-in.</div>
@@ -1057,16 +2486,16 @@ function abrirModal(ri) {
         <button class="foto-btn" onclick="abrirGaleria()">📂 Galeria</button>
         <button class="foto-btn" onclick="abrirCamera()">📷 Câmera</button>
       </div>`;
-  }
+      }
 
-  let fotoHtml = foto
-    ? `<div class="foto-preview-wrap" onclick="verFoto('${foto}')" title="Clique para ampliar">
+      let fotoHtml = foto
+        ? `<div class="foto-preview-wrap" onclick="verFoto('${foto}')" title="Clique para ampliar">
         <img id="fotoAtual" src="${foto}">
         <div class="foto-preview-overlay"><span style="font-size:26px">🔍</span><span>Ver foto</span></div>
        </div>`
-    : `<div class="foto-empty"><div class="foto-empty-icon">📷</div><span>Nenhuma foto cadastrada</span></div>`;
+        : `<div class="foto-empty"><div class="foto-empty-icon">📷</div><span>Nenhuma foto cadastrada</span></div>`;
 
-  document.getElementById("mBody").innerHTML = `
+      document.getElementById("mBody").innerHTML = `
     ${historicoSecHtml}
 
     <div class="${ciSecClass}">
@@ -1078,10 +2507,10 @@ function abrirModal(ri) {
       <div class="section-title">Dados pessoais</div>
       <div class="section-body">
         <div class="grid-2">
-          <div class="data-item"><div class="lbl">Nascimento</div><div class="val">${row[4]||"—"}</div></div>
-          <div class="data-item"><div class="lbl">Telefone</div><div class="val">${row[3]||"—"}</div></div>
-          <div class="data-item"><div class="lbl">Responsável</div><div class="val">${row[5]||"—"}</div></div>
-          <div class="data-item"><div class="lbl">Tel. responsável</div><div class="val">${row[6]||"—"}</div></div>
+          <div class="data-item"><div class="lbl">Nascimento</div><div class="val">${row[4] || "—"}</div></div>
+          <div class="data-item"><div class="lbl">Telefone</div><div class="val">${row[3] || "—"}</div></div>
+          <div class="data-item"><div class="lbl">Responsável</div><div class="val">${row[5] || "—"}</div></div>
+          <div class="data-item"><div class="lbl">Tel. responsável</div><div class="val">${row[6] || "—"}</div></div>
         </div>
       </div>
     </div>
@@ -1090,10 +2519,10 @@ function abrirModal(ri) {
       <div class="section-title">Saúde e alimentação</div>
       <div class="section-body">
         <div class="grid-2">
-          <div class="data-item"><div class="lbl">Restrição alimentar</div><div class="val">${rest?"Sim — "+(row[8]||""):"Não"}</div></div>
-          <div class="data-item"><div class="lbl">Medicação</div><div class="val">${med?"Sim — "+(row[10]||""):"Não"}</div></div>
-          <div class="data-item"><div class="lbl">Alergia a medicação</div><div class="val">${alerMed?"Sim — "+(row[12]||""):"Não"}</div></div>
-          <div class="data-item"><div class="lbl">Precisará sair</div><div class="val">${sair?"Sim — "+(row[14]||""):"Não"}</div></div>
+          <div class="data-item"><div class="lbl">Restrição alimentar</div><div class="val">${rest ? "Sim — " + (row[8] || "") : "Não"}</div></div>
+          <div class="data-item"><div class="lbl">Medicação</div><div class="val">${med ? "Sim — " + (row[10] || "") : "Não"}</div></div>
+          <div class="data-item"><div class="lbl">Alergia a medicação</div><div class="val">${alerMed ? "Sim — " + (row[12] || "") : "Não"}</div></div>
+          <div class="data-item"><div class="lbl">Precisará sair</div><div class="val">${sair ? "Sim — " + (row[14] || "") : "Não"}</div></div>
         </div>
       </div>
     </div>
@@ -1101,7 +2530,7 @@ function abrirModal(ri) {
     <div class="section">
       <div class="section-title">Histórico religioso</div>
       <div class="section-body">
-        <div class="data-item" style="margin-bottom:10px"><div class="lbl">Já fez retiro</div><div class="val">${row[15]||"—"}</div></div>
+        <div class="data-item" style="margin-bottom:10px"><div class="lbl">Já fez retiro</div><div class="val">${row[15] || "—"}</div></div>
         <div class="data-item"><div class="lbl">Sacramentos</div><div class="sacr-wrap">${sacrHtml}</div></div>
       </div>
     </div>
@@ -1123,74 +2552,74 @@ function abrirModal(ri) {
       <div class="section-title">Status de pagamento</div>
       <div class="section-body">
         <div class="payment-toggle">
-          <button class="payment-opt ${pago?'sel-yellow':''}" id="optPago" onclick="setPago(true)">Pago</button>
-          <button class="payment-opt ${pago?'':'sel-orange'}" id="optPend" onclick="setPago(false)">Pendente</button>
+          <button class="payment-opt ${pago ? 'sel-yellow' : ''}" id="optPago" onclick="setPago(true)">Pago</button>
+          <button class="payment-opt ${pago ? '' : 'sel-orange'}" id="optPend" onclick="setPago(false)">Pendente</button>
         </div>
         <button class="save-btn" id="saveBtn" onclick="salvar()">Salvar alterações</button>
       </div>
     </div>`;
 
-  document.getElementById("modalBg").classList.add("open");
-}
+      document.getElementById("modalBg").classList.add("open");
+    }
 
-function fecharModal() {
-  document.getElementById("modalBg").classList.remove("open");
-  _checkinConfirmStep = false; _revogarConfirmStep = false;
-  if (_checkinTimer) { clearTimeout(_checkinTimer); _checkinTimer = null; }
-  if (_revogarTimer) { clearTimeout(_revogarTimer); _revogarTimer = null; }
-}
-function setPago(v) {
-  _pagoSelecionado = v;
-  document.getElementById("optPago").className = "payment-opt " + (v ? "sel-yellow" : "");
-  document.getElementById("optPend").className = "payment-opt " + (v ? "" : "sel-orange");
-}
+    function fecharModal() {
+      document.getElementById("modalBg").classList.remove("open");
+      _checkinConfirmStep = false; _revogarConfirmStep = false;
+      if (_checkinTimer) { clearTimeout(_checkinTimer); _checkinTimer = null; }
+      if (_revogarTimer) { clearTimeout(_revogarTimer); _revogarTimer = null; }
+    }
+    function setPago(v) {
+      _pagoSelecionado = v;
+      document.getElementById("optPago").className = "payment-opt " + (v ? "sel-yellow" : "");
+      document.getElementById("optPend").className = "payment-opt " + (v ? "" : "sel-orange");
+    }
 
-// ============================================================
-// CHECK-IN / REVOGAR NO MODAL
-// ============================================================
-function iniciarCheckinModal() {
-  if (!encontroHoje) { showToast("Check-in só disponível na data do encontro.", "error"); return; }
-  const row  = dados[rowAtual];
-  const foto = row[iF] || "";
-  if (!foto && !fotoNovaBase64) { showToast("Adicione e salve uma foto primeiro!", "error"); return; }
+    // ============================================================
+    // CHECK-IN / REVOGAR NO MODAL
+    // ============================================================
+    function iniciarCheckinModal() {
+      if (!encontroHoje) { showToast("Check-in só disponível na data do encontro.", "error"); return; }
+      const row = dados[rowAtual];
+      const foto = row[iF] || "";
+      if (!foto && !fotoNovaBase64) { showToast("Adicione e salve uma foto primeiro!", "error"); return; }
 
-  const btn  = document.getElementById("checkinModalBtn");
-  const hint = document.getElementById("checkinHint");
-  if (!btn) return;
-
-  if (!_checkinConfirmStep) {
-    _checkinConfirmStep = true;
-    btn.classList.add("confirming");
-    btn.innerHTML = `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Confirmar presença?`;
-    if (hint) hint.textContent = "Toque novamente para confirmar.";
-    _checkinTimer = setTimeout(() => {
-      _checkinConfirmStep = false;
+      const btn = document.getElementById("checkinModalBtn");
+      const hint = document.getElementById("checkinHint");
       if (!btn) return;
-      btn.classList.remove("confirming");
-      btn.innerHTML = `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Realizar Check-in`;
-      if (hint) hint.textContent = `Toque para confirmar a presença de ${row[2]||""}`;
-    }, 4000);
-  } else {
-    clearTimeout(_checkinTimer); _checkinTimer = null;
-    _checkinConfirmStep = false;
-    confirmarCheckinModal();
-  }
-}
 
-async function confirmarCheckinModal() {
-  const btn = document.getElementById("checkinModalBtn");
-  if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }
-  const ts = fmtTimestamp();
-  dados[rowAtual][iCI] = ts;
+      if (!_checkinConfirmStep) {
+        _checkinConfirmStep = true;
+        btn.classList.add("confirming");
+        btn.innerHTML = `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Confirmar presença?`;
+        if (hint) hint.textContent = "Toque novamente para confirmar.";
+        _checkinTimer = setTimeout(() => {
+          _checkinConfirmStep = false;
+          if (!btn) return;
+          btn.classList.remove("confirming");
+          btn.innerHTML = `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Realizar Check-in`;
+          if (hint) hint.textContent = `Toque para confirmar a presença de ${row[2] || ""}`;
+        }, 4000);
+      } else {
+        clearTimeout(_checkinTimer); _checkinTimer = null;
+        _checkinConfirmStep = false;
+        confirmarCheckinModal();
+      }
+    }
 
-  if (!historicoCompleto[rowAtual]) historicoCompleto[rowAtual] = [];
-  historicoCompleto[rowAtual].push({ encontro: encontroAtivo.nome, data: ts });
+    async function confirmarCheckinModal() {
+      const btn = document.getElementById("checkinModalBtn");
+      if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; }
+      const ts = fmtTimestamp();
+      dados[rowAtual][iCI] = ts;
 
-  atualizarStats(); renderLista();
+      if (!historicoCompleto[rowAtual]) historicoCompleto[rowAtual] = [];
+      historicoCompleto[rowAtual].push({ encontro: encontroAtivo.nome, data: ts });
 
-  const body = document.getElementById("checkinSectionBody");
-  if (body) {
-    body.innerHTML = `
+      atualizarStats(); renderLista();
+
+      const body = document.getElementById("checkinSectionBody");
+      if (body) {
+        body.innerHTML = `
       <div class="checkin-done-banner">
         <div class="checkin-done-circle">✓</div>
         <div>
@@ -1203,210 +2632,213 @@ async function confirmarCheckinModal() {
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
         Revogar check-in
       </button>`;
-  }
-  showToast(`Check-in de ${dados[rowAtual][2]||"?"} realizado! ✓`, "success");
+      }
+      showToast(`Check-in de ${dados[rowAtual][2] || "?"} realizado! ✓`, "success");
 
-  const recId = dados[rowAtual][20];
-  const sheetRowIdx = dados[rowAtual][21];
-  await _supabase.from('inscricoes').update({ checkin: ts }).eq('id', recId);
+      const recId = dados[rowAtual][20];
+      const sheetRowIdx = dados[rowAtual][21];
+      await _supabase.from('inscricoes').update({ checkin: ts }).eq('id', recId);
 
-  fetch(GOOGLE_SHEET_API, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify({ rowIndex: sheetRowIdx, checkin: ts, encontroNome: encontroAtivo ? encontroAtivo.nome : "" })
-  }).catch(console.error);
-}
+      fetch(GOOGLE_SHEET_API, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({ rowIndex: sheetRowIdx, checkin: ts, encontroNome: encontroAtivo ? encontroAtivo.nome : "" })
+      }).catch(console.error);
+    }
 
-function iniciarRevogarCheckin() {
-  const btn = document.getElementById("revokeBtn");
-  if (!btn) return;
-  if (!_revogarConfirmStep) {
-    _revogarConfirmStep = true;
-    btn.classList.add("confirming-revoke");
-    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg> Confirmar revogação?`;
-    _revogarTimer = setTimeout(() => {
-      _revogarConfirmStep = false;
+    function iniciarRevogarCheckin() {
+      const btn = document.getElementById("revokeBtn");
       if (!btn) return;
-      btn.classList.remove("confirming-revoke");
-      btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg> Revogar check-in`;
-    }, 4000);
-  } else {
-    clearTimeout(_revogarTimer); _revogarTimer = null;
-    _revogarConfirmStep = false;
-    confirmarRevogarCheckin();
-  }
-}
+      if (!_revogarConfirmStep) {
+        _revogarConfirmStep = true;
+        btn.classList.add("confirming-revoke");
+        btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg> Confirmar revogação?`;
+        _revogarTimer = setTimeout(() => {
+          _revogarConfirmStep = false;
+          if (!btn) return;
+          btn.classList.remove("confirming-revoke");
+          btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg> Revogar check-in`;
+        }, 4000);
+      } else {
+        clearTimeout(_revogarTimer); _revogarTimer = null;
+        _revogarConfirmStep = false;
+        confirmarRevogarCheckin();
+      }
+    }
 
-async function confirmarRevogarCheckin() {
-  const btn = document.getElementById("revokeBtn");
-  if (btn) { btn.disabled = true; btn.textContent = "Revogando…"; }
-  const nome = dados[rowAtual][2] || "?";
-  dados[rowAtual][iCI] = "";
+    async function confirmarRevogarCheckin() {
+      const btn = document.getElementById("revokeBtn");
+      if (btn) { btn.disabled = true; btn.textContent = "Revogando…"; }
+      const nome = dados[rowAtual][2] || "?";
+      dados[rowAtual][iCI] = "";
 
-  if (historicoCompleto[rowAtual]) {
-    historicoCompleto[rowAtual] = historicoCompleto[rowAtual].filter(h => h.encontro !== encontroAtivo.nome);
-  }
+      if (historicoCompleto[rowAtual]) {
+        historicoCompleto[rowAtual] = historicoCompleto[rowAtual].filter(h => h.encontro !== encontroAtivo.nome);
+      }
 
-  atualizarStats(); renderLista();
+      atualizarStats(); renderLista();
 
-  const body = document.getElementById("checkinSectionBody");
-  if (body) {
-    body.innerHTML = `
+      const body = document.getElementById("checkinSectionBody");
+      if (body) {
+        body.innerHTML = `
       <div style="font-size:12px;color:var(--accent-o);background:var(--accent-o-dim);border:1px solid rgba(251,146,60,.25);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px;">Check-in revogado.</div>
       <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">Realizar Check-in</button>
       <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${nome}</div>`;
-  }
-  showToast(`Check-in de ${nome} revogado.`);
+      }
+      showToast(`Check-in de ${nome} revogado.`);
 
-  const recId = dados[rowAtual][20];
-  const sheetRowIdx = dados[rowAtual][21];
-  await _supabase.from('inscricoes').update({ checkin: "" }).eq('id', recId);
+      const recId = dados[rowAtual][20];
+      const sheetRowIdx = dados[rowAtual][21];
+      await _supabase.from('inscricoes').update({ checkin: "" }).eq('id', recId);
 
-  fetch(GOOGLE_SHEET_API, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify({ rowIndex: sheetRowIdx, checkin: "", encontroNome: encontroAtivo ? encontroAtivo.nome : "" })
-  }).catch(console.error);
-}
+      fetch(GOOGLE_SHEET_API, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({ rowIndex: sheetRowIdx, checkin: "", encontroNome: encontroAtivo ? encontroAtivo.nome : "" })
+      }).catch(console.error);
+    }
 
-// ============================================================
-// FOTO — RECORTE E UPLOAD
-// ============================================================
-function abrirGaleria() { document.getElementById("inputFotoGaleria").click(); }
-function abrirCamera()  { document.getElementById("inputFotoCamera").click();  }
+    // ============================================================
+    // FOTO — RECORTE E UPLOAD
+    // ============================================================
+    function abrirGaleria() { document.getElementById("inputFotoGaleria").click(); }
+    function abrirCamera() { document.getElementById("inputFotoCamera").click(); }
 
-function processarFoto(file) {
-  if (!file) return;
-  fotoNovoMime = file.type; fotoNovoNome = file.name;
-  const reader = new FileReader();
-  reader.onloadend = e => {
-    document.getElementById("imageToCrop").src = e.target.result;
-    document.getElementById("cropModalBg").classList.add("open");
-    if (cropper) cropper.destroy();
-    cropper = new Cropper(document.getElementById("imageToCrop"), {
-      aspectRatio:1, viewMode:1, zoomable:true, dragMode:"move",
-      autoCropArea:1, guides:true, cropBoxMovable:true, cropBoxResizable:true,
-      toggleDragModeOnDblclick:false
-    });
-  };
-  reader.readAsDataURL(file);
-}
-function fecharCrop() { document.getElementById("cropModalBg").classList.remove("open"); if (cropper) { cropper.destroy(); cropper = null; } }
+    function processarFoto(file) {
+      if (!file) return;
+      fotoNovoMime = file.type; fotoNovoNome = file.name;
+      const reader = new FileReader();
+      reader.onloadend = e => {
+        document.getElementById("imageToCrop").src = e.target.result;
+        document.getElementById("cropModalBg").classList.add("open");
+        if (cropper) cropper.destroy();
+        cropper = new Cropper(document.getElementById("imageToCrop"), {
+          aspectRatio: 1, viewMode: 1, zoomable: true, dragMode: "move",
+          autoCropArea: 1, guides: true, cropBoxMovable: true, cropBoxResizable: true,
+          toggleDragModeOnDblclick: false
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+    function fecharCrop() { document.getElementById("cropModalBg").classList.remove("open"); if (cropper) { cropper.destroy(); cropper = null; } }
 
-function aplicarCrop() {
-  if (!cropper) return;
-  const canvas = cropper.getCroppedCanvas({ width:800, height:800 });
-  fotoNovaBase64 = canvas.toDataURL(fotoNovoMime||"image/jpeg", 0.9);
+    function aplicarCrop() {
+      if (!cropper) return;
+      const canvas = cropper.getCroppedCanvas({ width: 800, height: 800 });
+      fotoNovaBase64 = canvas.toDataURL(fotoNovoMime || "image/jpeg", 0.9);
 
-  const container = document.querySelector("#mBody .foto-container");
-  if (container) {
-    const old = container.querySelector(".foto-preview-wrap, .foto-empty");
-    if (old) old.remove();
-    const wrap = document.createElement("div");
-    wrap.className = "foto-preview-wrap";
-    wrap.onclick = () => verFoto(fotoNovaBase64);
-    wrap.innerHTML = `<img src="${fotoNovaBase64}"><div class="foto-preview-overlay"><span style="font-size:26px">🔍</span><span>Ver foto</span></div>`;
-    container.insertBefore(wrap, container.querySelector(".foto-actions"));
-  }
-  document.getElementById("mAvatar").innerHTML = `<img src="${fotoNovaBase64}">`;
+      const container = document.querySelector("#mBody .foto-container");
+      if (container) {
+        const old = container.querySelector(".foto-preview-wrap, .foto-empty");
+        if (old) old.remove();
+        const wrap = document.createElement("div");
+        wrap.className = "foto-preview-wrap";
+        wrap.onclick = () => verFoto(fotoNovaBase64);
+        wrap.innerHTML = `<img src="${fotoNovaBase64}"><div class="foto-preview-overlay"><span style="font-size:26px">🔍</span><span>Ver foto</span></div>`;
+        container.insertBefore(wrap, container.querySelector(".foto-actions"));
+      }
+      document.getElementById("mAvatar").innerHTML = `<img src="${fotoNovaBase64}">`;
 
-  if (encontroHoje) {
-    const ciBody = document.getElementById("checkinSectionBody");
-    const ciVal  = (dados[rowAtual][iCI] || "").trim();
-    if (ciBody && !ciVal) {
-      ciBody.innerHTML = `
+      if (encontroHoje) {
+        const ciBody = document.getElementById("checkinSectionBody");
+        const ciVal = (dados[rowAtual][iCI] || "").trim();
+        if (ciBody && !ciVal) {
+          ciBody.innerHTML = `
         <div style="font-size:12px;color:var(--accent-g);background:var(--accent-g-dim);border:1px solid var(--accent-g-mid);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px;">
           ✓ Foto adicionada — salve para liberar o check-in permanentemente.
         </div>
         <button class="checkin-btn" id="checkinModalBtn" onclick="iniciarCheckinModal()">Realizar Check-in</button>
-        <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${dados[rowAtual][2]||""}</div>`;
-    }
-  }
-  fecharCrop();
-  showToast("Foto recortada! Clique em Salvar para enviar.", "info");
-}
-
-document.getElementById("inputFotoGaleria").addEventListener("change", function() { processarFoto(this.files[0]); this.value = ""; });
-document.getElementById("inputFotoCamera").addEventListener("change",  function() { processarFoto(this.files[0]); this.value = ""; });
-
-// ============================================================
-// SALVAR (SUPABASE STORAGE + BANCO + SYNC PLANILHA)
-// ============================================================
-async function salvar() {
-  const btn = document.getElementById("saveBtn");
-  btn.textContent = "Salvando…"; btn.disabled = true;
-
-  const row = dados[rowAtual];
-  const recId = row[20];
-  const sheetRowIdx = row[21];
-  let novaFotoUrl = row[iF];
-
-  try {
-    if (fotoNovaBase64) {
-      const blob = await (await fetch(fotoNovaBase64)).blob();
-      const fileName = `foto_${recId}_${Date.now()}.jpg`;
-      const { data: uploadData, error: uploadErr } = await _supabase.storage
-        .from('fotos')
-        .upload(fileName, blob, { contentType: 'image/jpeg', upsert: true });
-
-      if (uploadErr) throw uploadErr;
-
-      const { data: publicUrlData } = _supabase.storage.from('fotos').getPublicUrl(fileName);
-      novaFotoUrl = publicUrlData.publicUrl;
+        <div class="checkin-hint" id="checkinHint">Toque para confirmar a presença de ${dados[rowAtual][2] || ""}</div>`;
+        }
+      }
+      fecharCrop();
+      showToast("Foto recortada! Clique em Salvar para enviar.", "info");
     }
 
-    const novoPago = _pagoSelecionado ? "SIM" : "NÃO";
+    document.getElementById("inputFotoGaleria").addEventListener("change", function () { processarFoto(this.files[0]); this.value = ""; });
+    document.getElementById("inputFotoCamera").addEventListener("change", function () { processarFoto(this.files[0]); this.value = ""; });
 
-    await _supabase.from('inscricoes').update({ pago: novoPago, foto_url: novaFotoUrl }).eq('id', recId);
-    if (fotoNovaBase64) {
-      const chave = chavePessoa(row[1], row[4]);
-      await _supabase.from('inscricoes').update({ foto_url: novaFotoUrl }).eq('chave_pessoa', chave);
+    // ============================================================
+    // SALVAR (SUPABASE STORAGE + BANCO + SYNC PLANILHA)
+    // ============================================================
+    async function salvar() {
+      const btn = document.getElementById("saveBtn");
+      btn.textContent = "Salvando…"; btn.disabled = true;
+
+      const row = dados[rowAtual];
+      const recId = row[20];
+      const sheetRowIdx = row[21];
+      let novaFotoUrl = row[iF];
+
+      try {
+        if (fotoNovaBase64) {
+          const blob = await (await fetch(fotoNovaBase64)).blob();
+          const fileName = `foto_${recId}_${Date.now()}.jpg`;
+          const { data: uploadData, error: uploadErr } = await _supabase.storage
+            .from('fotos')
+            .upload(fileName, blob, { contentType: 'image/jpeg', upsert: true });
+
+          if (uploadErr) throw uploadErr;
+
+          const { data: publicUrlData } = _supabase.storage.from('fotos').getPublicUrl(fileName);
+          novaFotoUrl = publicUrlData.publicUrl;
+        }
+
+        const novoPago = _pagoSelecionado ? "SIM" : "NÃO";
+
+        await _supabase.from('inscricoes').update({ pago: novoPago, foto_url: novaFotoUrl }).eq('id', recId);
+
+        // Atualiza a foto em TODAS as inscrições antigas daquela pessoa
+        if (fotoNovaBase64) {
+          const chave = chavePessoa(row[1], row[4]);
+          await _supabase.from('inscricoes').update({ foto_url: novaFotoUrl }).eq('chave_pessoa', chave);
+        }
+
+        row[iP] = novoPago;
+        row[iF] = novaFotoUrl;
+        renderLista();
+        atualizarStats();
+
+        showToast("Salvo com sucesso! ✓", "success");
+        fecharModal();
+
+        fetch(GOOGLE_SHEET_API, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify({
+            rowIndex: sheetRowIdx,
+            pago: novoPago,
+            fotoUrl: novaFotoUrl,
+            encontroNome: encontroAtivo ? encontroAtivo.nome : ""
+          })
+        }).catch(console.error);
+
+      } catch (err) {
+        console.error(err);
+        showToast("Erro ao salvar.", "error");
+        btn.textContent = "Tentar novamente"; btn.disabled = false;
+      }
     }
 
-    row[iP] = novoPago;
-    row[iF] = novaFotoUrl;
-    renderLista();
-    atualizarStats();
+    // ============================================================
+    // TECLADO E TOUCH
+    // ============================================================
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") { fecharLightbox(); fecharModal(); fecharCrop(); closeSidebar(); }
+    });
+    document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+    let _lastTouch = 0;
+    document.addEventListener("touchend", e => {
+      const now = Date.now();
+      if (now - _lastTouch <= 300) e.preventDefault();
+      _lastTouch = now;
+    }, false);
 
-    showToast("Salvo com sucesso! ✓", "success");
-    fecharModal();
-
-    fetch(GOOGLE_SHEET_API, {
-      method: "POST",
-      mode: "no-cors",
-      body: JSON.stringify({
-        rowIndex: sheetRowIdx,
-        pago: novoPago,
-        fotoUrl: novaFotoUrl,
-        encontroNome: encontroAtivo ? encontroAtivo.nome : ""
-      })
-    }).catch(console.error);
-
-  } catch(err) {
-    console.error(err);
-    showToast("Erro ao salvar.", "error");
-    btn.textContent = "Tentar novamente"; btn.disabled = false;
-  }
-}
-
-// ============================================================
-// TECLADO E TOUCH
-// ============================================================
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") { fecharLightbox(); fecharModal(); fecharCrop(); closeSidebar(); }
-});
-document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive:false });
-let _lastTouch = 0;
-document.addEventListener("touchend", e => {
-  const now = Date.now();
-  if (now - _lastTouch <= 300) e.preventDefault();
-  _lastTouch = now;
-}, false);
-
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
-carregarDados();
-</script>
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    carregarDados();
+  </script>
 </body>
+
 </html>
